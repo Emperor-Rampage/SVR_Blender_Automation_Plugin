@@ -22,8 +22,29 @@ bl_info = {
     "category" : "Generic"
 }
 
+import bpy
+
+
+class ObjectMoveX(bpy.types.Operator):
+    bl_idname = "my_operator.my_class_name"
+    bl_label = "My Class Name"
+    bl_description = "Description that shows in blender tooltips"
+    bl_options = {"REGISTER"}
+
+    @classmethod
+    def poll(cls, context):
+        return True
+
+    def execute(self, context):
+
+        scene = context.scene
+        for obj in scene.objects:
+            obj.location.x +=10
+        return {'FINISHED'}
+
+
 def register():
-    ...
+    bpy.utils.register_class(ObjectMoveX)
 
 def unregister():
-    ...
+    bpy.utils.unregister_class(ObjectMoveX)
