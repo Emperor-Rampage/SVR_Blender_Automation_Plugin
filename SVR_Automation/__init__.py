@@ -19,17 +19,29 @@ bl_info = {
     "version" : (0, 0, 1),
     "location" : "",
     "warning" : "",
-    "category" : "Generic"
+    "category" : "Render"
 }
 
 import bpy
 
-
 class ObjectMoveX(bpy.types.Operator):
-    bl_idname = "my_operator.my_class_name"
-    bl_label = "My Class Name"
+    bl_idname = "render.multirender"
+    bl_label = "Multi Render"
     bl_description = "Description that shows in blender tooltips"
     bl_options = {"REGISTER"}
+
+    pet = bpy.context.active_object
+    DefaultMat = bpy.data.materials.get("DefaultMat")
+    if DefaultMat is None:
+        DefaultMat = bpy.data.materials.new(name="DefaultMat")
+
+    MaterialVar2 = bpy.data.materials.get("MaterialVar2")
+    if MaterialVar2 is None:
+        MaterialVar2 = bpy.data.materials.new(name="MaterialVar2")
+
+    MaterialVar3 = bpy.data.materials.get("MaterialVar3")
+    if MaterialVar3 is None:
+        MaterialVar3 = bpy.data.materials.new(name="MaterialVar3")
 
     @classmethod
     def poll(cls, context):
@@ -37,9 +49,23 @@ class ObjectMoveX(bpy.types.Operator):
 
     def execute(self, context):
 
-        scene = context.scene
-        for obj in scene.objects:
-            obj.location.x +=10
+        if pet.data.materials:
+            pet.data.materials[0] = DefaultMat
+        else:
+            pet.data.materials.append(DefaultMat)
+        bpy.ops.render.render()
+
+        if pet.data.materials:
+            pet.data.materials[0] = MaterialVar2
+        else:
+            pet.data.materials.append(MaterialVar2)
+        bpy.ops.render.render()
+
+        if pet.data.materials:
+            pet.data.materials[0] = MaterialVar3
+        else:
+            pet.data.materials.append(MaterialVar3)
+        bpy.ops.render.render()
         return {'FINISHED'}
 
 
@@ -48,3 +74,6 @@ def register():
 
 def unregister():
     bpy.utils.unregister_class(ObjectMoveX)
+
+if __name__ == "__main__":
+    register()
