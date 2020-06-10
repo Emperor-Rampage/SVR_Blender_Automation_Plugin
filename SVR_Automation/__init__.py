@@ -24,56 +24,59 @@ bl_info = {
 
 import bpy
 
-class ObjectMoveX(bpy.types.Operator):
+def gatherData(string):
+    DefaultMat = bpy.data.materials.get(string)
+    if DefaultMat is None:
+        DefaultMat = bpy.data.materials.new(name=string)
+    return DefaultMat
+  
+
+class MultiRender(bpy.types.Operator):
     bl_idname = "render.multirender"
     bl_label = "Multi Render"
-    bl_description = "Description that shows in blender tooltips"
-    bl_options = {"REGISTER"}
-
-    pet = bpy.context.active_object
-    DefaultMat = bpy.data.materials.get("DefaultMat")
-    if DefaultMat is None:
-        DefaultMat = bpy.data.materials.new(name="DefaultMat")
-
-    MaterialVar2 = bpy.data.materials.get("MaterialVar2")
-    if MaterialVar2 is None:
-        MaterialVar2 = bpy.data.materials.new(name="MaterialVar2")
-
-    MaterialVar3 = bpy.data.materials.get("MaterialVar3")
-    if MaterialVar3 is None:
-        MaterialVar3 = bpy.data.materials.new(name="MaterialVar3")
+    bl_description = "RenderThree Times!"
+    bl_options = {"REGISTER"}  
 
     @classmethod
     def poll(cls, context):
-        return True
-
+        return True 
+ 
     def execute(self, context):
-
+        scn = bpy.context.scene
+        pet = bpy.context.active_object
+        DefaultMat = gatherData("DefaultMat")
+        MaterialVar2 = gatherData("MaterialVar2")
+        MaterialVar3 = gatherData("MaterialVar3")
+        scn.render.filepath = "C:\work\work1"
         if pet.data.materials:
             pet.data.materials[0] = DefaultMat
         else:
             pet.data.materials.append(DefaultMat)
-        bpy.ops.render.render()
+        bpy.ops.render.render(animation=True)
+
+        scn.render.filepath = "C:\work\work2"
 
         if pet.data.materials:
             pet.data.materials[0] = MaterialVar2
         else:
             pet.data.materials.append(MaterialVar2)
-        bpy.ops.render.render()
+        bpy.ops.render.render(animation=True)
+
+        scn.render.filepath = "C:\work\work3"
 
         if pet.data.materials:
             pet.data.materials[0] = MaterialVar3
         else:
             pet.data.materials.append(MaterialVar3)
-        bpy.ops.render.render()
+        bpy.ops.render.render(animation=True)
         return {'FINISHED'}
 
 
 def register():
-    bpy.utils.register_class(ObjectMoveX)
+    bpy.utils.register_class(MultiRender)
 
 def unregister():
-    bpy.utils.unregister_class(ObjectMoveX)
+    bpy.utils.unregister_class(MultiRender)
 
 if __name__ == "__main__":
     register()
