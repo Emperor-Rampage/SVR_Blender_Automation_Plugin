@@ -23,9 +23,9 @@ bl_info = {
 }
 
 import bpy
-import os
-import SVR_Automation.custom_object
-
+import os, sys
+import imageio
+from moviepy.editor import *
 
 enum_menu_items = [
                 ('OPT1','Option 1','',1),
@@ -47,27 +47,32 @@ def newRender(object, material):
             object.data.materials.append(material)
     bpy.ops.render.render(animation=True)
 
-def validateRenderSetting(self, context):
+def validateRenderSettings(self, context):
     if self.isSkill is True:
         bpy.context.scene.render.resolution_x = 232
         bpy.context.scene.render.resolution_y = 346
     else:
         bpy.context.scene.render.resolution_x = 464
-        bpy.context.scene.render.resolution_y = 346
+        bpy.context.scene.render.resolution_y = 346        
+    SetRenderBlock()
+
+def SetRenderBlock():
     bpy.context.scene.render.use_file_extension = False
-    bpy.context.scene.render.image_settings.file_format["FFMPEG"]
-    bpy.context.scene.render.image_settings.color_mode["RGB"]
-    bpy.context.scene.render.ffmpeg.format = ["MPEG4"]
-    bpy.context.scene.render.ffmpeg.codec = ["MPEG4"]
-    bpy.context.scene.render.ffmpeg.constant_rate_factor = ["MEDIUM"]
-    bpy.context.scene.render.ffmpeg.ffmpeg_preset = ["GOOD"]
+    bpy.context.scene.render.image_settings.file_format = "FFMPEG"
+    bpy.context.scene.render.image_settings.color_mode = "RGB"
+    bpy.context.scene.render.ffmpeg.format = "MPEG4"
+    bpy.context.scene.render.ffmpeg.codec = "MPEG4"
+    bpy.context.scene.render.ffmpeg.constant_rate_factor = "MEDIUM"
+    bpy.context.scene.render.ffmpeg.ffmpeg_preset = "GOOD"
     bpy.context.scene.render.ffmpeg.gopsize = 18
+    bpy.context.scene.render.ffmpeg.audio_codec = "NONE"
+
 
 class MySettings(bpy.types.PropertyGroup):
     isSkill : bpy.props.BoolProperty(name = "isSkill", 
                 description = "Boolean that confirms if the current animations is supposed to be a skill animation or not.", 
                 default = False, 
-                update = validateRenderSetting,
+                update = validateRenderSettings,
                 )
     petName : bpy.props.StringProperty(name = "Pet Type", default = "PetName")
     petColor1 : bpy.props.StringProperty(name = "Default Color Name", default = "Color1")
@@ -108,14 +113,22 @@ class CustomMenu(bpy.types.Menu):
         # call another menu
         layout.operator("wm.call_menu", text="Unwrap").name = "VIEW3D_MT_uv_map"
 
+class VariationPanel(bpy.types.Panel):
+    bl_label = "Variation Panel"
+    bl_idname = "OBJECT_PT_variation_panel"
+    bl_space_type = "VIEW_3D"
+    bl_region_type = 'UI'
+
+variations = {
+    1 : {'name' : 'Default', 'material' : 'Default Mat'},
+}
+
 class LayoutPanel(bpy.types.Panel):
     bl_label = "MultiRender"
     bl_idname = "OBJECT_PT_layout_panel"
     bl_space_type = "VIEW_3D"
     bl_region_type = 'UI'
     bl_category = 'Tool'
-
-
 
     def draw(self, context):
         layout = self.layout
@@ -136,24 +149,24 @@ class LayoutPanel(bpy.types.Panel):
         row.operator("render.multirender", text="Multi Render", icon='OBJECT_DATAMODE')
         #row.operator("object.mode_set", text="Set Var 3", icon='OBJECT_DATAMODE').mode='TEXTURE_PAINT'
 
-        row = layout.row()
-        box = row.box()
+        #row = layout.row()
+        #box = row.box()
 
-        row = box.row()
-        row.label(text = "Some menus", icon='LINENUMBERS_ON')
+        #row = box.row()
+        #row.label(text = "Some menus", icon='LINENUMBERS_ON')
 
-        row = box.row()
+        #row = box.row()
         # add the custom menu defined above
-        box.menu(CustomMenu.bl_idname,text = 'My custom menu', icon='PREFERENCES')
+        #box.menu(CustomMenu.bl_idname,text = 'My custom menu', icon='PREFERENCES')
 
-        row = box.row()
+        #row = box.row()
         # add a standard blender menu - the add menu
-        box.menu('VIEW3D_MT_mesh_add', text ='Add', icon='PLUS')
+        #box.menu('VIEW3D_MT_mesh_add', text ='Add', icon='PLUS')
 
-        row = box.row()
+        #row = box.row()
         # add an enum property menu
         # this allows only certain values to be set for a property
-        box.prop_menu_enum(context.scene, 'test_enum', text='enum property', icon='ALIGN_LEFT')
+        #box.prop_menu_enum(context.scene, 'test_enum', text='enum property', icon='ALIGN_LEFT')
 
 class MultiRender(bpy.types.Operator):
     bl_idname = "render.multirender"
@@ -164,7 +177,7 @@ class MultiRender(bpy.types.Operator):
     @classmethod
     def poll(cls, context):
         return True 
- 
+
     def execute(self, context):
 
         scn = bpy.context.scene
@@ -172,47 +185,73 @@ class MultiRender(bpy.types.Operator):
         mysettings = bpy.context.scene.my_settings
         DefaultMat = gatherData("DefaultMat")
         MaterialVar2 = gatherData("MaterialVar2")
-        MaterialVar3 = gatherData("MaterialVar2")
+        MaterialVar3 = gatherData("MaterialVar3")
+        validateRenderSettings(mysettings,scn)
 
         if mysettings.isSkill is True:
-            cam = bpy.data.objects["Camera"]
-            cam.scale[0] = 1
-            scn.render.filepath = "C:\work\\" + mysettings.petName + mysettings.petColor1 + "-" + mysettings.animationName + "-left.mp4"
-            newRender(pet, DefaultMat)
-            scn.render.filepath = "C:\work\\" + mysettings.petName + mysettings.petColor1 + "-" + mysettings.animationName + "-right.mp4"
-            cam.scale[0] = -1
+     
+            string1L = "C:\work\mp4\\" + mysettings.petName + "\\ " + mysettings.petName + mysettings.petColor1 + "-" + mysettings.animationName + "-left.mp4"
+            string1R = "C:\work\mp4\\" + mysettings.petName + "\\ " + mysettings.petName + mysettings.petColor1 + "-" + mysettings.animationName + "-right.mp4"
+            gif1L = "C:\work\gif\\"  + mysettings.petName + "\\ " + mysettings.petName + mysettings.petColor1 + "-" + mysettings.animationName + "-left.gif"
+            gif1R = "C:\work\gif\\"  + mysettings.petName + "\\ " + mysettings.petName + mysettings.petColor1 + "-" + mysettings.animationName + "-right.gif"
+
+            scn.render.filepath = string1L
             newRender(pet, DefaultMat)
 
-            cam.scale[0] = 1
+            myclip = VideoFileClip(string1L)
+            myclip.write_gif(gif1L, fps = myclip.fps, program= "ffmepg")
+            #mirroredClip = myclip.fx( vfx.mirror_x, myclip)
+            #mirroredClip.write_gif(gif1R, fps = myclip.fps, program= "ffmepg", opt = "None")
+            myclip.close
+            #mirroredClip.close
+
+            #newRender(pet, DefaultMat)
+
             scn.render.filepath = "C:\work\\" + mysettings.petName + mysettings.petColor2 + "-" + mysettings.animationName + "-left.mp4"
             newRender(pet, MaterialVar2)
             scn.render.filepath = "C:\work\\" + mysettings.petName + mysettings.petColor2 + "-" + mysettings.animationName + "-right.mp4"
-            cam.scale[0] = -1
+
             newRender(pet, MaterialVar2)
 
-            cam.scale[0] = 1
+
             scn.render.filepath = "C:\work\\" + mysettings.petName + mysettings.petColor3 + "-" + mysettings.animationName + "-left.mp4"
             newRender(pet, MaterialVar3)
             scn.render.filepath = "C:\work\\" + mysettings.petName + mysettings.petColor3 + "-" + mysettings.animationName + "-right.mp4"
-            cam.scale[0] = -1
-            newRender(pet, MaterialVar3)
 
-            cam.scale[0] = 1
+            newRender(pet, MaterialVar3)
 
         else:
-            scn.render.filepath = "C:\work\ " + mysettings.petName + mysettings.petColor1 + "-" + mysettings.animationName + ".mp4"
-
+            #First Render Loop
+            string1 = "C:\work\mp4\\" + mysettings.petName + "\\ " + mysettings.petName + mysettings.petColor1 + "-" + mysettings.animationName + ".mp4"
+            gif1 = "C:\work\gif\\"  + mysettings.petName + "\\ "+ mysettings.petName + mysettings.petColor1 + "-" + mysettings.animationName + ".gif"
+            scn.render.filepath = string1
             newRender(pet, DefaultMat)
-       
-            scn.render.filepath = "C:\work\ " + mysettings.petName + mysettings.petColor2 + "-" + mysettings.animationName + ".mp4"
+            myclip = VideoFileClip(string1)
+            myclip.write_videofile(string1)
+            
+            myclip.write_gif(gif1, program= "ffmepg", opt = "None")
+            myclip.close
+            
 
+            #Second Render Loop
+            string2 = "C:\work\mp4\\" + mysettings.petName + "\\ " + mysettings.petName + mysettings.petColor2 + "-" + mysettings.animationName + ".mp4"
+            gif2 = "C:\work\gif\\"  + mysettings.petName + "\\ " + mysettings.petName + mysettings.petColor2 + "-" + mysettings.animationName + ".gif"
+            scn.render.filepath = string2
             newRender(pet, MaterialVar2)
-       
-            scn.render.filepath = "C:\work\ " + mysettings.petName + mysettings.petColor3 + "-" + mysettings.animationName + ".mp4"
+            #myclip = VideoFileClip(string2)
+            #myclip.write_gif(gif2, fps = myclip.fps, program= "ffmpeg", opt = "None")
+            
 
+            #Third Render Loop
+            string3 = "C:\work\mp4\\" + mysettings.petName + "\\ " + mysettings.petName  + mysettings.petColor3 + "-" + mysettings.animationName + ".mp4"
+            gif3 = "C:\work\gif\\"  + mysettings.petName + "\\ "+ mysettings.petName + mysettings.petColor3 + "-" + mysettings.animationName + ".gif"
+            scn.render.filepath = string3
             newRender(pet, MaterialVar3)
+            #myclip = VideoFileClip(string3)
+            #myclip.write_gif(gif3, fps = myclip.fps, program= "ffmpeg", opt = "None")
+            #myclip.close()
         
-        pet.data.material[0] = DefaultMat
+        pet.data.materials[0] = DefaultMat
         return {'FINISHED'}
 
 classes = (
