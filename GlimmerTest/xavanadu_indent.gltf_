@@ -1,0 +1,970 @@
+{
+    "scenes": [
+        {
+            "nodes": [
+                0,
+                1,
+                2,
+                3,
+                4,
+                5,
+                6,
+                7,
+                8,
+                9,
+                10,
+                11,
+                12,
+                13,
+                14,
+                15,
+                16,
+                17,
+                18,
+                19,
+                20,
+                21,
+                22,
+                23,
+                24,
+                25,
+                26,
+                27,
+                28
+            ],
+            "name": "Room Objects"
+        }
+    ],
+    "nodes": [
+        {
+            "translation": [
+                -42.21478271484375,
+                1.9449056386947632,
+                -115.82682037353516
+            ],
+            "scale": [
+                3.1562983791755848,
+                3.1562983791755848,
+                3.1562983791755848
+            ],
+            "rotation": [
+                -3.9013777888061073e-13,
+                -0.7217187278600972,
+                -9.075093666502055e-14,
+                0.6921864473218202
+            ],
+            "name": "zz9oc0w",
+            "extensions": {
+                "HUBS_components": {
+                    "pinnable": {
+                        "pinned": true
+                    },
+                    "media": {
+                        "version": 1,
+                        "src": "http://vearth.net/vocf/site_map.jpg",
+                        "id": "zz9oc0w",
+                        "contentSubtype": null
+                    }
+                }
+            }
+        },
+        {
+            "translation": [
+                -70.90142822265625,
+                1.986282467842102,
+                -116.08094024658203
+            ],
+            "scale": [
+                6.103965992940635,
+                6.103965992940635,
+                6.103965992940636
+            ],
+            "rotation": [
+                0.0100330126462351,
+                0.6861835134503713,
+                -0.009465843173003067,
+                0.7272976848163129
+            ],
+            "name": "iz0yy59",
+            "extensions": {
+                "HUBS_components": {
+                    "pinnable": {
+                        "pinned": true
+                    },
+                    "media": {
+                        "version": 1,
+                        "src": "http://vearth.net/vocf/overview.jpg",
+                        "id": "iz0yy59",
+                        "contentSubtype": null
+                    }
+                }
+            }
+        },
+        {
+            "translation": [
+                -54.13149642944336,
+                1.1615877151489258,
+                -89.77933502197266
+            ],
+            "scale": [
+                6.355565472164256,
+                6.355565472164254,
+                6.355565472164255
+            ],
+            "rotation": [
+                0.020271372357617213,
+                -0.7385982590517316,
+                0.0459149360609261,
+                0.6722748707448546
+            ],
+            "name": "edve6nb",
+            "extensions": {
+                "HUBS_components": {
+                    "pinnable": {
+                        "pinned": true
+                    },
+                    "media": {
+                        "version": 1,
+                        "src": "https://poly.google.com/view/9pffFcv7LSm",
+                        "id": "edve6nb",
+                        "contentSubtype": null
+                    }
+                }
+            }
+        },
+        {
+            "translation": [
+                -56.19142532348633,
+                5.5688042640686035,
+                -81.58495330810547
+            ],
+            "scale": [
+                12.434353282068889,
+                12.434353282068887,
+                12.434353282068889
+            ],
+            "rotation": [
+                0.005247376620435648,
+                -0.6473164483523414,
+                0.0005834462803935903,
+                0.7622030833849675
+            ],
+            "name": "f2knn1j",
+            "extensions": {
+                "HUBS_components": {
+                    "pinnable": {
+                        "pinned": true
+                    },
+                    "media": {
+                        "version": 1,
+                        "src": "https://poly.google.com/view/7VVumyY7L_u",
+                        "id": "f2knn1j",
+                        "contentSubtype": null
+                    }
+                }
+            }
+        },
+        {
+            "translation": [
+                -69.1783218383789,
+                1.0732581615447998,
+                -83.71271514892578
+            ],
+            "scale": [
+                1.4588160857357932,
+                1.4588160857357937,
+                1.458816085735793
+            ],
+            "rotation": [
+                5.887652655027679e-06,
+                0.9516212832409044,
+                -1.659883133459601e-05,
+                0.30727338474516264
+            ],
+            "name": "cdh3405",
+            "extensions": {
+                "HUBS_components": {
+                    "pinnable": {
+                        "pinned": true
+                    },
+                    "media": {
+                        "version": 1,
+                        "src": "https://poly.google.com/view/bVepm2yfJTh",
+                        "id": "cdh3405",
+                        "contentSubtype": null
+                    }
+                }
+            }
+        },
+        {
+            "translation": [
+                -76.14118957519531,
+                4.299118995666504,
+                -51.16246795654297
+            ],
+            "scale": [
+                12.661066883292914,
+                12.661066883292918,
+                12.661066883292916
+            ],
+            "rotation": [
+                0.03568456448432619,
+                0.7933692391002235,
+                -0.048412680960776416,
+                0.6057623912304941
+            ],
+            "name": "mcje5w1",
+            "extensions": {
+                "HUBS_components": {
+                    "pinnable": {
+                        "pinned": true
+                    },
+                    "media": {
+                        "version": 1,
+                        "src": "https://poly.google.com/view/9QEds6cYAy6",
+                        "id": "mcje5w1",
+                        "contentSubtype": null
+                    }
+                }
+            }
+        },
+        {
+            "translation": [
+                -59.218414306640625,
+                6.214714050292969,
+                -43.14198684692383
+            ],
+            "scale": [
+                13.128696649668239,
+                13.128696649668232,
+                13.128696649668239
+            ],
+            "rotation": [
+                0.028642779866652066,
+                -0.6796119840894133,
+                0.026573596732681795,
+                0.7325305360189773
+            ],
+            "name": "a7z0bmn",
+            "extensions": {
+                "HUBS_components": {
+                    "pinnable": {
+                        "pinned": true
+                    },
+                    "media": {
+                        "version": 1,
+                        "src": "https://poly.google.com/view/e9NAQQrCbLu",
+                        "id": "a7z0bmn",
+                        "contentSubtype": null
+                    }
+                }
+            }
+        },
+        {
+            "translation": [
+                -72.32402801513672,
+                5.889514923095703,
+                -68.4931869506836
+            ],
+            "scale": [
+                13.505966461227008,
+                13.505966461227018,
+                13.505966461227006
+            ],
+            "rotation": [
+                -0.013069454432286425,
+                0.6304929836221629,
+                0.010618647980230744,
+                0.7760122623252402
+            ],
+            "name": "wpgjbd9",
+            "extensions": {
+                "HUBS_components": {
+                    "pinnable": {
+                        "pinned": true
+                    },
+                    "media": {
+                        "version": 1,
+                        "src": "https://poly.google.com/view/e9NAQQrCbLu",
+                        "id": "wpgjbd9",
+                        "contentSubtype": null
+                    }
+                }
+            }
+        },
+        {
+            "translation": [
+                -71.68441009521484,
+                2.2935121059417725,
+                37.923397064208984
+            ],
+            "scale": [
+                4.777987804063672,
+                4.777987804063669,
+                4.777987804063671
+            ],
+            "rotation": [
+                0.0017593376980631944,
+                0.6431374565100275,
+                -0.0014779243895199255,
+                0.7657473032953989
+            ],
+            "name": "2ippphv",
+            "extensions": {
+                "HUBS_components": {
+                    "pinnable": {
+                        "pinned": true
+                    },
+                    "media": {
+                        "version": 1,
+                        "src": "http://vearth.net/vocf/overview.jpg",
+                        "id": "2ippphv",
+                        "contentSubtype": null
+                    }
+                }
+            }
+        },
+        {
+            "translation": [
+                -22.69099235534668,
+                3.2804481983184814,
+                14.031455039978027
+            ],
+            "scale": [
+                16.81788516651375,
+                16.817885166513758,
+                16.817885166513754
+            ],
+            "rotation": [
+                -0.0014111076243717962,
+                -0.9964446916266372,
+                -0.08250900437380798,
+                0.016977912168790958
+            ],
+            "name": "ypntc02",
+            "extensions": {
+                "HUBS_components": {
+                    "pinnable": {
+                        "pinned": true
+                    },
+                    "media": {
+                        "version": 1,
+                        "src": "https://poly.google.com/view/1QpMTUO7P-G",
+                        "id": "ypntc02",
+                        "contentSubtype": null
+                    }
+                }
+            }
+        },
+        {
+            "translation": [
+                -62.724395751953125,
+                1.7787303924560547,
+                -27.02385902404785
+            ],
+            "scale": [
+                7.348013008877422,
+                7.348013008877423,
+                7.348013008877427
+            ],
+            "rotation": [
+                0.02184547630363682,
+                0.95762151110646,
+                -0.0757711706488083,
+                0.2770244507796322
+            ],
+            "name": "f9r0a45",
+            "extensions": {
+                "HUBS_components": {
+                    "pinnable": {
+                        "pinned": true
+                    },
+                    "media": {
+                        "version": 1,
+                        "src": "https://poly.google.com/view/3howD1jUNWA",
+                        "id": "f9r0a45",
+                        "contentSubtype": null
+                    }
+                }
+            }
+        },
+        {
+            "translation": [
+                -51.06370162963867,
+                2.1333844661712646,
+                19.75988006591797
+            ],
+            "scale": [
+                9.35676741791237,
+                9.356767417912373,
+                9.356767417912371
+            ],
+            "rotation": [
+                0.15906949447400717,
+                0.6402016824712433,
+                0.7388279474149647,
+                -0.1377387592777121
+            ],
+            "name": "e2k2wis",
+            "extensions": {
+                "HUBS_components": {
+                    "pinnable": {
+                        "pinned": true
+                    },
+                    "media": {
+                        "version": 1,
+                        "src": "https://poly.google.com/view/0MzuBG9I2Mo",
+                        "id": "e2k2wis",
+                        "contentSubtype": null
+                    }
+                }
+            }
+        },
+        {
+            "translation": [
+                -38.890594482421875,
+                1.802119493484497,
+                29.233016967773438
+            ],
+            "scale": [
+                6.996423418078575,
+                6.996423418078577,
+                6.996423418078574
+            ],
+            "rotation": [
+                0.0030810277015746157,
+                -0.9711366257287938,
+                -0.007878312857763418,
+                0.23837385264099367
+            ],
+            "name": "59j3y4r",
+            "extensions": {
+                "HUBS_components": {
+                    "pinnable": {
+                        "pinned": true
+                    },
+                    "media": {
+                        "version": 1,
+                        "src": "https://poly.google.com/view/aB0Pvqny65O",
+                        "id": "59j3y4r",
+                        "contentSubtype": null
+                    }
+                }
+            }
+        },
+        {
+            "translation": [
+                -39.225399017333984,
+                4.252981185913086,
+                15.452441215515137
+            ],
+            "scale": [
+                3.090886462483428,
+                3.090886462483428,
+                3.090886462483427
+            ],
+            "rotation": [
+                0.1585168372138571,
+                0.42210504429575935,
+                -0.07084404073911264,
+                0.8897645001861705
+            ],
+            "name": "6qk9u7s",
+            "extensions": {
+                "HUBS_components": {
+                    "pinnable": {
+                        "pinned": true
+                    },
+                    "media": {
+                        "version": 1,
+                        "src": "https://poly.google.com/view/5hrwvzpCArU",
+                        "id": "6qk9u7s",
+                        "contentSubtype": null
+                    }
+                }
+            }
+        },
+        {
+            "translation": [
+                -44.034088134765625,
+                9.916548728942871,
+                10.716140747070312
+            ],
+            "scale": [
+                2.2788899827062994,
+                2.278889982706299,
+                2.278889982706299
+            ],
+            "rotation": [
+                0.017086087745881866,
+                0.9565353257660268,
+                -0.05723869948671765,
+                0.28543294737694536
+            ],
+            "name": "b8wol3t",
+            "extensions": {
+                "HUBS_components": {
+                    "pinnable": {
+                        "pinned": true
+                    },
+                    "media": {
+                        "version": 1,
+                        "src": "https://poly.google.com/view/5hrwvzpCArU",
+                        "id": "b8wol3t",
+                        "contentSubtype": null
+                    }
+                }
+            }
+        },
+        {
+            "translation": [
+                -34.16905975341797,
+                11.818659782409668,
+                5.562950611114502
+            ],
+            "scale": [
+                2.4178539001614032,
+                2.4178539001614046,
+                2.4178539001614032
+            ],
+            "rotation": [
+                0.014923842964505697,
+                -0.9542034122593959,
+                0.04824667466159676,
+                0.2948650290010568
+            ],
+            "name": "l36diql",
+            "extensions": {
+                "HUBS_components": {
+                    "pinnable": {
+                        "pinned": true
+                    },
+                    "media": {
+                        "version": 1,
+                        "src": "https://poly.google.com/view/5hrwvzpCArU",
+                        "id": "l36diql",
+                        "contentSubtype": null
+                    }
+                }
+            }
+        },
+        {
+            "translation": [
+                -80.42924499511719,
+                2.1746084690093994,
+                -25.546653747558594
+            ],
+            "scale": [
+                4.41790487595978,
+                4.417904875959781,
+                4.417904875959781
+            ],
+            "rotation": [
+                -0.015115407126797405,
+                0.6826802487711355,
+                0.014127390546935065,
+                0.7304242734476354
+            ],
+            "name": "2004gqx",
+            "extensions": {
+                "HUBS_components": {
+                    "pinnable": {
+                        "pinned": true
+                    },
+                    "media": {
+                        "version": 1,
+                        "src": "http://vearth.net/vocf/images/tiedye.jpg",
+                        "id": "2004gqx",
+                        "contentSubtype": null
+                    }
+                }
+            }
+        },
+        {
+            "translation": [
+                -55.999244689941406,
+                2.063772678375244,
+                -57.34660720825195
+            ],
+            "scale": [
+                4.438455141642552,
+                4.438455141642552,
+                4.438455141642555
+            ],
+            "rotation": [
+                -0.019651768208190985,
+                -0.753143608872945,
+                -0.022521496994612807,
+                0.6571767605395443
+            ],
+            "name": "32gwo5f",
+            "extensions": {
+                "HUBS_components": {
+                    "pinnable": {
+                        "pinned": true
+                    },
+                    "media": {
+                        "version": 1,
+                        "src": "http://vearth.net/vocf/images/tiedye.jpg",
+                        "id": "32gwo5f",
+                        "contentSubtype": null
+                    }
+                }
+            }
+        },
+        {
+            "translation": [
+                -34.50335693359375,
+                2.2341792583465576,
+                47.49687957763672
+            ],
+            "scale": [
+                3.7841093363586635,
+                3.7841093363586635,
+                3.784109336358663
+            ],
+            "rotation": [
+                -5.0011169800343e-07,
+                0.3961267276672746,
+                8.480293896703657e-08,
+                0.9181958481867358
+            ],
+            "name": "xrzcy3s",
+            "extensions": {
+                "HUBS_components": {
+                    "pinnable": {
+                        "pinned": true
+                    },
+                    "media": {
+                        "version": 1,
+                        "src": "http://vearth.net/vocf/images/tiedye.jpg",
+                        "id": "xrzcy3s",
+                        "contentSubtype": null
+                    }
+                }
+            }
+        },
+        {
+            "translation": [
+                -10.60999870300293,
+                2.429302453994751,
+                -1.5904316902160645
+            ],
+            "scale": [
+                11.79623238119607,
+                11.796232381196072,
+                11.796232381196068
+            ],
+            "rotation": [
+                0.006953923606827298,
+                0.1264289305707592,
+                -0.04625714519656993,
+                0.9908721637928215
+            ],
+            "name": "xtmsx6z",
+            "extensions": {
+                "HUBS_components": {
+                    "pinnable": {
+                        "pinned": true
+                    },
+                    "media": {
+                        "version": 1,
+                        "src": "https://poly.google.com/view/4xoTMiF0D5J",
+                        "id": "xtmsx6z",
+                        "contentSubtype": null
+                    }
+                }
+            }
+        },
+        {
+            "translation": [
+                -41.96321105957031,
+                1.4455338716506958,
+                -4.009314060211182
+            ],
+            "scale": [
+                10.924643277357882,
+                10.924643277357884,
+                10.924643277357882
+            ],
+            "rotation": [
+                0.006188137462539943,
+                -0.7820338577272234,
+                0.00779677992141244,
+                0.6231564510986617
+            ],
+            "name": "gg3zvuw",
+            "extensions": {
+                "HUBS_components": {
+                    "pinnable": {
+                        "pinned": true
+                    },
+                    "media": {
+                        "version": 1,
+                        "src": "https://poly.google.com/view/d-ad5gtnq8Z",
+                        "id": "gg3zvuw",
+                        "contentSubtype": null
+                    }
+                }
+            }
+        },
+        {
+            "translation": [
+                -68.36604309082031,
+                1.295072078704834,
+                -87.3877182006836
+            ],
+            "scale": [
+                2.3694223849485656,
+                2.3694223849485656,
+                2.3694223849485656
+            ],
+            "rotation": [
+                -0.06283637911114938,
+                0.6704549822289244,
+                0.05716561210766952,
+                0.7370710949813241
+            ],
+            "name": "9bfdaoi",
+            "extensions": {
+                "HUBS_components": {
+                    "pinnable": {
+                        "pinned": true
+                    },
+                    "media": {
+                        "version": 1,
+                        "src": "https://poly.google.com/view/folDA1yLeEF",
+                        "id": "9bfdaoi",
+                        "contentSubtype": null
+                    }
+                }
+            }
+        },
+        {
+            "translation": [
+                -72.44831085205078,
+                3.3852109909057617,
+                -77.59486389160156
+            ],
+            "scale": [
+                3.102119514292227,
+                3.1021195142922267,
+                3.102119514292226
+            ],
+            "rotation": [
+                0.020964833153414447,
+                0.6551495800569446,
+                -0.018589599657806682,
+                0.7549794237637348
+            ],
+            "name": "0g6m68m",
+            "extensions": {
+                "HUBS_components": {
+                    "pinnable": {
+                        "pinned": true
+                    },
+                    "media": {
+                        "version": 1,
+                        "src": "http://chriscalef.com/postindustprod/logo.jpg",
+                        "id": "0g6m68m",
+                        "contentSubtype": null
+                    }
+                }
+            }
+        },
+        {
+            "translation": [
+                -69.3524398803711,
+                1.4748855829238892,
+                -75.55752563476562
+            ],
+            "rotation": [
+                -0.08450622413401591,
+                0.8021851221581415,
+                0.11700619771597819,
+                0.579367998397209
+            ],
+            "name": "upvc2b1",
+            "extensions": {
+                "HUBS_components": {
+                    "pinnable": {
+                        "pinned": true
+                    },
+                    "media": {
+                        "version": 1,
+                        "src": "http://chriscalef.com/postindustprod/frame_bag_w_stone01.jpg",
+                        "id": "upvc2b1",
+                        "contentSubtype": null
+                    }
+                }
+            }
+        },
+        {
+            "translation": [
+                -69.4940414428711,
+                1.635228157043457,
+                -77.3594741821289
+            ],
+            "scale": [
+                1.271565644721204,
+                1.271565644721204,
+                1.2715656447212038
+            ],
+            "rotation": [
+                -0.0637135825165931,
+                0.6350175735144794,
+                0.05267713089392805,
+                0.7680614432527307
+            ],
+            "name": "fp88jzb",
+            "extensions": {
+                "HUBS_components": {
+                    "pinnable": {
+                        "pinned": true
+                    },
+                    "media": {
+                        "version": 1,
+                        "src": "http://chriscalef.com/postindustprod/IMAG0772.900.jpg",
+                        "id": "fp88jzb",
+                        "contentSubtype": null
+                    }
+                }
+            }
+        },
+        {
+            "translation": [
+                -69.19084930419922,
+                1.4447122812271118,
+                -79.22850799560547
+            ],
+            "scale": [
+                0.79013682562197,
+                0.7901368256219701,
+                0.79013682562197
+            ],
+            "rotation": [
+                -0.12259193594434224,
+                0.4485640250345495,
+                0.062269351256340574,
+                0.8831104464223808
+            ],
+            "name": "fo5ud6r",
+            "extensions": {
+                "HUBS_components": {
+                    "pinnable": {
+                        "pinned": true
+                    },
+                    "media": {
+                        "version": 1,
+                        "src": "http://chriscalef.com/postindustprod/IMAG0780.1600.jpg",
+                        "id": "fo5ud6r",
+                        "contentSubtype": null
+                    }
+                }
+            }
+        },
+        {
+            "translation": [
+                -71.17616271972656,
+                1.6550030708312988,
+                -85.2707748413086
+            ],
+            "scale": [
+                6.208586853525974,
+                6.208586853525973,
+                6.208586853525973
+            ],
+            "rotation": [
+                -0.03250563807271126,
+                0.9810072734288267,
+                -0.02139658260857062,
+                0.1900271012932098
+            ],
+            "name": "ubexutb",
+            "extensions": {
+                "HUBS_components": {
+                    "pinnable": {
+                        "pinned": true
+                    },
+                    "media": {
+                        "version": 1,
+                        "src": "https://poly.google.com/view/2ag6_uuqsnb",
+                        "id": "ubexutb",
+                        "contentSubtype": null
+                    }
+                }
+            }
+        },
+        {
+            "translation": [
+                -29.811643600463867,
+                4.0369181632995605,
+                -113.51836395263672
+            ],
+            "scale": [
+                15.1091069606959,
+                15.10910696069591,
+                15.10910696069591
+            ],
+            "rotation": [
+                -0.00876119736099951,
+                0.9139630800164605,
+                -0.019486068084522603,
+                -0.4052345283174993
+            ],
+            "name": "z7netlb",
+            "extensions": {
+                "HUBS_components": {
+                    "pinnable": {
+                        "pinned": true
+                    },
+                    "media": {
+                        "version": 1,
+                        "src": "https://poly.google.com/view/2445qv4neDQ",
+                        "id": "z7netlb",
+                        "contentSubtype": null
+                    }
+                }
+            }
+        },
+        {
+            "translation": [
+                -48.7417106628418,
+                7.061943531036377,
+                -105.03915405273438
+            ],
+            "scale": [
+                34.73930054704674,
+                34.73930054704675,
+                34.73930054704674
+            ],
+            "rotation": [
+                0.0009236090696036924,
+                0.6791440246759013,
+                -0.003078524042084859,
+                0.733997999577178
+            ],
+            "name": "201yq4h",
+            "extensions": {
+                "HUBS_components": {
+                    "pinnable": {
+                        "pinned": true
+                    },
+                    "media": {
+                        "version": 1,
+                        "src": "https://sketchfab.com/models/343599abfd8542b2902bea4f0040988e",
+                        "id": "201yq4h",
+                        "contentSubtype": null
+                    }
+                }
+            }
+        }
+    ],
+    "extensionsUsed": [
+        "HUBS_components"
+    ],
+    "asset": {
+        "version": "2.0",
+        "generator": "reticulum"
+    }
+}

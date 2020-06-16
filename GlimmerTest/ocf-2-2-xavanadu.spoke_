@@ -1,0 +1,2066 @@
+{
+    "version": 4,
+    "root": "BB2F6560-060D-43F3-AC17-DC731A93C202",
+    "metadata": {
+        "name": "ocf-2-2-trees",
+        "description": "",
+        "previewCameraTransform": {
+            "elements": [
+                0.9999579934066309,
+                -5.757113535897941e-16,
+                -0.009165774498290646,
+                0,
+                -0.0036667082309182176,
+                0.9164961661202966,
+                -0.4000266650331484,
+                0,
+                0.008400397187206926,
+                0.4000434694964956,
+                0.9164576672385367,
+                0,
+                -0.9735401368582958,
+                8.020833333333332,
+                8.489583333333345,
+                1
+            ]
+        },
+        "creatorAttribution": "",
+        "allowRemixing": true,
+        "allowPromotion": true
+    },
+    "entities": {
+        "BB2F6560-060D-43F3-AC17-DC731A93C202": {
+            "name": "ocf-2-2-trees",
+            "components": [
+                {
+                    "name": "fog",
+                    "props": {
+                        "type": "disabled",
+                        "color": "#ffffff",
+                        "near": 0.0025,
+                        "far": 1000,
+                        "density": 0.0025
+                    }
+                },
+                {
+                    "name": "background",
+                    "props": {
+                        "color": "#aaaaaa"
+                    }
+                },
+                {
+                    "name": "audio-settings",
+                    "props": {
+                        "overrideAudioSettings": false,
+                        "avatarDistanceModel": "inverse",
+                        "avatarRolloffFactor": 2,
+                        "avatarRefDistance": 1,
+                        "avatarMaxDistance": 10000,
+                        "mediaVolume": 0.5,
+                        "mediaDistanceModel": "inverse",
+                        "mediaRolloffFactor": 1,
+                        "mediaRefDistance": 1,
+                        "mediaMaxDistance": 10000,
+                        "mediaConeInnerAngle": 360,
+                        "mediaConeOuterAngle": 0,
+                        "mediaConeOuterGain": 0
+                    }
+                }
+            ]
+        },
+        "1FE15D01-783D-427B-AC95-64E956ABECAE": {
+            "name": "Skybox",
+            "components": [
+                {
+                    "name": "transform",
+                    "props": {
+                        "position": {
+                            "x": 0,
+                            "y": 0,
+                            "z": 0
+                        },
+                        "rotation": {
+                            "x": 0,
+                            "y": 0,
+                            "z": 0
+                        },
+                        "scale": {
+                            "x": 1,
+                            "y": 1,
+                            "z": 1
+                        }
+                    }
+                },
+                {
+                    "name": "visible",
+                    "props": {
+                        "visible": true
+                    }
+                },
+                {
+                    "name": "skybox",
+                    "props": {
+                        "turbidity": 14.94,
+                        "rayleigh": 0.54,
+                        "luminance": 1,
+                        "mieCoefficient": 0.005,
+                        "mieDirectionalG": 0.8,
+                        "inclination": 0,
+                        "azimuth": 0.15,
+                        "distance": 8000
+                    }
+                }
+            ],
+            "parent": "BB2F6560-060D-43F3-AC17-DC731A93C202",
+            "index": 0
+        },
+        "56EA85B6-0864-407C-826B-019A12CAEF12": {
+            "name": "Directional Light",
+            "components": [
+                {
+                    "name": "transform",
+                    "props": {
+                        "position": {
+                            "x": -1,
+                            "y": 3,
+                            "z": 0
+                        },
+                        "rotation": {
+                            "x": 1.5707963267948966,
+                            "y": 0.5235987755982988,
+                            "z": -1.5707963267948966
+                        },
+                        "scale": {
+                            "x": 1,
+                            "y": 1,
+                            "z": 1
+                        }
+                    }
+                },
+                {
+                    "name": "visible",
+                    "props": {
+                        "visible": true
+                    }
+                },
+                {
+                    "name": "directional-light",
+                    "props": {
+                        "color": "#ffffff",
+                        "intensity": 1,
+                        "castShadow": true,
+                        "shadowMapResolution": [
+                            1024,
+                            1024
+                        ],
+                        "shadowBias": -3.0000000000000004e-05,
+                        "shadowRadius": 1
+                    }
+                }
+            ],
+            "parent": "BB2F6560-060D-43F3-AC17-DC731A93C202",
+            "index": 1
+        },
+        "781C937F-8CFB-43DA-A5DA-BB19D255650A": {
+            "name": "Floor Plan",
+            "components": [
+                {
+                    "name": "transform",
+                    "props": {
+                        "position": {
+                            "x": 0,
+                            "y": 0.005,
+                            "z": 0
+                        },
+                        "rotation": {
+                            "x": 0,
+                            "y": 0,
+                            "z": 0
+                        },
+                        "scale": {
+                            "x": 1,
+                            "y": 1,
+                            "z": 1
+                        }
+                    }
+                },
+                {
+                    "name": "visible",
+                    "props": {
+                        "visible": true
+                    }
+                },
+                {
+                    "name": "floor-plan",
+                    "props": {
+                        "autoCellSize": false,
+                        "cellSize": 0.1200000000000001,
+                        "cellHeight": 0.1,
+                        "agentHeight": 1.7,
+                        "agentRadius": 0.5,
+                        "agentMaxClimb": 0.5,
+                        "agentMaxSlope": 45,
+                        "regionMinSize": 4,
+                        "maxTriangles": 1000,
+                        "forceTrimesh": false
+                    }
+                }
+            ],
+            "parent": "BB2F6560-060D-43F3-AC17-DC731A93C202",
+            "index": 2
+        },
+        "DE191EF6-385F-4B9B-B3EA-6296ECCB31A1": {
+            "name": "Spawn Point",
+            "components": [
+                {
+                    "name": "transform",
+                    "props": {
+                        "position": {
+                            "x": 0,
+                            "y": 0,
+                            "z": -2
+                        },
+                        "rotation": {
+                            "x": 0,
+                            "y": 0,
+                            "z": 0
+                        },
+                        "scale": {
+                            "x": 1,
+                            "y": 1,
+                            "z": 1
+                        }
+                    }
+                },
+                {
+                    "name": "visible",
+                    "props": {
+                        "visible": true
+                    }
+                },
+                {
+                    "name": "spawn-point",
+                    "props": {}
+                }
+            ],
+            "parent": "BB2F6560-060D-43F3-AC17-DC731A93C202",
+            "index": 3
+        },
+        "41048851-4EED-49E4-9797-9F3191B7A8E7": {
+            "name": "Spawn Point 1",
+            "components": [
+                {
+                    "name": "transform",
+                    "props": {
+                        "position": {
+                            "x": 2,
+                            "y": 0,
+                            "z": 0
+                        },
+                        "rotation": {
+                            "x": 0,
+                            "y": -1.5707963267948966,
+                            "z": 0
+                        },
+                        "scale": {
+                            "x": 1,
+                            "y": 1,
+                            "z": 1
+                        }
+                    }
+                },
+                {
+                    "name": "visible",
+                    "props": {
+                        "visible": true
+                    }
+                },
+                {
+                    "name": "spawn-point",
+                    "props": {}
+                }
+            ],
+            "parent": "BB2F6560-060D-43F3-AC17-DC731A93C202",
+            "index": 4
+        },
+        "E1BCC0FB-03AB-4CF4-B763-798BC3E8B413": {
+            "name": "Spawn Point 2",
+            "components": [
+                {
+                    "name": "transform",
+                    "props": {
+                        "position": {
+                            "x": 0,
+                            "y": 0,
+                            "z": 2
+                        },
+                        "rotation": {
+                            "x": 3.141592653589793,
+                            "y": 0,
+                            "z": 3.141592653589793
+                        },
+                        "scale": {
+                            "x": 1,
+                            "y": 1,
+                            "z": 1
+                        }
+                    }
+                },
+                {
+                    "name": "visible",
+                    "props": {
+                        "visible": true
+                    }
+                },
+                {
+                    "name": "spawn-point",
+                    "props": {}
+                }
+            ],
+            "parent": "BB2F6560-060D-43F3-AC17-DC731A93C202",
+            "index": 5
+        },
+        "7CFF196B-2AEB-4DA9-B53E-BE1B217EC7C5": {
+            "name": "Spawn Point 3",
+            "components": [
+                {
+                    "name": "transform",
+                    "props": {
+                        "position": {
+                            "x": -2,
+                            "y": 0,
+                            "z": 0
+                        },
+                        "rotation": {
+                            "x": 0,
+                            "y": 1.5707963267948966,
+                            "z": 0
+                        },
+                        "scale": {
+                            "x": 1,
+                            "y": 1,
+                            "z": 1
+                        }
+                    }
+                },
+                {
+                    "name": "visible",
+                    "props": {
+                        "visible": true
+                    }
+                },
+                {
+                    "name": "spawn-point",
+                    "props": {}
+                }
+            ],
+            "parent": "BB2F6560-060D-43F3-AC17-DC731A93C202",
+            "index": 6
+        },
+        "A762C25B-1102-4BA6-863B-E59DD3EF8BF1": {
+            "name": "ground_plane.glb",
+            "components": [
+                {
+                    "name": "transform",
+                    "props": {
+                        "position": {
+                            "x": 0,
+                            "y": 0,
+                            "z": 0
+                        },
+                        "rotation": {
+                            "x": 0,
+                            "y": 0,
+                            "z": 0
+                        },
+                        "scale": {
+                            "x": 1,
+                            "y": 1,
+                            "z": 1
+                        }
+                    }
+                },
+                {
+                    "name": "visible",
+                    "props": {
+                        "visible": true
+                    }
+                },
+                {
+                    "name": "gltf-model",
+                    "props": {
+                        "src": "https://uploads-prod.reticulum.io/files/5b8950b2-967b-4d4c-bdb5-10ca30d448a5.glb",
+                        "attribution": null
+                    }
+                },
+                {
+                    "name": "shadow",
+                    "props": {
+                        "cast": false,
+                        "receive": false
+                    }
+                },
+                {
+                    "name": "collidable",
+                    "props": {}
+                },
+                {
+                    "name": "walkable",
+                    "props": {}
+                }
+            ],
+            "parent": "BB2F6560-060D-43F3-AC17-DC731A93C202",
+            "index": 7
+        },
+        "94B3CC0C-4C37-41C7-8CC4-AC6C5E721820": {
+            "name": "canopy_2_2_trees_02.glb",
+            "components": [
+                {
+                    "name": "transform",
+                    "props": {
+                        "position": {
+                            "x": 0,
+                            "y": 0,
+                            "z": 0
+                        },
+                        "rotation": {
+                            "x": 0,
+                            "y": 0,
+                            "z": 0
+                        },
+                        "scale": {
+                            "x": 0.25,
+                            "y": 0.25,
+                            "z": 0.25
+                        }
+                    }
+                },
+                {
+                    "name": "visible",
+                    "props": {
+                        "visible": true
+                    }
+                },
+                {
+                    "name": "gltf-model",
+                    "props": {
+                        "src": "https://uploads-prod.reticulum.io/files/5f0ae511-3c5d-4e3d-99d5-d82c894c171a.glb",
+                        "attribution": null
+                    }
+                },
+                {
+                    "name": "shadow",
+                    "props": {
+                        "cast": false,
+                        "receive": false
+                    }
+                },
+                {
+                    "name": "collidable",
+                    "props": {}
+                },
+                {
+                    "name": "walkable",
+                    "props": {}
+                }
+            ],
+            "parent": "BB2F6560-060D-43F3-AC17-DC731A93C202",
+            "index": 8
+        },
+        "394eb1ff-8914-45db-82e9-af60f69231d1": {
+            "name": "zz9oc0w",
+            "components": [
+                {
+                    "name": "transform",
+                    "props": {
+                        "position": {
+                            "x": -42.215,
+                            "y": 1.945,
+                            "z": -115.827
+                        },
+                        "rotation": {
+                            "x": 0.0,
+                            "y": -0.722,
+                            "z": 0.0
+                        },
+                        "scale": {
+                            "x": 3.156,
+                            "y": 3.156,
+                            "z": 3.156
+                        }
+                    }
+                },
+                {
+                    "name": "visible",
+                    "props": {
+                        "visible": "true"
+                    }
+                },
+                {
+                    "name": "gltf-model",
+                    "props": {
+                        "src": "http://vearth.net/vocf/site_map.jpg",
+                        "attribution": null
+                    }
+                },
+                {
+                    "name": "shadow",
+                    "props": {
+                        "cast": false,
+                        "receive": false
+                    }
+                },
+                {
+                    "name": "collidable",
+                    "props": {}
+                },
+                {
+                    "name": "walkable",
+                    "props": {}
+                }
+            ],
+            "parent": "BB2F6560-060D-43F3-AC17-DC731A93C202",
+            "index": 9
+        },
+        "370bb20e-00f6-456b-ad05-8e828e52092b": {
+            "name": "iz0yy59",
+            "components": [
+                {
+                    "name": "transform",
+                    "props": {
+                        "position": {
+                            "x": -70.901,
+                            "y": 1.986,
+                            "z": -116.081
+                        },
+                        "rotation": {
+                            "x": 0.01,
+                            "y": 0.686,
+                            "z": -0.009
+                        },
+                        "scale": {
+                            "x": 6.104,
+                            "y": 6.104,
+                            "z": 6.104
+                        }
+                    }
+                },
+                {
+                    "name": "visible",
+                    "props": {
+                        "visible": "true"
+                    }
+                },
+                {
+                    "name": "gltf-model",
+                    "props": {
+                        "src": "http://vearth.net/vocf/overview.jpg",
+                        "attribution": null
+                    }
+                },
+                {
+                    "name": "shadow",
+                    "props": {
+                        "cast": false,
+                        "receive": false
+                    }
+                },
+                {
+                    "name": "collidable",
+                    "props": {}
+                },
+                {
+                    "name": "walkable",
+                    "props": {}
+                }
+            ],
+            "parent": "BB2F6560-060D-43F3-AC17-DC731A93C202",
+            "index": 10
+        },
+        "ee9802d3-902e-402c-8563-ec3de68e4d6e": {
+            "name": "edve6nb",
+            "components": [
+                {
+                    "name": "transform",
+                    "props": {
+                        "position": {
+                            "x": -54.131,
+                            "y": 1.162,
+                            "z": -89.779
+                        },
+                        "rotation": {
+                            "x": 0.02,
+                            "y": -0.739,
+                            "z": 0.046
+                        },
+                        "scale": {
+                            "x": 6.356,
+                            "y": 6.356,
+                            "z": 6.356
+                        }
+                    }
+                },
+                {
+                    "name": "visible",
+                    "props": {
+                        "visible": "true"
+                    }
+                },
+                {
+                    "name": "gltf-model",
+                    "props": {
+                        "src": "https://poly.google.com/view/9pffFcv7LSm",
+                        "attribution": null
+                    }
+                },
+                {
+                    "name": "shadow",
+                    "props": {
+                        "cast": false,
+                        "receive": false
+                    }
+                },
+                {
+                    "name": "collidable",
+                    "props": {}
+                },
+                {
+                    "name": "walkable",
+                    "props": {}
+                }
+            ],
+            "parent": "BB2F6560-060D-43F3-AC17-DC731A93C202",
+            "index": 11
+        },
+        "a2b54c14-a6e1-41ed-91c4-d8ef393ec575": {
+            "name": "f2knn1j",
+            "components": [
+                {
+                    "name": "transform",
+                    "props": {
+                        "position": {
+                            "x": -56.191,
+                            "y": 5.569,
+                            "z": -81.585
+                        },
+                        "rotation": {
+                            "x": 0.005,
+                            "y": -0.647,
+                            "z": 0.001
+                        },
+                        "scale": {
+                            "x": 12.434,
+                            "y": 12.434,
+                            "z": 12.434
+                        }
+                    }
+                },
+                {
+                    "name": "visible",
+                    "props": {
+                        "visible": "true"
+                    }
+                },
+                {
+                    "name": "gltf-model",
+                    "props": {
+                        "src": "https://poly.google.com/view/7VVumyY7L_u",
+                        "attribution": null
+                    }
+                },
+                {
+                    "name": "shadow",
+                    "props": {
+                        "cast": false,
+                        "receive": false
+                    }
+                },
+                {
+                    "name": "collidable",
+                    "props": {}
+                },
+                {
+                    "name": "walkable",
+                    "props": {}
+                }
+            ],
+            "parent": "BB2F6560-060D-43F3-AC17-DC731A93C202",
+            "index": 12
+        },
+        "72e69641-0bfc-40ea-a1a4-c2aa8656e561": {
+            "name": "cdh3405",
+            "components": [
+                {
+                    "name": "transform",
+                    "props": {
+                        "position": {
+                            "x": -69.178,
+                            "y": 1.073,
+                            "z": -83.713
+                        },
+                        "rotation": {
+                            "x": 0.0,
+                            "y": 0.952,
+                            "z": 0.0
+                        },
+                        "scale": {
+                            "x": 1.459,
+                            "y": 1.459,
+                            "z": 1.459
+                        }
+                    }
+                },
+                {
+                    "name": "visible",
+                    "props": {
+                        "visible": "true"
+                    }
+                },
+                {
+                    "name": "gltf-model",
+                    "props": {
+                        "src": "https://poly.google.com/view/bVepm2yfJTh",
+                        "attribution": null
+                    }
+                },
+                {
+                    "name": "shadow",
+                    "props": {
+                        "cast": false,
+                        "receive": false
+                    }
+                },
+                {
+                    "name": "collidable",
+                    "props": {}
+                },
+                {
+                    "name": "walkable",
+                    "props": {}
+                }
+            ],
+            "parent": "BB2F6560-060D-43F3-AC17-DC731A93C202",
+            "index": 13
+        },
+        "4fe763ac-663f-42b0-9a55-cbc268f960e0": {
+            "name": "mcje5w1",
+            "components": [
+                {
+                    "name": "transform",
+                    "props": {
+                        "position": {
+                            "x": -76.141,
+                            "y": 4.299,
+                            "z": -51.162
+                        },
+                        "rotation": {
+                            "x": 0.036,
+                            "y": 0.793,
+                            "z": -0.048
+                        },
+                        "scale": {
+                            "x": 12.661,
+                            "y": 12.661,
+                            "z": 12.661
+                        }
+                    }
+                },
+                {
+                    "name": "visible",
+                    "props": {
+                        "visible": "true"
+                    }
+                },
+                {
+                    "name": "gltf-model",
+                    "props": {
+                        "src": "https://poly.google.com/view/9QEds6cYAy6",
+                        "attribution": null
+                    }
+                },
+                {
+                    "name": "shadow",
+                    "props": {
+                        "cast": false,
+                        "receive": false
+                    }
+                },
+                {
+                    "name": "collidable",
+                    "props": {}
+                },
+                {
+                    "name": "walkable",
+                    "props": {}
+                }
+            ],
+            "parent": "BB2F6560-060D-43F3-AC17-DC731A93C202",
+            "index": 14
+        },
+        "2c6c947d-2275-4a86-a61a-1cbf9aa79974": {
+            "name": "a7z0bmn",
+            "components": [
+                {
+                    "name": "transform",
+                    "props": {
+                        "position": {
+                            "x": -59.218,
+                            "y": 6.215,
+                            "z": -43.142
+                        },
+                        "rotation": {
+                            "x": 0.029,
+                            "y": -0.68,
+                            "z": 0.027
+                        },
+                        "scale": {
+                            "x": 13.129,
+                            "y": 13.129,
+                            "z": 13.129
+                        }
+                    }
+                },
+                {
+                    "name": "visible",
+                    "props": {
+                        "visible": "true"
+                    }
+                },
+                {
+                    "name": "gltf-model",
+                    "props": {
+                        "src": "https://poly.google.com/view/e9NAQQrCbLu",
+                        "attribution": null
+                    }
+                },
+                {
+                    "name": "shadow",
+                    "props": {
+                        "cast": false,
+                        "receive": false
+                    }
+                },
+                {
+                    "name": "collidable",
+                    "props": {}
+                },
+                {
+                    "name": "walkable",
+                    "props": {}
+                }
+            ],
+            "parent": "BB2F6560-060D-43F3-AC17-DC731A93C202",
+            "index": 15
+        },
+        "58b9e104-d266-4968-a91d-f417341a5896": {
+            "name": "wpgjbd9",
+            "components": [
+                {
+                    "name": "transform",
+                    "props": {
+                        "position": {
+                            "x": -72.324,
+                            "y": 5.89,
+                            "z": -68.493
+                        },
+                        "rotation": {
+                            "x": -0.013,
+                            "y": 0.63,
+                            "z": 0.011
+                        },
+                        "scale": {
+                            "x": 13.506,
+                            "y": 13.506,
+                            "z": 13.506
+                        }
+                    }
+                },
+                {
+                    "name": "visible",
+                    "props": {
+                        "visible": "true"
+                    }
+                },
+                {
+                    "name": "gltf-model",
+                    "props": {
+                        "src": "https://poly.google.com/view/e9NAQQrCbLu",
+                        "attribution": null
+                    }
+                },
+                {
+                    "name": "shadow",
+                    "props": {
+                        "cast": false,
+                        "receive": false
+                    }
+                },
+                {
+                    "name": "collidable",
+                    "props": {}
+                },
+                {
+                    "name": "walkable",
+                    "props": {}
+                }
+            ],
+            "parent": "BB2F6560-060D-43F3-AC17-DC731A93C202",
+            "index": 16
+        },
+        "9c7af3fd-be9f-427a-a72f-dd4683adffc9": {
+            "name": "2ippphv",
+            "components": [
+                {
+                    "name": "transform",
+                    "props": {
+                        "position": {
+                            "x": -71.684,
+                            "y": 2.294,
+                            "z": 37.923
+                        },
+                        "rotation": {
+                            "x": 0.002,
+                            "y": 0.643,
+                            "z": -0.001
+                        },
+                        "scale": {
+                            "x": 4.778,
+                            "y": 4.778,
+                            "z": 4.778
+                        }
+                    }
+                },
+                {
+                    "name": "visible",
+                    "props": {
+                        "visible": "true"
+                    }
+                },
+                {
+                    "name": "gltf-model",
+                    "props": {
+                        "src": "http://vearth.net/vocf/overview.jpg",
+                        "attribution": null
+                    }
+                },
+                {
+                    "name": "shadow",
+                    "props": {
+                        "cast": false,
+                        "receive": false
+                    }
+                },
+                {
+                    "name": "collidable",
+                    "props": {}
+                },
+                {
+                    "name": "walkable",
+                    "props": {}
+                }
+            ],
+            "parent": "BB2F6560-060D-43F3-AC17-DC731A93C202",
+            "index": 17
+        },
+        "d932d173-bb4f-4415-9c45-6b176bff6ae3": {
+            "name": "ypntc02",
+            "components": [
+                {
+                    "name": "transform",
+                    "props": {
+                        "position": {
+                            "x": -22.691,
+                            "y": 3.28,
+                            "z": 14.031
+                        },
+                        "rotation": {
+                            "x": -0.001,
+                            "y": -0.996,
+                            "z": -0.083
+                        },
+                        "scale": {
+                            "x": 16.818,
+                            "y": 16.818,
+                            "z": 16.818
+                        }
+                    }
+                },
+                {
+                    "name": "visible",
+                    "props": {
+                        "visible": "true"
+                    }
+                },
+                {
+                    "name": "gltf-model",
+                    "props": {
+                        "src": "https://poly.google.com/view/1QpMTUO7P-G",
+                        "attribution": null
+                    }
+                },
+                {
+                    "name": "shadow",
+                    "props": {
+                        "cast": false,
+                        "receive": false
+                    }
+                },
+                {
+                    "name": "collidable",
+                    "props": {}
+                },
+                {
+                    "name": "walkable",
+                    "props": {}
+                }
+            ],
+            "parent": "BB2F6560-060D-43F3-AC17-DC731A93C202",
+            "index": 18
+        },
+        "c1eb9399-ab75-42ae-8a0a-774a58d79ff1": {
+            "name": "f9r0a45",
+            "components": [
+                {
+                    "name": "transform",
+                    "props": {
+                        "position": {
+                            "x": -62.724,
+                            "y": 1.779,
+                            "z": -27.024
+                        },
+                        "rotation": {
+                            "x": 0.022,
+                            "y": 0.958,
+                            "z": -0.076
+                        },
+                        "scale": {
+                            "x": 7.348,
+                            "y": 7.348,
+                            "z": 7.348
+                        }
+                    }
+                },
+                {
+                    "name": "visible",
+                    "props": {
+                        "visible": "true"
+                    }
+                },
+                {
+                    "name": "gltf-model",
+                    "props": {
+                        "src": "https://poly.google.com/view/3howD1jUNWA",
+                        "attribution": null
+                    }
+                },
+                {
+                    "name": "shadow",
+                    "props": {
+                        "cast": false,
+                        "receive": false
+                    }
+                },
+                {
+                    "name": "collidable",
+                    "props": {}
+                },
+                {
+                    "name": "walkable",
+                    "props": {}
+                }
+            ],
+            "parent": "BB2F6560-060D-43F3-AC17-DC731A93C202",
+            "index": 19
+        },
+        "cc8627ff-a1c3-4ad6-9a2d-43e4e378327d": {
+            "name": "e2k2wis",
+            "components": [
+                {
+                    "name": "transform",
+                    "props": {
+                        "position": {
+                            "x": -51.064,
+                            "y": 2.133,
+                            "z": 19.76
+                        },
+                        "rotation": {
+                            "x": 0.159,
+                            "y": 0.64,
+                            "z": 0.739
+                        },
+                        "scale": {
+                            "x": 9.357,
+                            "y": 9.357,
+                            "z": 9.357
+                        }
+                    }
+                },
+                {
+                    "name": "visible",
+                    "props": {
+                        "visible": "true"
+                    }
+                },
+                {
+                    "name": "gltf-model",
+                    "props": {
+                        "src": "https://poly.google.com/view/0MzuBG9I2Mo",
+                        "attribution": null
+                    }
+                },
+                {
+                    "name": "shadow",
+                    "props": {
+                        "cast": false,
+                        "receive": false
+                    }
+                },
+                {
+                    "name": "collidable",
+                    "props": {}
+                },
+                {
+                    "name": "walkable",
+                    "props": {}
+                }
+            ],
+            "parent": "BB2F6560-060D-43F3-AC17-DC731A93C202",
+            "index": 20
+        },
+        "4d941729-6cc0-4035-a9ea-c5ee0a4a9c78": {
+            "name": "59j3y4r",
+            "components": [
+                {
+                    "name": "transform",
+                    "props": {
+                        "position": {
+                            "x": -38.891,
+                            "y": 1.802,
+                            "z": 29.233
+                        },
+                        "rotation": {
+                            "x": 0.003,
+                            "y": -0.971,
+                            "z": -0.008
+                        },
+                        "scale": {
+                            "x": 6.996,
+                            "y": 6.996,
+                            "z": 6.996
+                        }
+                    }
+                },
+                {
+                    "name": "visible",
+                    "props": {
+                        "visible": "true"
+                    }
+                },
+                {
+                    "name": "gltf-model",
+                    "props": {
+                        "src": "https://poly.google.com/view/aB0Pvqny65O",
+                        "attribution": null
+                    }
+                },
+                {
+                    "name": "shadow",
+                    "props": {
+                        "cast": false,
+                        "receive": false
+                    }
+                },
+                {
+                    "name": "collidable",
+                    "props": {}
+                },
+                {
+                    "name": "walkable",
+                    "props": {}
+                }
+            ],
+            "parent": "BB2F6560-060D-43F3-AC17-DC731A93C202",
+            "index": 21
+        },
+        "e17d7647-0615-4b46-851c-5c7732703414": {
+            "name": "6qk9u7s",
+            "components": [
+                {
+                    "name": "transform",
+                    "props": {
+                        "position": {
+                            "x": -39.225,
+                            "y": 4.253,
+                            "z": 15.452
+                        },
+                        "rotation": {
+                            "x": 0.159,
+                            "y": 0.422,
+                            "z": -0.071
+                        },
+                        "scale": {
+                            "x": 3.091,
+                            "y": 3.091,
+                            "z": 3.091
+                        }
+                    }
+                },
+                {
+                    "name": "visible",
+                    "props": {
+                        "visible": "true"
+                    }
+                },
+                {
+                    "name": "gltf-model",
+                    "props": {
+                        "src": "https://poly.google.com/view/5hrwvzpCArU",
+                        "attribution": null
+                    }
+                },
+                {
+                    "name": "shadow",
+                    "props": {
+                        "cast": false,
+                        "receive": false
+                    }
+                },
+                {
+                    "name": "collidable",
+                    "props": {}
+                },
+                {
+                    "name": "walkable",
+                    "props": {}
+                }
+            ],
+            "parent": "BB2F6560-060D-43F3-AC17-DC731A93C202",
+            "index": 22
+        },
+        "34431521-1fe5-497f-b97e-c2f9104be33d": {
+            "name": "b8wol3t",
+            "components": [
+                {
+                    "name": "transform",
+                    "props": {
+                        "position": {
+                            "x": -44.034,
+                            "y": 9.917,
+                            "z": 10.716
+                        },
+                        "rotation": {
+                            "x": 0.017,
+                            "y": 0.957,
+                            "z": -0.057
+                        },
+                        "scale": {
+                            "x": 2.279,
+                            "y": 2.279,
+                            "z": 2.279
+                        }
+                    }
+                },
+                {
+                    "name": "visible",
+                    "props": {
+                        "visible": "true"
+                    }
+                },
+                {
+                    "name": "gltf-model",
+                    "props": {
+                        "src": "https://poly.google.com/view/5hrwvzpCArU",
+                        "attribution": null
+                    }
+                },
+                {
+                    "name": "shadow",
+                    "props": {
+                        "cast": false,
+                        "receive": false
+                    }
+                },
+                {
+                    "name": "collidable",
+                    "props": {}
+                },
+                {
+                    "name": "walkable",
+                    "props": {}
+                }
+            ],
+            "parent": "BB2F6560-060D-43F3-AC17-DC731A93C202",
+            "index": 23
+        },
+        "ffaf364b-d379-478c-ad7a-66927dfea2cd": {
+            "name": "l36diql",
+            "components": [
+                {
+                    "name": "transform",
+                    "props": {
+                        "position": {
+                            "x": -34.169,
+                            "y": 11.819,
+                            "z": 5.563
+                        },
+                        "rotation": {
+                            "x": 0.015,
+                            "y": -0.954,
+                            "z": 0.048
+                        },
+                        "scale": {
+                            "x": 2.418,
+                            "y": 2.418,
+                            "z": 2.418
+                        }
+                    }
+                },
+                {
+                    "name": "visible",
+                    "props": {
+                        "visible": "true"
+                    }
+                },
+                {
+                    "name": "gltf-model",
+                    "props": {
+                        "src": "https://poly.google.com/view/5hrwvzpCArU",
+                        "attribution": null
+                    }
+                },
+                {
+                    "name": "shadow",
+                    "props": {
+                        "cast": false,
+                        "receive": false
+                    }
+                },
+                {
+                    "name": "collidable",
+                    "props": {}
+                },
+                {
+                    "name": "walkable",
+                    "props": {}
+                }
+            ],
+            "parent": "BB2F6560-060D-43F3-AC17-DC731A93C202",
+            "index": 24
+        },
+        "052a8dc6-851a-48be-92a4-6d0275a31df7": {
+            "name": "2004gqx",
+            "components": [
+                {
+                    "name": "transform",
+                    "props": {
+                        "position": {
+                            "x": -80.429,
+                            "y": 2.175,
+                            "z": -25.547
+                        },
+                        "rotation": {
+                            "x": -0.015,
+                            "y": 0.683,
+                            "z": 0.014
+                        },
+                        "scale": {
+                            "x": 4.418,
+                            "y": 4.418,
+                            "z": 4.418
+                        }
+                    }
+                },
+                {
+                    "name": "visible",
+                    "props": {
+                        "visible": "true"
+                    }
+                },
+                {
+                    "name": "gltf-model",
+                    "props": {
+                        "src": "http://vearth.net/vocf/images/tiedye.jpg",
+                        "attribution": null
+                    }
+                },
+                {
+                    "name": "shadow",
+                    "props": {
+                        "cast": false,
+                        "receive": false
+                    }
+                },
+                {
+                    "name": "collidable",
+                    "props": {}
+                },
+                {
+                    "name": "walkable",
+                    "props": {}
+                }
+            ],
+            "parent": "BB2F6560-060D-43F3-AC17-DC731A93C202",
+            "index": 25
+        },
+        "6a18b3e8-6976-4206-aceb-36291f1fcbfa": {
+            "name": "32gwo5f",
+            "components": [
+                {
+                    "name": "transform",
+                    "props": {
+                        "position": {
+                            "x": -55.999,
+                            "y": 2.064,
+                            "z": -57.347
+                        },
+                        "rotation": {
+                            "x": -0.02,
+                            "y": -0.753,
+                            "z": -0.023
+                        },
+                        "scale": {
+                            "x": 4.438,
+                            "y": 4.438,
+                            "z": 4.438
+                        }
+                    }
+                },
+                {
+                    "name": "visible",
+                    "props": {
+                        "visible": "true"
+                    }
+                },
+                {
+                    "name": "gltf-model",
+                    "props": {
+                        "src": "http://vearth.net/vocf/images/tiedye.jpg",
+                        "attribution": null
+                    }
+                },
+                {
+                    "name": "shadow",
+                    "props": {
+                        "cast": false,
+                        "receive": false
+                    }
+                },
+                {
+                    "name": "collidable",
+                    "props": {}
+                },
+                {
+                    "name": "walkable",
+                    "props": {}
+                }
+            ],
+            "parent": "BB2F6560-060D-43F3-AC17-DC731A93C202",
+            "index": 26
+        },
+        "fc5c22ca-9cc0-4ee5-937d-c2d0d7ec9f81": {
+            "name": "xrzcy3s",
+            "components": [
+                {
+                    "name": "transform",
+                    "props": {
+                        "position": {
+                            "x": -34.503,
+                            "y": 2.234,
+                            "z": 47.497
+                        },
+                        "rotation": {
+                            "x": 0.0,
+                            "y": 0.396,
+                            "z": 0.0
+                        },
+                        "scale": {
+                            "x": 3.784,
+                            "y": 3.784,
+                            "z": 3.784
+                        }
+                    }
+                },
+                {
+                    "name": "visible",
+                    "props": {
+                        "visible": "true"
+                    }
+                },
+                {
+                    "name": "gltf-model",
+                    "props": {
+                        "src": "http://vearth.net/vocf/images/tiedye.jpg",
+                        "attribution": null
+                    }
+                },
+                {
+                    "name": "shadow",
+                    "props": {
+                        "cast": false,
+                        "receive": false
+                    }
+                },
+                {
+                    "name": "collidable",
+                    "props": {}
+                },
+                {
+                    "name": "walkable",
+                    "props": {}
+                }
+            ],
+            "parent": "BB2F6560-060D-43F3-AC17-DC731A93C202",
+            "index": 27
+        },
+        "1c9065a6-4d54-490b-8ded-05b1b397cabd": {
+            "name": "xtmsx6z",
+            "components": [
+                {
+                    "name": "transform",
+                    "props": {
+                        "position": {
+                            "x": -10.61,
+                            "y": 2.429,
+                            "z": -1.59
+                        },
+                        "rotation": {
+                            "x": 0.007,
+                            "y": 0.126,
+                            "z": -0.046
+                        },
+                        "scale": {
+                            "x": 11.796,
+                            "y": 11.796,
+                            "z": 11.796
+                        }
+                    }
+                },
+                {
+                    "name": "visible",
+                    "props": {
+                        "visible": "true"
+                    }
+                },
+                {
+                    "name": "gltf-model",
+                    "props": {
+                        "src": "https://poly.google.com/view/4xoTMiF0D5J",
+                        "attribution": null
+                    }
+                },
+                {
+                    "name": "shadow",
+                    "props": {
+                        "cast": false,
+                        "receive": false
+                    }
+                },
+                {
+                    "name": "collidable",
+                    "props": {}
+                },
+                {
+                    "name": "walkable",
+                    "props": {}
+                }
+            ],
+            "parent": "BB2F6560-060D-43F3-AC17-DC731A93C202",
+            "index": 28
+        },
+        "032b930d-c95d-4f0c-981c-0b493156e2d3": {
+            "name": "gg3zvuw",
+            "components": [
+                {
+                    "name": "transform",
+                    "props": {
+                        "position": {
+                            "x": -41.963,
+                            "y": 1.446,
+                            "z": -4.009
+                        },
+                        "rotation": {
+                            "x": 0.006,
+                            "y": -0.782,
+                            "z": 0.008
+                        },
+                        "scale": {
+                            "x": 10.925,
+                            "y": 10.925,
+                            "z": 10.925
+                        }
+                    }
+                },
+                {
+                    "name": "visible",
+                    "props": {
+                        "visible": "true"
+                    }
+                },
+                {
+                    "name": "gltf-model",
+                    "props": {
+                        "src": "https://poly.google.com/view/d-ad5gtnq8Z",
+                        "attribution": null
+                    }
+                },
+                {
+                    "name": "shadow",
+                    "props": {
+                        "cast": false,
+                        "receive": false
+                    }
+                },
+                {
+                    "name": "collidable",
+                    "props": {}
+                },
+                {
+                    "name": "walkable",
+                    "props": {}
+                }
+            ],
+            "parent": "BB2F6560-060D-43F3-AC17-DC731A93C202",
+            "index": 29
+        },
+        "86ed565a-118c-4821-8954-591abf3b6777": {
+            "name": "9bfdaoi",
+            "components": [
+                {
+                    "name": "transform",
+                    "props": {
+                        "position": {
+                            "x": -68.366,
+                            "y": 1.295,
+                            "z": -87.388
+                        },
+                        "rotation": {
+                            "x": -0.063,
+                            "y": 0.67,
+                            "z": 0.057
+                        },
+                        "scale": {
+                            "x": 2.369,
+                            "y": 2.369,
+                            "z": 2.369
+                        }
+                    }
+                },
+                {
+                    "name": "visible",
+                    "props": {
+                        "visible": "true"
+                    }
+                },
+                {
+                    "name": "gltf-model",
+                    "props": {
+                        "src": "https://poly.google.com/view/folDA1yLeEF",
+                        "attribution": null
+                    }
+                },
+                {
+                    "name": "shadow",
+                    "props": {
+                        "cast": false,
+                        "receive": false
+                    }
+                },
+                {
+                    "name": "collidable",
+                    "props": {}
+                },
+                {
+                    "name": "walkable",
+                    "props": {}
+                }
+            ],
+            "parent": "BB2F6560-060D-43F3-AC17-DC731A93C202",
+            "index": 30
+        },
+        "01b031ac-550e-4ffd-b0b6-df9e46390c8c": {
+            "name": "0g6m68m",
+            "components": [
+                {
+                    "name": "transform",
+                    "props": {
+                        "position": {
+                            "x": -72.448,
+                            "y": 3.385,
+                            "z": -77.595
+                        },
+                        "rotation": {
+                            "x": 0.021,
+                            "y": 0.655,
+                            "z": -0.019
+                        },
+                        "scale": {
+                            "x": 3.102,
+                            "y": 3.102,
+                            "z": 3.102
+                        }
+                    }
+                },
+                {
+                    "name": "visible",
+                    "props": {
+                        "visible": "true"
+                    }
+                },
+                {
+                    "name": "gltf-model",
+                    "props": {
+                        "src": "http://chriscalef.com/postindustprod/logo.jpg",
+                        "attribution": null
+                    }
+                },
+                {
+                    "name": "shadow",
+                    "props": {
+                        "cast": false,
+                        "receive": false
+                    }
+                },
+                {
+                    "name": "collidable",
+                    "props": {}
+                },
+                {
+                    "name": "walkable",
+                    "props": {}
+                }
+            ],
+            "parent": "BB2F6560-060D-43F3-AC17-DC731A93C202",
+            "index": 31
+        },
+        "c8699899-5ab0-45b7-9b46-db805c40fd42": {
+            "name": "upvc2b1",
+            "components": [
+                {
+                    "name": "transform",
+                    "props": {
+                        "position": {
+                            "x": -69.352,
+                            "y": 1.475,
+                            "z": -75.558
+                        },
+                        "rotation": {
+                            "x": -0.085,
+                            "y": 0.802,
+                            "z": 0.117
+                        },
+                        "scale": {
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 1.0
+                        }
+                    }
+                },
+                {
+                    "name": "visible",
+                    "props": {
+                        "visible": "true"
+                    }
+                },
+                {
+                    "name": "gltf-model",
+                    "props": {
+                        "src": "http://chriscalef.com/postindustprod/frame_bag_w_stone01.jpg",
+                        "attribution": null
+                    }
+                },
+                {
+                    "name": "shadow",
+                    "props": {
+                        "cast": false,
+                        "receive": false
+                    }
+                },
+                {
+                    "name": "collidable",
+                    "props": {}
+                },
+                {
+                    "name": "walkable",
+                    "props": {}
+                }
+            ],
+            "parent": "BB2F6560-060D-43F3-AC17-DC731A93C202",
+            "index": 32
+        },
+        "00052be1-1d15-49b3-8d7e-9dd2192877c8": {
+            "name": "fp88jzb",
+            "components": [
+                {
+                    "name": "transform",
+                    "props": {
+                        "position": {
+                            "x": -69.494,
+                            "y": 1.635,
+                            "z": -77.359
+                        },
+                        "rotation": {
+                            "x": -0.064,
+                            "y": 0.635,
+                            "z": 0.053
+                        },
+                        "scale": {
+                            "x": 1.272,
+                            "y": 1.272,
+                            "z": 1.272
+                        }
+                    }
+                },
+                {
+                    "name": "visible",
+                    "props": {
+                        "visible": "true"
+                    }
+                },
+                {
+                    "name": "gltf-model",
+                    "props": {
+                        "src": "http://chriscalef.com/postindustprod/IMAG0772.900.jpg",
+                        "attribution": null
+                    }
+                },
+                {
+                    "name": "shadow",
+                    "props": {
+                        "cast": false,
+                        "receive": false
+                    }
+                },
+                {
+                    "name": "collidable",
+                    "props": {}
+                },
+                {
+                    "name": "walkable",
+                    "props": {}
+                }
+            ],
+            "parent": "BB2F6560-060D-43F3-AC17-DC731A93C202",
+            "index": 33
+        },
+        "41ff9a03-6c44-44b5-85e4-6745e0433cd4": {
+            "name": "fo5ud6r",
+            "components": [
+                {
+                    "name": "transform",
+                    "props": {
+                        "position": {
+                            "x": -69.191,
+                            "y": 1.445,
+                            "z": -79.229
+                        },
+                        "rotation": {
+                            "x": -0.123,
+                            "y": 0.449,
+                            "z": 0.062
+                        },
+                        "scale": {
+                            "x": 0.79,
+                            "y": 0.79,
+                            "z": 0.79
+                        }
+                    }
+                },
+                {
+                    "name": "visible",
+                    "props": {
+                        "visible": "true"
+                    }
+                },
+                {
+                    "name": "gltf-model",
+                    "props": {
+                        "src": "http://chriscalef.com/postindustprod/IMAG0780.1600.jpg",
+                        "attribution": null
+                    }
+                },
+                {
+                    "name": "shadow",
+                    "props": {
+                        "cast": false,
+                        "receive": false
+                    }
+                },
+                {
+                    "name": "collidable",
+                    "props": {}
+                },
+                {
+                    "name": "walkable",
+                    "props": {}
+                }
+            ],
+            "parent": "BB2F6560-060D-43F3-AC17-DC731A93C202",
+            "index": 34
+        },
+        "9b38096a-1f1f-4e28-a298-857428fe5fa1": {
+            "name": "ubexutb",
+            "components": [
+                {
+                    "name": "transform",
+                    "props": {
+                        "position": {
+                            "x": -71.176,
+                            "y": 1.655,
+                            "z": -85.271
+                        },
+                        "rotation": {
+                            "x": -0.033,
+                            "y": 0.981,
+                            "z": -0.021
+                        },
+                        "scale": {
+                            "x": 6.209,
+                            "y": 6.209,
+                            "z": 6.209
+                        }
+                    }
+                },
+                {
+                    "name": "visible",
+                    "props": {
+                        "visible": "true"
+                    }
+                },
+                {
+                    "name": "gltf-model",
+                    "props": {
+                        "src": "https://poly.google.com/view/2ag6_uuqsnb",
+                        "attribution": null
+                    }
+                },
+                {
+                    "name": "shadow",
+                    "props": {
+                        "cast": false,
+                        "receive": false
+                    }
+                },
+                {
+                    "name": "collidable",
+                    "props": {}
+                },
+                {
+                    "name": "walkable",
+                    "props": {}
+                }
+            ],
+            "parent": "BB2F6560-060D-43F3-AC17-DC731A93C202",
+            "index": 35
+        },
+        "8f3c958d-c49b-4551-a209-b97f5232d0f7": {
+            "name": "z7netlb",
+            "components": [
+                {
+                    "name": "transform",
+                    "props": {
+                        "position": {
+                            "x": -29.812,
+                            "y": 4.037,
+                            "z": -113.518
+                        },
+                        "rotation": {
+                            "x": -0.009,
+                            "y": 0.914,
+                            "z": -0.019
+                        },
+                        "scale": {
+                            "x": 15.109,
+                            "y": 15.109,
+                            "z": 15.109
+                        }
+                    }
+                },
+                {
+                    "name": "visible",
+                    "props": {
+                        "visible": "true"
+                    }
+                },
+                {
+                    "name": "gltf-model",
+                    "props": {
+                        "src": "https://poly.google.com/view/2445qv4neDQ",
+                        "attribution": null
+                    }
+                },
+                {
+                    "name": "shadow",
+                    "props": {
+                        "cast": false,
+                        "receive": false
+                    }
+                },
+                {
+                    "name": "collidable",
+                    "props": {}
+                },
+                {
+                    "name": "walkable",
+                    "props": {}
+                }
+            ],
+            "parent": "BB2F6560-060D-43F3-AC17-DC731A93C202",
+            "index": 36
+        },
+        "7ae0b085-efd4-47d9-8be8-44fda10cc1c0": {
+            "name": "201yq4h",
+            "components": [
+                {
+                    "name": "transform",
+                    "props": {
+                        "position": {
+                            "x": -48.742,
+                            "y": 7.062,
+                            "z": -105.039
+                        },
+                        "rotation": {
+                            "x": 0.001,
+                            "y": 0.679,
+                            "z": -0.003
+                        },
+                        "scale": {
+                            "x": 34.739,
+                            "y": 34.739,
+                            "z": 34.739
+                        }
+                    }
+                },
+                {
+                    "name": "visible",
+                    "props": {
+                        "visible": "true"
+                    }
+                },
+                {
+                    "name": "gltf-model",
+                    "props": {
+                        "src": "https://sketchfab.com/models/343599abfd8542b2902bea4f0040988e",
+                        "attribution": null
+                    }
+                },
+                {
+                    "name": "shadow",
+                    "props": {
+                        "cast": false,
+                        "receive": false
+                    }
+                },
+                {
+                    "name": "collidable",
+                    "props": {}
+                },
+                {
+                    "name": "walkable",
+                    "props": {}
+                }
+            ],
+            "parent": "BB2F6560-060D-43F3-AC17-DC731A93C202",
+            "index": 37
+        }
+    }
+}
