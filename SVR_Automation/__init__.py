@@ -113,15 +113,25 @@ class CustomMenu(bpy.types.Menu):
         # call another menu
         layout.operator("wm.call_menu", text="Unwrap").name = "VIEW3D_MT_uv_map"
 
-class VariationPanel(bpy.types.Panel):
-    bl_label = "Variation Panel"
-    bl_idname = "OBJECT_PT_variation_panel"
-    bl_space_type = "VIEW_3D"
-    bl_region_type = 'UI'
+class VariationSettingItem(bpy.types.PropertyGroup):
+    name: bpy.props.StringProperty(name = "Variation Name", default = "Default")
+    meshName: bpy.props.StringProperty(name = "Mesh Name", default = "Default")
+    materialName: bpy.props.StringProperty(name = "Material Name", default = "Default")
 
 variations = {
-    1 : {'name' : 'Default', 'material' : 'Default Mat'},
+    1 : {'name' : 'Default Name', 'material' : 'Default Mat', 'model' : 'Default Model'},
+    2 : {'name' : 'Default Name', 'material' : 'Default Mat', 'model' : 'Default Model'},
+    3 : {'name' : 'Default Name', 'material' : 'Default Mat', 'model' : 'Default Model'}
 }
+
+class ButtonOperator(bpy.types.Operator):
+    bl_idname =  'button.operation'
+    bl_label = 'ButtonOperator'
+    bl_description = 'Operator that runs the adding and subtracting of items into the variation enum.'
+    bl_options = {'REGISTER', 'UNDO'}
+
+    
+    #def AddVariation(name, material, model):
 
 class LayoutPanel(bpy.types.Panel):
     bl_label = "MultiRender"
@@ -147,6 +157,19 @@ class LayoutPanel(bpy.types.Panel):
         row.alignment = 'EXPAND'
         #row.operator( "material.set", text="Set Default Mat", icon='OBJECT_DATAMODE')
         row.operator("render.multirender", text="Multi Render", icon='OBJECT_DATAMODE')
+
+        for var in variations:
+            layout.label(text = "Test Operators")
+            row = layout.row(align=True)
+            row.alignment = 'EXPAND'
+            row.label(text = variations[var]['name'])
+            row.label(text = variations[var]['material'])
+            row.label(text = variations[var]['model'])
+
+        buttonRow = layout.row(align=True)
+        row.alignment = 'EXPAND'
+        #row.operator()
+
         #row.operator("object.mode_set", text="Set Var 3", icon='OBJECT_DATAMODE').mode='TEXTURE_PAINT'
 
         #row = layout.row()
