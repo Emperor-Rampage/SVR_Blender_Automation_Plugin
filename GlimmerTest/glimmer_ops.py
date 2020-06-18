@@ -1,6 +1,5 @@
 import bpy
 import csv
-import xml.etree.ElementTree as ET
 from bpy_extras.io_utils import ImportHelper
 from moviepy.editor import *
 
@@ -20,19 +19,6 @@ colors = []
 actions = []
 skills = []
 gifs = []
-
-class Glimmer_OT_LoadXMLFile(Operator, ImportHelper):
-    bl_idname = "glimmer.load_xml_file" 
-    bl_label = "Load an XML file." 
-
-    def execute(self, context):
-        settings = context.scene.svr_settings
-        settings.xmlFile = self.filepath
-
-        root = ET.fromstring(settings.xmlFile)
-
-        for animal in root.findall('animal'):
-            bpy.context.scene.svr_settings.nameEnum.append((animal.attrib, animal.attrib, animal.attrib))
 
 class Glimmer_OT_LoadCsvFile(Operator, ImportHelper): 
     bl_idname = "glimmer.load_csv_file" 
