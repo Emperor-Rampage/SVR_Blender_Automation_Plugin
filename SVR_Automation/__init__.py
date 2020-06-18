@@ -113,15 +113,25 @@ class CustomMenu(bpy.types.Menu):
         # call another menu
         layout.operator("wm.call_menu", text="Unwrap").name = "VIEW3D_MT_uv_map"
 
-class VariationPanel(bpy.types.Panel):
-    bl_label = "Variation Panel"
-    bl_idname = "OBJECT_PT_variation_panel"
-    bl_space_type = "VIEW_3D"
-    bl_region_type = 'UI'
+class VariationSettingItem(bpy.types.PropertyGroup):
+    name: bpy.props.StringProperty(name = "Variation Name", default = "Default")
+    meshName: bpy.props.StringProperty(name = "Mesh Name", default = "Default")
+    materialName: bpy.props.StringProperty(name = "Material Name", default = "Default")
 
 variations = {
-    1 : {'name' : 'Default', 'material' : 'Default Mat'},
+    1 : {'name' : 'Default Name', 'material' : 'Default Mat', 'model' : 'Default Model'},
+    2 : {'name' : 'Default Name', 'material' : 'Default Mat', 'model' : 'Default Model'},
+    3 : {'name' : 'Default Name', 'material' : 'Default Mat', 'model' : 'Default Model'}
 }
+
+class ButtonOperator(bpy.types.Operator):
+    bl_idname =  'button.operation'
+    bl_label = 'ButtonOperator'
+    bl_description = 'Operator that runs the adding and subtracting of items into the variation enum.'
+    bl_options = {'REGISTER', 'UNDO'}
+
+    
+    #def AddVariation(name, material, model):
 
 class LayoutPanel(bpy.types.Panel):
     bl_label = "MultiRender"
@@ -147,6 +157,19 @@ class LayoutPanel(bpy.types.Panel):
         row.alignment = 'EXPAND'
         #row.operator( "material.set", text="Set Default Mat", icon='OBJECT_DATAMODE')
         row.operator("render.multirender", text="Multi Render", icon='OBJECT_DATAMODE')
+
+        for var in variations:
+            layout.label(text = "Test Operators")
+            row = layout.row(align=True)
+            row.alignment = 'EXPAND'
+            row.label(text = variations[var]['name'])
+            row.label(text = variations[var]['material'])
+            row.label(text = variations[var]['model'])
+
+        buttonRow = layout.row(align=True)
+        row.alignment = 'EXPAND'
+        #row.operator()
+
         #row.operator("object.mode_set", text="Set Var 3", icon='OBJECT_DATAMODE').mode='TEXTURE_PAINT'
 
         #row = layout.row()
@@ -190,46 +213,63 @@ class MultiRender(bpy.types.Operator):
 
         if mysettings.isSkill is True:
      
-            string1L = "C:\work\mp4\\" + mysettings.petName + "\\ " + mysettings.petName + mysettings.petColor1 + "-" + mysettings.animationName + "-left.mp4"
-            string1R = "C:\work\mp4\\" + mysettings.petName + "\\ " + mysettings.petName + mysettings.petColor1 + "-" + mysettings.animationName + "-right.mp4"
-            gif1L = "C:\work\gif\\"  + mysettings.petName + "\\ " + mysettings.petName + mysettings.petColor1 + "-" + mysettings.animationName + "-left.gif"
-            gif1R = "C:\work\gif\\"  + mysettings.petName + "\\ " + mysettings.petName + mysettings.petColor1 + "-" + mysettings.animationName + "-right.gif"
+            string1 = "C:\work\mp4\\" + mysettings.petName + "\\ " + mysettings.petName + mysettings.petColor1 + "-" + mysettings.animationName + "-left.mp4"
+            gif1L = "C:\work\gif\\" + mysettings.petName + mysettings.petColor1 + "-" + mysettings.animationName + "-left.gif"
+            gif1R = "C:\work\gif\\" + mysettings.petName + mysettings.petColor1 + "-" + mysettings.animationName + "-right.gif"
 
-            scn.render.filepath = string1L
+            scn.render.filepath = string1
             newRender(pet, DefaultMat)
 
-            myclip = VideoFileClip(string1L)
-            myclip.write_gif(gif1L, fps = myclip.fps, program= "ffmepg")
-            #mirroredClip = myclip.fx( vfx.mirror_x, myclip)
-            #mirroredClip.write_gif(gif1R, fps = myclip.fps, program= "ffmepg", opt = "None")
+            myclip = VideoFileClip(string1)
+            myclip.write_gif(gif1L, program="ffmpeg")
+
+            mirroredClip = myclip.fx( vfx.mirror_x)
             myclip.close
-            #mirroredClip.close
+            mirroredClip.write_gif(gif1R, program="ffmpeg")
+            mirroredClip.close
 
-            #newRender(pet, DefaultMat)
 
-            scn.render.filepath = "C:\work\\" + mysettings.petName + mysettings.petColor2 + "-" + mysettings.animationName + "-left.mp4"
+            string2 = "C:\work\\" + mysettings.petName + mysettings.petColor2 + "-" + mysettings.animationName + "-left.mp4"
+            gif2L = "C:\work\gif\\" + mysettings.petName + mysettings.petColor2 + "-" + mysettings.animationName + "-left.gif"
+            gif2R = "C:\work\gif\\" + mysettings.petName + mysettings.petColor2 + "-" + mysettings.animationName + "-right.gif"
+
+            scn.render.filepath = string2
             newRender(pet, MaterialVar2)
-            scn.render.filepath = "C:\work\\" + mysettings.petName + mysettings.petColor2 + "-" + mysettings.animationName + "-right.mp4"
+            myclip = VideoFileClip(string2)
+            myclip.write_gif(gif2L, program="ffmpeg")
 
-            newRender(pet, MaterialVar2)
+            mirroredClip = myclip.fx( vfx.mirror_x)
+            myclip.close
+            mirroredClip.write_gif(gif2R, program="ffmpeg")
+            mirroredClip.close
 
 
-            scn.render.filepath = "C:\work\\" + mysettings.petName + mysettings.petColor3 + "-" + mysettings.animationName + "-left.mp4"
+            string3 = "C:\work\\" + mysettings.petName + mysettings.petColor3 + "-" + mysettings.animationName + "-left.mp4"
+
+            gif3L = "C:\work\gif\\" + mysettings.petName + mysettings.petColor3 + "-" + mysettings.animationName + "-left.gif"
+            gif3R = "C:\work\gif\\" + mysettings.petName + mysettings.petColor3 + "-" + mysettings.animationName + "-right.gif"
+
             newRender(pet, MaterialVar3)
-            scn.render.filepath = "C:\work\\" + mysettings.petName + mysettings.petColor3 + "-" + mysettings.animationName + "-right.mp4"
+            myclip = VideoFileClip(string3)
+            myclip.write_gif(gif3L, program="ffmpeg")
 
-            newRender(pet, MaterialVar3)
+            mirroredClip = myclip.fx( vfx.mirror_x)
+            myclip.close
+            mirroredClip.write_gif(gif3R, program="ffmpeg")
+            mirroredClip.close
 
         else:
             #First Render Loop
-            string1 = "C:\work\mp4\\" + mysettings.petName + "\\ " + mysettings.petName + mysettings.petColor1 + "-" + mysettings.animationName + ".mp4"
-            gif1 = "C:\work\gif\\"  + mysettings.petName + "\\ "+ mysettings.petName + mysettings.petColor1 + "-" + mysettings.animationName + ".gif"
+            string1 = "C:\work\mp4\\" + mysettings.petName + "\\" + mysettings.petName + mysettings.petColor1 + "-" + mysettings.animationName + ".mp4"
+            gif1 = "C:\work\\" + mysettings.petName + mysettings.petColor1 + "-" + mysettings.animationName + ".gif"
             scn.render.filepath = string1
             newRender(pet, DefaultMat)
             myclip = VideoFileClip(string1)
             myclip.write_videofile(string1)
-            
-            myclip.write_gif(gif1, program= "ffmepg", opt = "None")
+            myclip.close
+
+            myclip = VideoFileClip(string1)
+            myclip.write_gif(gif1, fps = myclip.fps, program= "ffmepg", opt = "None")
             myclip.close
             
 
@@ -238,8 +278,8 @@ class MultiRender(bpy.types.Operator):
             gif2 = "C:\work\gif\\"  + mysettings.petName + "\\ " + mysettings.petName + mysettings.petColor2 + "-" + mysettings.animationName + ".gif"
             scn.render.filepath = string2
             newRender(pet, MaterialVar2)
-            #myclip = VideoFileClip(string2)
-            #myclip.write_gif(gif2, fps = myclip.fps, program= "ffmpeg", opt = "None")
+            myclip = VideoFileClip(string2)
+            myclip.write_gif(gif2, fps = myclip.fps, program= "ffmpeg", opt = "None")
             
 
             #Third Render Loop
@@ -247,9 +287,9 @@ class MultiRender(bpy.types.Operator):
             gif3 = "C:\work\gif\\"  + mysettings.petName + "\\ "+ mysettings.petName + mysettings.petColor3 + "-" + mysettings.animationName + ".gif"
             scn.render.filepath = string3
             newRender(pet, MaterialVar3)
-            #myclip = VideoFileClip(string3)
-            #myclip.write_gif(gif3, fps = myclip.fps, program= "ffmpeg", opt = "None")
-            #myclip.close()
+            myclip = VideoFileClip(string3)
+            myclip.write_gif(gif3, fps = myclip.fps, program= "ffmpeg", opt = "None")
+            myclip.close()
         
         pet.data.materials[0] = DefaultMat
         return {'FINISHED'}
