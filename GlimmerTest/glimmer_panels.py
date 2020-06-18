@@ -48,7 +48,7 @@ class Glimmer_PT_Panel(Panel):
         row.prop(settings, "isSkill", text = "Render As Skill?")
 
         layout.separator()
-        layout.row().operator("render.newmultirender", text="Multi Render", icon='OBJECT_DATAMODE')
+        layout.row().operator("render.multirender", text="Multi Render", icon='OBJECT_DATAMODE')
         layout.separator()
 
         #Master Prop List Area

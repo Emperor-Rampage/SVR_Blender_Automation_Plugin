@@ -29,7 +29,7 @@ def emptyRender(object, material):
     bpy.ops.render.render(write_still= True)
     SetRenderBlock(bpy.context.scene)
 
-def validateRenderSettings(self, context):
+def validateRenderSettings(self):
     if self.isSkill is True:
         context.scene.render.resolution_x = 232
         context.scene.render.resolution_y = 346
@@ -50,8 +50,8 @@ def SetRenderBlock(context):
     context.scene.render.ffmpeg.audio_codec = "NONE"
 
 def CreateDirectories():
-
-    path = "c:/work/gif"
+    mysettings = bpy.context.scene.svr_settings
+    path = mysettings.workDir + "gif"
 
     try:
         os.makedirs(path)
@@ -60,7 +60,7 @@ def CreateDirectories():
     else:
         print ("Successfully created the directory %s" % path)
         
-    path = "c:/work/mp4"
+    path = mysettings.workDir + "mp4"
 
     try:
         os.makedirs(path)

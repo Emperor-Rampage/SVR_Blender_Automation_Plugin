@@ -11,7 +11,7 @@ from bpy.props import (
     StringProperty
 ) 
 
-from . glimmer_funcs import gatherData, newRender, validateRenderSettings, SetRenderBlock, newRender, emptyRender
+from . glimmer_funcs import gatherData, newRender, validateRenderSettings, SetRenderBlock, newRender, emptyRender, CreateDirectories
 
 pet_name = ""
 pet_names = []
@@ -54,8 +54,8 @@ class Glimmer_OT_LoadCsvFile(Operator, ImportHelper):
         temp = 0
         return {'FINISHED'}
 
-class Glimmer_OT_NewMultiRender(Operator):
-    bl_idname = "render.newmultirender"
+class Glimmer_OT_MultiRender(Operator):
+    bl_idname = "render.multirender"
     bl_label = "Multi Render"
     bl_description = "Render Three Times!"
     bl_options = {"REGISTER"}
@@ -67,7 +67,9 @@ class Glimmer_OT_NewMultiRender(Operator):
     def execute(self, context):
         scn = context.scene
         mysettings = context.scene.svr_settings
-        validateRenderSettings(mysettings,scn)
+        validateRenderSettings(mysettings)
+
+        CreateDirectories()
 
         for item in scn.my_variations:
             if mysettings.isSkill is True:
@@ -85,8 +87,8 @@ class Glimmer_OT_NewMultiRender(Operator):
                         if ob.type != 'LIGHT':
                             ob.hide_render = True
                             
-                string1 = "C:/work/mp4/" + mysettings.nameEnum + item.colorsEnum + "/" + mysettings.nameEnum + item.colorsEnum + "-" + mysettings.actionsEnum + "-base.jpeg"
-                gif1 = "C:/work/gif/" + mysettings.nameEnum + item.colorsEnum + "-" + mysettings.actionsEnum + "-empty.gif"
+                string1 =  mysettings.workDir + "mp4/" + mysettings.nameEnum + item.colorsEnum + "/" + mysettings.nameEnum + item.colorsEnum + "-" + mysettings.actionsEnum + "-base.jpeg"
+                gif1 = mysettings.workDir + "gif/" + mysettings.nameEnum + item.colorsEnum + "-" + mysettings.actionsEnum + "-empty.gif"
                 scn.render.filepath = string1
 
                 #Enable objects from the hide list.
@@ -100,9 +102,9 @@ class Glimmer_OT_NewMultiRender(Operator):
                 item.mesh.hide_render = False
 
                 #First Render Loop
-                string1 = "C:\work\mp4\\" + mysettings.nameEnum + "\\" + mysettings.nameEnum + item.colorsEnum + "-" + mysettings.actionsEnum + "-base.mp4"
-                gif1L = "C:\work\gif\\" + mysettings.nameEnum + item.colorsEnum + "-" + mysettings.actionsEnum + "-left.gif"
-                gif1R = "C:\work\gif\\" + mysettings.nameEnum + item.colorsEnum + "-" + mysettings.actionsEnum + "-right.gif"
+                string1 = mysettings.workDir + "mp4/" + mysettings.nameEnum + "/" + mysettings.nameEnum + item.colorsEnum + "-" + mysettings.actionsEnum + "-base.mp4"
+                gif1L = mysettings.workDir + "gif/" + mysettings.nameEnum + item.colorsEnum + "-" + mysettings.actionsEnum + "-left.gif"
+                gif1R = mysettings.workDir + "gif/" + mysettings.nameEnum + item.colorsEnum + "-" + mysettings.actionsEnum + "-right.gif"
 
                 scn.render.filepath = string1
                 newRender(item.mesh, item.material)
@@ -121,8 +123,8 @@ class Glimmer_OT_NewMultiRender(Operator):
                             ob.hide_render = True
                 item.mesh.hide_render = False            
                 #First Render Loop
-                string1 = "C:\work\mp4\\" + mysettings.nameEnum + "\\" + mysettings.nameEnum + item.colorsEnum + "-" + mysettings.actionsEnum + ".mp4"
-                gif1 = "C:\work\gif\\" + mysettings.nameEnum + item.colorsEnum + "-" + mysettings.actionsEnum + ".gif"
+                string1 = mysettings.workDir + "mp4/" + mysettings.nameEnum + "/" + mysettings.nameEnum + item.colorsEnum + "-" + mysettings.actionsEnum + ".mp4"
+                gif1 = mysettings.workDir + "gif/" + mysettings.nameEnum + item.colorsEnum + "-" + mysettings.actionsEnum + ".gif"
                 scn.render.filepath = string1
                 newRender(item.mesh, item.material)
                 myclip = VideoFileClip(string1)
@@ -130,113 +132,6 @@ class Glimmer_OT_NewMultiRender(Operator):
                 myclip.close
                     
         return {"FINISHED"}
-
-class Glimmer_OT_MultiRender(Operator):
-    bl_idname = "render.multirender"
-    bl_label = "Multi Render"
-    bl_description = "Render Three Times!"
-    bl_options = {"REGISTER"}  
-
-    @classmethod
-    def poll(cls, context):
-        return True 
-
-    def execute(self, context):
-
-        scn = context.scene
-        pet = context.active_object
-        mysettings = context.scene.my_settings
-        DefaultMat = gatherData("DefaultMat")
-        MaterialVar2 = gatherData("MaterialVar2")
-        MaterialVar3 = gatherData("MaterialVar3")
-        validateRenderSettings(mysettings,scn)                 
-
-        if mysettings.isSkill is True:
-            #Empty Render Loop TO-DO
-                #Walk through all objects in the scene.
-                #Turn the render visibility off on objects that need to be turned off, and gather the ones that are turned off.
-                #Render out one empty framed .mp4 of the background.
-                #Convert the .mp4 to a .gif.
-                #Save once for each variation, giving it the '-empty.gif' ending tag.
-                #Close the clip and re-enable all the objects that were turned off during the walk.
-                #DONE.
-            
-            #First Render Loop
-            string1 = "C:\work\mp4\\" + mysettings.petName + "\\ " + mysettings.petName + mysettings.petColor1 + "-" + mysettings.animationName + "-left.mp4"
-            gif1L = "C:\work\gif\\" + mysettings.petName + mysettings.petColor1 + "-" + mysettings.animationName + "-left.gif"
-            gif1R = "C:\work\gif\\" + mysettings.petName + mysettings.petColor1 + "-" + mysettings.animationName + "-right.gif"
-
-            scn.render.filepath = string1
-            newRender(pet, DefaultMat)
-
-            myclip = VideoFileClip(string1)
-            myclip.write_gif(gif1L, program="ffmpeg")
-
-            mirroredClip = myclip.fx( vfx.mirror_x)
-            myclip.close
-            mirroredClip.write_gif(gif1R, program="ffmpeg")
-            mirroredClip.close
-
-            #Second Render Loop
-            string2 = "C:\work\\" + mysettings.petName + mysettings.petColor2 + "-" + mysettings.animationName + "-left.mp4"
-            gif2L = "C:\work\gif\\" + mysettings.petName + mysettings.petColor2 + "-" + mysettings.animationName + "-left.gif"
-            gif2R = "C:\work\gif\\" + mysettings.petName + mysettings.petColor2 + "-" + mysettings.animationName + "-right.gif"
-
-            scn.render.filepath = string2
-            newRender(pet, MaterialVar2)
-            myclip = VideoFileClip(string2)
-            myclip.write_gif(gif2L, program="ffmpeg")
-
-            mirroredClip = myclip.fx( vfx.mirror_x)
-            myclip.close
-            mirroredClip.write_gif(gif2R, program="ffmpeg")
-            mirroredClip.close
-
-            #Third Render Loop
-            string3 = "C:\work\\" + mysettings.petName + mysettings.petColor3 + "-" + mysettings.animationName + "-left.mp4"
-
-            gif3L = "C:\work\gif\\" + mysettings.petName + mysettings.petColor3 + "-" + mysettings.animationName + "-left.gif"
-            gif3R = "C:\work\gif\\" + mysettings.petName + mysettings.petColor3 + "-" + mysettings.animationName + "-right.gif"
-
-            newRender(pet, MaterialVar3)
-            myclip = VideoFileClip(string3)
-            myclip.write_gif(gif3L, program="ffmpeg")
-
-            mirroredClip = myclip.fx( vfx.mirror_x)
-            myclip.close
-            mirroredClip.write_gif(gif3R, program="ffmpeg")
-            mirroredClip.close
-
-        else:
-            #First Render Loop
-            string1 = "C:\work\mp4\r" + mysettings.petName + "\r" + mysettings.petName + mysettings.petColor1 + "-" + mysettings.animationName + ".mp4"
-            gif1 = "C:\work\gif\r" + mysettings.petName + mysettings.petColor1 + "-" + mysettings.animationName + ".gif"
-            scn.render.filepath = string1
-            newRender(pet, DefaultMat)
-            myclip = VideoFileClip(string1)
-            myclip.write_gif(gif1, fps = 24, program= "ffmpeg", opt = "None")
-            myclip.close
-            
-
-            #Second Render Loop
-            string2 = "C:\work\mp4\r" + mysettings.petName + "\r" + mysettings.petName + mysettings.petColor2 + "-" + mysettings.animationName + ".mp4"
-            gif2 = "C:\work\r" + mysettings.petName + mysettings.petColor2 + "-" + mysettings.animationName + ".gif"
-            scn.render.filepath = string2
-            newRender(pet, MaterialVar2)
-            myclip = VideoFileClip(string2)
-            myclip.write_gif(gif2, fps = 24, program= "ffmpeg", opt = "None")
-            myclip.close
-
-            #Third Render Loop
-            string3 = "C:\work\mp4\r" + mysettings.petName + "\r" + mysettings.petName  + mysettings.petColor3 + "-" + mysettings.animationName + ".mp4"
-            gif3 = "C:\work\gif\r"  + mysettings.petName + "\r"+ mysettings.petName + mysettings.petColor3 + "-" + mysettings.animationName + ".gif"
-            scn.render.filepath = string3
-            newRender(pet, MaterialVar3)
-            myclip = VideoFileClip(string3)
-            myclip.write_gif(gif3, fps = 24, program= "ffmpeg", opt = "None")
-            myclip.close()
-        
-        return {'FINISHED'}
 
 class Glimmer_OT_AddVariation(bpy.types.Operator):
     bl_idname = "collections.add_variation"

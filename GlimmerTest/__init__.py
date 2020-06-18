@@ -128,7 +128,7 @@ classes = (
     SVR_VariationSettings,
     Glimmer_OT_LoadCsvFile,
     Glimmer_OT_MultiRender,
-    Glimmer_OT_NewMultiRender,
+    Glimmer_OT_MultiRender,
     Glimmer_OT_ScaleObject,
     Glimmer_OT_UnScaleObject,
     Glimmer_PT_Panel,
