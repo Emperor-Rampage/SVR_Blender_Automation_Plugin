@@ -24,7 +24,6 @@ bl_info = {
 
 import bpy
 import os, sys
-import imageio
 from moviepy.editor import *
 
 enum_menu_items = [
@@ -33,6 +32,13 @@ enum_menu_items = [
                 ('OPT3','Option 3','',3),
                 ('OPT4','Option 4','',4),
                 ]
+
+variations = {
+    1 : {'name' : 'Default Name', 'material' : 'Default Mat', 'model' : 'Default Model'},
+    2 : {'name' : 'Default Name', 'material' : 'Default Mat', 'model' : 'Default Model'},
+    3 : {'name' : 'Default Name', 'material' : 'Default Mat', 'model' : 'Default Model'}
+}
+
 
 def gatherData(string):
     DefaultMat = bpy.data.materials.get(string)
@@ -80,58 +86,10 @@ class MySettings(bpy.types.PropertyGroup):
     petColor3 : bpy.props.StringProperty(name = "Variation 2 Color Name", default = "Color3")
     animationName : bpy.props.StringProperty(name = "Animation Title", default = "DefaultAnimation")
 
-class SetMaterialDefault(bpy.types.Operator):
-    bl_idname = "material.set"
-    bl_label = "Set Material"
-    
-    def execute(self, context):
-        pet = bpy.context.active_object
-        pet.active_material = gatherData("DefaultMat")
-
-class CustomMenu(bpy.types.Menu):
-    """Demo custom menu"""
-    # example menu from Templates->Python->ui_menu.py
-    bl_label = "Custom Menu"
-    bl_idname = "OBJECT_MT_custom_menu"
-
-    def draw(self, context):
-        layout = self.layout
-
-        layout.operator("wm.open_mainfile")
-        layout.operator("wm.save_as_mainfile").copy = True
-
-        layout.operator("object.shade_smooth")
-
-        layout.label(text = "Hello world!", icon = 'WORLD_DATA')
-
-        # use an operator enum property to populate a sub-menu
-        layout.operator_menu_enum("object.select_by_type",
-                                  property="type",
-                                  text="Select All by Type...",
-                                  )
-
-        # call another menu
-        layout.operator("wm.call_menu", text="Unwrap").name = "VIEW3D_MT_uv_map"
-
 class VariationSettingItem(bpy.types.PropertyGroup):
     name: bpy.props.StringProperty(name = "Variation Name", default = "Default")
     meshName: bpy.props.StringProperty(name = "Mesh Name", default = "Default")
     materialName: bpy.props.StringProperty(name = "Material Name", default = "Default")
-
-variations = {
-    1 : {'name' : 'Default Name', 'material' : 'Default Mat', 'model' : 'Default Model'},
-    2 : {'name' : 'Default Name', 'material' : 'Default Mat', 'model' : 'Default Model'},
-    3 : {'name' : 'Default Name', 'material' : 'Default Mat', 'model' : 'Default Model'}
-}
-
-class ButtonOperator(bpy.types.Operator):
-    bl_idname =  'button.operation'
-    bl_label = 'ButtonOperator'
-    bl_description = 'Operator that runs the adding and subtracting of items into the variation enum.'
-    bl_options = {'REGISTER', 'UNDO'}
-
-    
-    #def AddVariation(name, material, model):
 
 class LayoutPanel(bpy.types.Panel):
     bl_label = "MultiRender"
@@ -142,9 +100,8 @@ class LayoutPanel(bpy.types.Panel):
 
     def draw(self, context):
         layout = self.layout
-        #self.layout.operator("object.mode_set", text='Edit', icon='EDITMODE_HLT').mode='EDIT'
-        pet = bpy.context.active_object
-        mysettings = bpy.context.scene.my_settings
+        pet = context.active_object
+        mysettings = context.scene.my_settings
 
         layout.label(text = "Test Operators")
         layout.row().prop(mysettings, "isSkill", text = "Render as Skill?")
@@ -155,7 +112,6 @@ class LayoutPanel(bpy.types.Panel):
         layout.row().prop(mysettings, "animationName", text = "Animation Title")
         row = layout.row(align=True)
         row.alignment = 'EXPAND'
-        #row.operator( "material.set", text="Set Default Mat", icon='OBJECT_DATAMODE')
         row.operator("render.multirender", text="Multi Render", icon='OBJECT_DATAMODE')
 
         for var in variations:
@@ -168,28 +124,6 @@ class LayoutPanel(bpy.types.Panel):
 
         buttonRow = layout.row(align=True)
         row.alignment = 'EXPAND'
-        #row.operator()
-
-        #row.operator("object.mode_set", text="Set Var 3", icon='OBJECT_DATAMODE').mode='TEXTURE_PAINT'
-
-        #row = layout.row()
-        #box = row.box()
-
-        #row = box.row()
-        #row.label(text = "Some menus", icon='LINENUMBERS_ON')
-
-        #row = box.row()
-        # add the custom menu defined above
-        #box.menu(CustomMenu.bl_idname,text = 'My custom menu', icon='PREFERENCES')
-
-        #row = box.row()
-        # add a standard blender menu - the add menu
-        #box.menu('VIEW3D_MT_mesh_add', text ='Add', icon='PLUS')
-
-        #row = box.row()
-        # add an enum property menu
-        # this allows only certain values to be set for a property
-        #box.prop_menu_enum(context.scene, 'test_enum', text='enum property', icon='ALIGN_LEFT')
 
 class MultiRender(bpy.types.Operator):
     bl_idname = "render.multirender"
@@ -203,16 +137,18 @@ class MultiRender(bpy.types.Operator):
 
     def execute(self, context):
 
-        scn = bpy.context.scene
-        pet = bpy.context.active_object
-        mysettings = bpy.context.scene.my_settings
+        scn = context.scene
+        pet = context.active_object
+        mysettings = context.scene.my_settings
         DefaultMat = gatherData("DefaultMat")
         MaterialVar2 = gatherData("MaterialVar2")
         MaterialVar3 = gatherData("MaterialVar3")
         validateRenderSettings(mysettings,scn)
 
         if mysettings.isSkill is True:
-     
+            #Empty Render Loop
+
+            #First Render Loop
             string1 = "C:\work\mp4\\" + mysettings.petName + "\\ " + mysettings.petName + mysettings.petColor1 + "-" + mysettings.animationName + "-left.mp4"
             gif1L = "C:\work\gif\\" + mysettings.petName + mysettings.petColor1 + "-" + mysettings.animationName + "-left.gif"
             gif1R = "C:\work\gif\\" + mysettings.petName + mysettings.petColor1 + "-" + mysettings.animationName + "-right.gif"
@@ -228,7 +164,7 @@ class MultiRender(bpy.types.Operator):
             mirroredClip.write_gif(gif1R, program="ffmpeg")
             mirroredClip.close
 
-
+            #Second Render Loop
             string2 = "C:\work\\" + mysettings.petName + mysettings.petColor2 + "-" + mysettings.animationName + "-left.mp4"
             gif2L = "C:\work\gif\\" + mysettings.petName + mysettings.petColor2 + "-" + mysettings.animationName + "-left.gif"
             gif2R = "C:\work\gif\\" + mysettings.petName + mysettings.petColor2 + "-" + mysettings.animationName + "-right.gif"
@@ -243,7 +179,7 @@ class MultiRender(bpy.types.Operator):
             mirroredClip.write_gif(gif2R, program="ffmpeg")
             mirroredClip.close
 
-
+            #Third Render Loop
             string3 = "C:\work\\" + mysettings.petName + mysettings.petColor3 + "-" + mysettings.animationName + "-left.mp4"
 
             gif3L = "C:\work\gif\\" + mysettings.petName + mysettings.petColor3 + "-" + mysettings.animationName + "-left.gif"
@@ -297,9 +233,8 @@ class MultiRender(bpy.types.Operator):
 classes = (
     MySettings,
     MultiRender,
-    CustomMenu,
     LayoutPanel,
-    SetMaterialDefault,
+
 )
 
 def register():
