@@ -29,45 +29,51 @@ from bpy.props import (
     FloatProperty,
     StringProperty,
     EnumProperty,
-    CollectionProperty
+    CollectionProperty,
+    PointerProperty
 ) 
 
-from . glimmer_ops import Glimmer_OT_LoadCsvFile, Glimmer_OT_MultiRender, Glimmer_OT_SetMaterialDefault,Glimmer_OT_ScaleObject, Glimmer_OT_UnScaleObject
-from . glimmer_panels import Glimmer_PT_Panel, Glimmer_UL_ActionList, ActionListItem, LIST_OT_NewItem, LIST_OT_DeleteItem, LIST_OT_MoveItem
-#Glimmer_PT_VariationPanel,
+from . glimmer_ops import Glimmer_OT_LoadCsvFile, Glimmer_OT_MultiRender,Glimmer_OT_NewMultiRender, Glimmer_OT_ScaleObject, Glimmer_OT_UnScaleObject, Glimmer_OT_AddVariation, Glimmer_OT_DeleteVariation
+from . glimmer_panels import Glimmer_PT_Panel, Glimmer_UL_ActionList, ActionListItem, LIST_OT_NewItem, LIST_OT_DeleteItem, LIST_OT_MoveItem, LIST_OT_NewItemNew
+from . glimmer_funcs import validateRenderSettings, SetRenderBlock
+
 
 myTestArray = ["test string one","test string two"]
 
 class SVR_Settings(bpy.types.PropertyGroup):
     workDir : bpy.props.StringProperty(name = "Work Directory", default = "C:\\work\\")
-    petName : bpy.props.StringProperty(name = "Pet Type", default = "PetName")
-    petColor1 : bpy.props.StringProperty(name = "Default Color Name", default = "Color1")
-    petColor2 : bpy.props.StringProperty(name = "Variation 1 Color Name", default = "Color2")
-    petColor3 : bpy.props.StringProperty(name = "Variation 2 Color Name", default = "Color3")
-    animationName : bpy.props.StringProperty(name = "Animation Title", default = "DefaultAnimation")
     csvFile : StringProperty(name="CSV Filename")
-    scaleValue : FloatProperty(name="Global scale value",default=1.0)
-    skillFail: BoolProperty(name="SkillFail:", description="Pet Fails at Skill.")    
-    skillHandEnum: EnumProperty(
-        name="Skills:",
-        description="Pet Skill Hand.",
-        items=[ ('empty',"Empty", ""),
-                ('right',"Right", ""),
-                ('left',"Left", ""),
-        ]
+    isSkill: BoolProperty(name="isSkill:", description="Set Render Mode to skill.", update= validateRenderSettings)    
+    
+    nameEnum: EnumProperty(
+        name="Name:",
+        description="Main animal name.",
+        #items=[('hummingbird',"Hummingbird","")
+        #]
+        items= []
     )
+
     skillsEnum: EnumProperty(
         name="Skills:",
         description="Pet Skills.",
-        items=[ ('singing',"Singing", ""),
+        items=[('singing',"Singing", ""),
                 ('knitting',"Knitting", ""),
                 ('bubbles',"Bubbles", ""),
                 ('hiding',"Hiding", ""),
                 ('hypnotize',"Hypnotize", ""),
                 ('juggle',"Juggle", ""),
                 ('marathon',"Marathon", ""),
+                ('singingfail',"Singing Fail", ""),
+                ('knittingfail',"Knitting Fail", ""),
+                ('bubblesfail',"Bubbles Fail", ""),
+                ('hidingfail',"Hiding Fail", ""),
+                ('hypnotizefail',"Hypnotize Fail", ""),
+                ('jugglefail',"Juggle Fail", ""),
+                ('marathonfail',"Marathon Fail", ""),
+                ('',"", ""),
         ]
     )
+
     actionsEnum: EnumProperty(
         name="Actions:",
         description="Pet Actions.",
@@ -96,24 +102,41 @@ class SVR_Settings(bpy.types.PropertyGroup):
                 ('pettreat',"Pet Treat", ""),
                 ('weights',"Weights", ""),
                 ('ropejumpning',"Rope Jumping", ""),
-                ('position',"Position", ""),
+                ('position',"Position", ""),                
                 ('avatar',"Avatar", ""),
                 ('',"", ""),
         ]
     )
 
+class SVR_VariationSettings(bpy.types.PropertyGroup):
+    colorsEnum: EnumProperty(
+        name="Colors:",
+        description="Color Variations.",
+        items=[ ('green',"Green",""),
+        ('magenta', "Magenta",""),
+        ('orange', "Orange",""),
+        ]
+    )
+    material : bpy.props.PointerProperty(name="MaterialProperty", type= bpy.types.Material)
+    mesh : bpy.props.PointerProperty(name="MeshProperty", type= bpy.types.Object)
+    prop_list : bpy.props.CollectionProperty(type = ActionListItem)
+    list_index : bpy.props.IntProperty(name = "Index for my_list", default = 0)
+
 classes = (
     SVR_Settings,
+    ActionListItem,
+    SVR_VariationSettings,
     Glimmer_OT_LoadCsvFile,
     Glimmer_OT_MultiRender,
-    Glimmer_OT_SetMaterialDefault,
+    Glimmer_OT_NewMultiRender,
     Glimmer_OT_ScaleObject,
     Glimmer_OT_UnScaleObject,
     Glimmer_PT_Panel,
     Glimmer_UL_ActionList,
-    #Glimmer_PT_VariationPanel,
-    ActionListItem,
+    Glimmer_OT_AddVariation,
+    Glimmer_OT_DeleteVariation,
     LIST_OT_NewItem,
+    LIST_OT_NewItemNew,
     LIST_OT_DeleteItem,
     LIST_OT_MoveItem
     )
@@ -124,7 +147,9 @@ def register():
 
     bpy.types.Scene.svr_settings = bpy.props.PointerProperty(type = SVR_Settings)
     bpy.types.Scene.my_list = CollectionProperty(type = ActionListItem) 
+    bpy.types.Scene.my_variations = CollectionProperty(type = SVR_VariationSettings)
     bpy.types.Scene.list_index = IntProperty(name = "Index for my_list", default = 0)
+    bpy.types.Scene.object_list = PointerProperty(type = bpy.data.collections.items)
         
     #Well this is weird but it appears that globals are a little weird in blender addons, this is _one_ way to do it.
     dns = bpy.app.driver_namespace
@@ -137,6 +162,7 @@ def unregister():
     for cls in reversed(classes):
         bpy.utils.unregister_class(cls)
     del bpy.types.Scene.svr_settings
-    del bpy.types.Scene.my_list 
+    del bpy.types.Scene.my_list
+    del bpy.types.Scene.my_variations 
     del bpy.types.Scene.list_index
 

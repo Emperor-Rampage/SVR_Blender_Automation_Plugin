@@ -4,10 +4,12 @@ from bpy.props import (
     BoolProperty,
     IntProperty,
     FloatProperty,
-    StringProperty
-) 
+    StringProperty,
+    PointerProperty,
 
+)
 
+from GlimmerTest.glimmer_funcs import validateRenderSettings, SetRenderBlock, AddNew
 
 class Glimmer_PT_Panel(Panel):
     bl_idname = "Glimmer_PT_Panel"
@@ -18,72 +20,100 @@ class Glimmer_PT_Panel(Panel):
     #bl_category = "Tool"
 
     def draw(self,context):
-        pet = context.active_object
+
         settings = context.scene.svr_settings
+        mylist = context.scene.my_list
+        variationSettings = context.scene.my_variations
         scene = context.scene
 
         layout = self.layout
+        #print(variationSettings.items())
+        box = layout.box()
+        box.row().prop(settings,"workDir",text="Work Directory")
+        box.row().operator('glimmer.load_csv_file',text="Load XML File")
+        box.row().prop(settings,"csvFile",text="CSV File Path")
+        layout.separator()
 
-        #layout.row().prop(settings, "isSkill", text = "Render as Skill?")
-        layout.row().prop(settings, "petName", text = "Pet Name")
-        layout.row().prop(settings, "petColor1", text = "Color 1")
-        layout.row().prop(settings, "petColor2", text = "Color 2")
-        layout.row().prop(settings, "petColor3", text = "Color 3")
-        layout.row().prop(settings, "animationName", text = "Animation Title")
-        layout.row().prop(settings, "actionsEnum", text = "Action")
-        layout.row().prop(settings, "skillsEnum", text = "Skill")
-        row = layout.row()
-        row.prop(settings, "skillHandEnum", text = "Hand")
-        row.prop(settings, "skillFail", text = "Fail")
+        box = layout.box()
+        box.row().prop(settings, "nameEnum", text= "Animal Name")
+
+        if settings.isSkill is True:
+            box.row().prop(settings, "skillsEnum", text = "Skill")
+        else:
+            box.row().prop(settings, "actionsEnum", text = "Action")
+
+        #layout.row().prop(settings, "skillsEnum", text = "Skill")
+        row = box.row()
+        #row.prop(settings, "skillHandEnum", text = "Hand")
+        row.prop(settings, "isSkill", text = "Render As Skill?")
+
+        layout.separator()
+        layout.row().operator("render.newmultirender", text="Multi Render", icon='OBJECT_DATAMODE')
+        layout.separator()
+
+        #Master Prop List Area
+        box = layout.box()
+        box.row().label(text= "Master Prop List")
+        box.row().template_list("Glimmer_UL_ActionList", "", scene, "my_list", scene, "list_index")
+        row = box.row()
+        if scene.list_index >= 0 and scene.my_list: 
+            item = scene.my_list[scene.list_index] 
+            row = box.row()
+            row.prop(item, "pointer")
+        layout.separator()
         
-        layout.row().operator("render.multirender", text="Multi Render", icon='OBJECT_DATAMODE')
-
-        layout.row().template_list("Glimmer_UL_ActionList", "The_List", scene, "my_list", scene, "list_index")
-        row = layout.row() 
-        row.operator('my_list.new_item', text='NEW') 
+        #Do Work on Master Prop List
+        row = layout.row()
+        row.operator('my_list.new_item', text='NEW')
         row.operator('my_list.delete_item', text='REMOVE') 
         row.operator('my_list.move_item', text='UP').direction = 'UP'
         row.operator('my_list.move_item', text='DOWN').direction = 'DOWN'
-
-        row = layout.row()
-        if scene.list_index >= 0 and scene.my_list: 
-            item = scene.my_list[scene.list_index] 
-            row = layout.row()
-            row.prop(item, "name")
-            row.prop(item, "color")
-
         layout.separator()
 
-        layout.row().prop(settings,"workDir",text="Work Directory")
-        layout.row().operator('glimmer.load_csv_file',text="Load CSV File")
-        layout.row().prop(settings,"csvFile",text="CSV File Path")
-
-        layout.separator()
-        
-        layout.row().prop(settings,"scaleValue",text="Scale Amount")
+        #Variation Panel Area
+        layout.row().label(text= "Variation Panel")
         row = layout.row()
-        row.operator('object.scale_object',text="Scale Object")
-        row.operator('object.unscale_object',text="Unscale Object")
+        row.alignment = "EXPAND"
+        row.operator('collections.add_variation', text = "Add", icon= 'PLUS')
+        row.operator('collections.delete_variation', text =  "Delete", icon= 'REMOVE')
+        #Iterator value for checking and adding items.
+        iterator = 0
+        for item in variationSettings:
+            
+            box = layout.box()          
+            box.row().prop(item, 'colorsEnum')
+            box.row().prop(item, 'material')
+            box.row().prop(item, 'mesh')
+            box.row().template_list("Glimmer_UL_ActionList", "", item, "prop_list",  item, "list_index")
+            
+            row = box.row() 
+            new = row.operator('prop_list.new_item', text='NEW')
+            new.index = iterator
+            row.operator('my_list.delete_item', text='REMOVE') 
+            row.operator('my_list.move_item', text='UP').direction = 'UP'
+            row.operator('my_list.move_item', text='DOWN').direction = 'DOWN'
+
+            row = box.row()
+            if item.list_index >= 0 and item.prop_list: 
+                item = item.prop_list[item.list_index] 
+                row = box.row()
+                row.prop(item, "pointer")
+
+            layout.separator()
+            iterator = iterator + 1
+
+            
         
-
-###############################
-
-#class Glimmer_PT_VariationPanel(bpy.types.Panel):
-#    bl_label = "Variation Panel"
-#    bl_idname = "OBJECT_PT_variation_panel"
-#    bl_space_type = "VIEW_3D"
-#    bl_region_type = 'UI'
-
-variations = {
-    1 : {'name' : 'Default', 'material' : 'Default Mat'},
-}
-
+        #layout.row().prop(settings,"scaleValue",text="Scale Amount")
+        #row = layout.row()
+        #row.operator('object.scale_object',text="Scale Object")
+        #row.operator('object.unscale_object',text="Unscale Object")
+        
 
 ###############################
 
 class ActionListItem(PropertyGroup):
-    name: StringProperty( name="Name", description="A name for this item", default="Untitled") 
-    random_prop: StringProperty( name="color", description="Color", default="")
+    pointer: PointerProperty( name="pointer", type= bpy.types.Object)   
 
 class Glimmer_UL_ActionList(UIList):
     """Demo UIList.""" 
@@ -92,16 +122,28 @@ class Glimmer_UL_ActionList(UIList):
         custom_icon = 'OBJECT_DATAMODE' 
         # Make sure your code supports all 3 layout types 
         if self.layout_type in {'DEFAULT', 'COMPACT'}: 
-            layout.label(item.name, icon = custom_icon) 
+            layout.label(text = item.name, icon = custom_icon) 
         elif self.layout_type in {'GRID'}: 
             layout.alignment = 'CENTER' 
             layout.label("", icon = custom_icon) 
 
+class LIST_OT_NewItemNew(Operator): 
+    """Add a new item to the list.""" 
+    bl_idname = "prop_list.new_item" 
+    bl_label = "Add a new item"
+
+    index : bpy.props.IntProperty(name='index', default= 0)
+
+    def execute(self, context): 
+        context.scene.my_variations[self.index].prop_list.add() 
+        return{'FINISHED'}
 
 class LIST_OT_NewItem(Operator): 
     """Add a new item to the list.""" 
     bl_idname = "my_list.new_item" 
-    bl_label = "Add a new item" 
+    bl_label = "Add a new item"
+
+
     def execute(self, context): 
         context.scene.my_list.add() 
         return{'FINISHED'}
