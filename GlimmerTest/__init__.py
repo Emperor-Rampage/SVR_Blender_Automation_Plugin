@@ -33,7 +33,7 @@ from bpy.props import (
     PointerProperty
 ) 
 
-from . glimmer_ops import Glimmer_OT_LoadCsvFile, Glimmer_OT_MultiRender,Glimmer_OT_NewMultiRender, Glimmer_OT_ScaleObject, Glimmer_OT_UnScaleObject, Glimmer_OT_AddVariation, Glimmer_OT_DeleteVariation
+from . glimmer_ops import Glimmer_OT_LoadCsvFile, Glimmer_OT_MultiRender, Glimmer_OT_ScaleObject, Glimmer_OT_UnScaleObject, Glimmer_OT_AddVariation, Glimmer_OT_DeleteVariation
 from . glimmer_panels import Glimmer_PT_Panel, Glimmer_UL_ActionList, ActionListItem, LIST_OT_NewItem, LIST_OT_DeleteItem, LIST_OT_MoveItem, LIST_OT_NewItemNew
 from . glimmer_funcs import validateRenderSettings, SetRenderBlock
 
@@ -43,7 +43,7 @@ myTestArray = ["test string one","test string two"]
 class SVR_Settings(bpy.types.PropertyGroup):
     workDir : bpy.props.StringProperty(name = "Work Directory", default = "C:\\work\\")
     csvFile : StringProperty(name="CSV Filename")
-    isSkill: BoolProperty(name="isSkill:", description="Set Render Mode to skill.", update= validateRenderSettings)    
+    isSkill : BoolProperty(name="isSkill:", description="Set Render Mode to skill.", update= validateRenderSettings)    
     
     nameEnum: EnumProperty(
         name="Name:",
@@ -127,7 +127,6 @@ classes = (
     ActionListItem,
     SVR_VariationSettings,
     Glimmer_OT_LoadCsvFile,
-    Glimmer_OT_MultiRender,
     Glimmer_OT_MultiRender,
     Glimmer_OT_ScaleObject,
     Glimmer_OT_UnScaleObject,

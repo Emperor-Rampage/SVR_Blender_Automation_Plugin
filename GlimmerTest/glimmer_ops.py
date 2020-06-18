@@ -73,22 +73,14 @@ class Glimmer_OT_MultiRender(Operator):
 
         for item in scn.my_variations:
             if mysettings.isSkill is True:
-                #Empty Render Loop TO-DO
-                    #Walk through all objects in the scene.
-                    #Turn the render visibility off on objects that need to be turned off, and gather the ones that are turned off.
-                    #Render out one empty framed .mp4 of the background.
-                    #Convert the .mp4 to a .gif.
-                    #Save once for each variation, giving it the '-empty.gif' ending tag.
-                    #Close the clip and re-enable all the objects that were turned off during the walk.
-                    #DONE.
                                          
                 for ob in bpy.context.scene.objects:
                     if ob.hide_render == False:
                         if ob.type != 'LIGHT':
                             ob.hide_render = True
                             
-                string1 =  mysettings.workDir + "mp4/" + mysettings.nameEnum + item.colorsEnum + "/" + mysettings.nameEnum + item.colorsEnum + "-" + mysettings.actionsEnum + "-base.jpeg"
-                gif1 = mysettings.workDir + "gif/" + mysettings.nameEnum + item.colorsEnum + "-" + mysettings.actionsEnum + "-empty.gif"
+                string1 =  mysettings.workDir + "mp4/" + mysettings.nameEnum + item.colorsEnum + "/" + mysettings.nameEnum + item.colorsEnum + "-" + mysettings.skillEnum + "-base.jpeg"
+                gif1 = mysettings.workDir + "gif/" + mysettings.nameEnum + item.colorsEnum + "-" + mysettings.skillEnum + "-empty.gif"
                 scn.render.filepath = string1
 
                 #Enable objects from the hide list.
@@ -102,9 +94,9 @@ class Glimmer_OT_MultiRender(Operator):
                 item.mesh.hide_render = False
 
                 #First Render Loop
-                string1 = mysettings.workDir + "mp4/" + mysettings.nameEnum + "/" + mysettings.nameEnum + item.colorsEnum + "-" + mysettings.actionsEnum + "-base.mp4"
-                gif1L = mysettings.workDir + "gif/" + mysettings.nameEnum + item.colorsEnum + "-" + mysettings.actionsEnum + "-left.gif"
-                gif1R = mysettings.workDir + "gif/" + mysettings.nameEnum + item.colorsEnum + "-" + mysettings.actionsEnum + "-right.gif"
+                string1 = mysettings.workDir + "mp4/" + mysettings.nameEnum + "/" + mysettings.nameEnum + item.colorsEnum + "-" + mysettings.skillEnum + "-base.mp4"
+                gif1L = mysettings.workDir + "gif/" + mysettings.nameEnum + item.colorsEnum + "-" + mysettings.skillEnum + "-left.gif"
+                gif1R = mysettings.workDir + "gif/" + mysettings.nameEnum + item.colorsEnum + "-" + mysettings.skillEnum + "-right.gif"
 
                 scn.render.filepath = string1
                 newRender(item.mesh, item.material)
@@ -153,7 +145,7 @@ class Glimmer_OT_DeleteVariation(bpy.types.Operator):
     def execute(self, context):
         index = len(context.scene.my_variations) - 1
         if index >= 0:
-            remove_var = context.scene.my_variations.remove(index)
+            context.scene.my_variations.remove(index)
             return{'FINISHED'}
         return{'FAILED'}
 

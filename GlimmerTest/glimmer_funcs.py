@@ -27,27 +27,27 @@ def emptyRender(object, material):
     bpy.context.scene.render.image_settings.color_mode = "RGB"
     bpy.context.scene.frame_set(1)
     bpy.ops.render.render(write_still= True)
-    SetRenderBlock(bpy.context.scene)
+    SetRenderBlock()
 
-def validateRenderSettings(self):
+def validateRenderSettings(self, context):
     if self.isSkill is True:
-        context.scene.render.resolution_x = 232
-        context.scene.render.resolution_y = 346
+        bpy.context.scene.render.resolution_x = 232
+        bpy.context.scene.render.resolution_y = 346
     else:
-        context.scene.render.resolution_x = 464
-        context.scene.render.resolution_y = 346        
-    SetRenderBlock(context)
+        bpy.context.scene.render.resolution_x = 464
+        bpy.context.scene.render.resolution_y = 346        
+    SetRenderBlock()
 
-def SetRenderBlock(context):
-    context.scene.render.use_file_extension = False
-    context.scene.render.image_settings.file_format = "FFMPEG"
-    context.scene.render.image_settings.color_mode = "RGB"
-    context.scene.render.ffmpeg.format = "MPEG4"
-    context.scene.render.ffmpeg.codec = "MPEG4"
-    context.scene.render.ffmpeg.constant_rate_factor = "MEDIUM"
-    context.scene.render.ffmpeg.ffmpeg_preset = "GOOD"
-    context.scene.render.ffmpeg.gopsize = 18
-    context.scene.render.ffmpeg.audio_codec = "NONE"
+def SetRenderBlock():
+    bpy.context.scene.render.use_file_extension = False
+    bpy.context.scene.render.image_settings.file_format = "FFMPEG"
+    bpy.context.scene.render.image_settings.color_mode = "RGB"
+    bpy.context.scene.render.ffmpeg.format = "MPEG4"
+    bpy.context.scene.render.ffmpeg.codec = "MPEG4"
+    bpy.context.scene.render.ffmpeg.constant_rate_factor = "MEDIUM"
+    bpy.context.scene.render.ffmpeg.ffmpeg_preset = "GOOD"
+    bpy.context.scene.render.ffmpeg.gopsize = 18
+    bpy.context.scene.render.ffmpeg.audio_codec = "NONE"
 
 def CreateDirectories():
     mysettings = bpy.context.scene.svr_settings
