@@ -21,12 +21,14 @@ class Glimmer_PT_Panel(Panel):
 
     def draw(self,context):
 
+        layout = self.layout
+        scene = context.scene
+
         settings = context.scene.svr_settings
         mylist = context.scene.my_list
         variationSettings = context.scene.my_variations
-        scene = context.scene
 
-        layout = self.layout
+
         #print(variationSettings.items())
         box = layout.box()
         box.row().prop(settings,"workDir",text="Work Directory")
@@ -42,9 +44,8 @@ class Glimmer_PT_Panel(Panel):
         else:
             box.row().prop(settings, "actionsEnum", text = "Action")
 
-        #layout.row().prop(settings, "skillsEnum", text = "Skill")
+
         row = box.row()
-        #row.prop(settings, "skillHandEnum", text = "Hand")
         row.prop(settings, "isSkill", text = "Render As Skill?")
 
         layout.separator()
@@ -55,31 +56,36 @@ class Glimmer_PT_Panel(Panel):
         #Action Prop List Area
         box = layout.box()
         box.row().label(text= "Action Prop List")
-        #box.row().template_list("Glimmer_UL_ActionList", "", scene, "my_list", scene, "list_index")
         row = box.row()
         if scene.list_index >= 0 and scene.my_list:
             if settings.isSkill is True:
                 for item in scene.my_list[settings.skillsEnum].prop_list:
-                    #item = scene.my_list[scene.list_index] 
                     row = box.row()
                     row.label=(scene.my_list[settings.skillsEnum].name)
-                    row.prop(item, "pointer")
+                    row.prop(item, "prop", text="Prop Object:")
             else:
-                for item in scene.my_list[settings.actionsEnum].prop_list:
-                    #item = scene.my_list[scene.list_index] 
+                for item in scene.my_list[settings.actionsEnum].prop_list: 
                     row = box.row()
                     row.label(text= scene.my_list[settings.actionsEnum].name)
-                    row.prop(item, "pointer")
+                    row.prop(item, "prop", text="Prop Object:")
+        #Do Work on Action Prop List
+        row = box.row()
+        new = row.operator('my_list.new_item', text='NEW')
+        if settings.isSkill is True:
+            new.string = settings.skillsEnum
+        else:
+            new.string = settings.actionsEnum
 
-            
-        layout.separator()
-        
-        #Do Work on Master Prop List
-        row = layout.row()
-        #row.operator('my_list.new_item', text='NEW')
-        #row.operator('my_list.delete_item', text='REMOVE') 
+        delete = row.operator('my_list.delete_item', text='REMOVE')
+        if settings.isSkill is True:
+            delete.string = settings.skillsEnum
+        else:
+            delete.string = settings.actionsEnum 
         #row.operator('my_list.move_item', text='UP').direction = 'UP'
         #row.operator('my_list.move_item', text='DOWN').direction = 'DOWN'
+            
+        
+        
         layout.separator()
 
         #Variation Panel Area
@@ -107,7 +113,7 @@ class Glimmer_PT_Panel(Panel):
             
             if item.list_index >= 0 and item.prop_list:
                 for prop in item.prop_list: 
-                    box.row().prop(prop, "Prop Object")
+                    box.row().prop(prop, "prop", text="Prop Object:")
 
             layout.separator()
             iterator = iterator + 1            
@@ -210,8 +216,10 @@ class LIST_OT_NewItem(Operator):
     bl_idname = "my_list.new_item" 
     bl_label = "Add a new item"
 
+    string : bpy.props.StringProperty()
+
     def execute(self, context): 
-        context.scene.my_list.add() 
+        context.scene.my_list[self.string].prop_list.add() 
         return{'FINISHED'}
 
 class LIST_OT_DeleteItem(Operator): 
@@ -219,16 +227,14 @@ class LIST_OT_DeleteItem(Operator):
     bl_idname = "my_list.delete_item" 
     bl_label = "Deletes an item" 
 
-    @classmethod 
-    def poll(cls, context): 
-        return context.scene.my_list 
+    string : bpy.props.StringProperty()
+ 
         
     def execute(self, context): 
-        my_list = context.scene.my_list
-        index = context.scene.list_index
+        my_list = context.scene.my_list[self.string].prop_list
 
-        my_list.remove(index) 
-        context.scene.list_index = min(max(0, index - 1), len(my_list) - 1) 
+        my_list.remove(0) 
+        #context.scene.list_index = min(max(0, index - 1), len(my_list) - 1) 
     
         return{'FINISHED'}
 

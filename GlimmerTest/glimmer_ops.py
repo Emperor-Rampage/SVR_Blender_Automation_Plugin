@@ -20,6 +20,31 @@ pet_names = []
 gifs = []
 sections = ["colors", "actions", "skills"]
 
+class MyItem(bpy.types.PropertyGroup):
+    @classmethod
+    def register(cls):
+        bpy.types.Scene.my_items = bpy.props.CollectionProperty(type=MyItem)
+
+    @classmethod
+    def unregister(cls):
+        del bpy.types.Scene.my_items
+
+    some_str : bpy.props.StringProperty(
+        name = "asdf",
+        default = ""
+    )
+
+class MY_OT_add_item(bpy.types.Operator):
+    ''' add item to bpy.context.scene.my_items '''
+    bl_label = "add item"
+    bl_idname = "my.add_item"
+
+    def execute(self, context):
+        # create a new item, assign its properties
+        item = bpy.context.scene.my_items.add()
+        item.some_str = "asdf" + str(len(bpy.context.scene.my_items))
+        return {'FINISHED'}
+
 class Glimmer_OT_LoadNamesCsv(Operator, ImportHelper): 
     bl_idname = "glimmer.load_names_csv" 
     bl_label = "Load a CSV file with pet, color, and action names." 

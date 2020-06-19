@@ -102,10 +102,7 @@ class SVR_VariationSettings(bpy.types.PropertyGroup):
     colorsEnum: EnumProperty(
         name="Colors:",
         description="Color Variations.",
-        items=[ ('green',"Green",""),
-        ('magenta', "Magenta",""),
-        ('orange', "Orange",""),
-        ]
+        items=[]#AddItemsFromCollectionCallback,
     )
     material : bpy.props.PointerProperty(name="MaterialProperty", type= bpy.types.Material)
     mesh : bpy.props.PointerProperty(name="MeshProperty", type= bpy.types.Object)
