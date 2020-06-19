@@ -73,6 +73,10 @@ class Glimmer_OT_LoadNamesCsv(Operator, ImportHelper):
 
         return {'FINISHED'}
 
+class SVR_ActionPropList(bpy.types.PropertyGroup):
+    name : bpy.props.StringProperty(name= "Name")
+    prop_list : bpy.props.CollectionProperty(type = ActionListItem)
+
 class Glimmer_OT_LoadCsvFile(Operator, ImportHelper): 
     bl_idname = "glimmer.load_csv_file" 
     bl_label = "Load a CSV file." 
