@@ -41,8 +41,7 @@ from . glimmer_panels import (
     LIST_OT_DeleteItem, 
     LIST_OT_MoveItem, 
     LIST_OT_NewItemProp, 
-    LIST_OT_DeleteItemProp, 
-    Temp_Action
+    LIST_OT_DeleteItemProp
 )
 
 from . glimmer_ops import (
@@ -125,8 +124,7 @@ classes = (
     LIST_OT_NewItemProp,
     LIST_OT_DeleteItem,
     LIST_OT_DeleteItemProp,
-    LIST_OT_MoveItem,
-    Temp_Action
+    LIST_OT_MoveItem
     )
 
 def register():

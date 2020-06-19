@@ -50,7 +50,6 @@ class Glimmer_PT_Panel(Panel):
         layout.separator()
         layout.row().operator("render.multirender", text="Multi Render", icon='OBJECT_DATAMODE')
         layout.separator()
-        layout.row().operator("temp.test", text="Test Enum Gen")
 
         #Action Prop List Area
         box = layout.box()
@@ -126,40 +125,6 @@ class Glimmer_PT_Panel(Panel):
         
 
 ###############################
-
-def enum_members_from_type(rna_type, prop_str):
-    prop = rna_type.bl_rna.properties[prop_str]
-    return [e.identifier for e in prop.enum_items]
-
-
-def enum_members_from_instance(rna_item, prop_str):
-    return enum_members_from_type(type(rna_item), prop_str)
-
-class Temp_Action(bpy.types.Operator):
-    bl_idname = "temp.test"
-    bl_label = "My Class Name"
-    bl_description = "Description that shows in blender tooltips"
-    bl_options = {"REGISTER"}
-
-    def execute(self, context):
-
-        enum = AddActionPropsFromCollectionCallback()
-        
-        for name in enum:
-            new = bpy.context.scene.my_list.add()
-            new.name = name
-            new.prop_list.add()
-            print(name)
-
-        enum = AddSkillPropsFromCollectionCallback()
-
-        for name in enum:
-            new = bpy.context.scene.my_list.add()
-            new.name = name
-            new.prop_list.add()
-            print(name)
-
-        return {"FINISHED"}
 
 
 class ActionListItem(PropertyGroup):
