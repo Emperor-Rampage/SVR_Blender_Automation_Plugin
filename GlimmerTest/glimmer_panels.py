@@ -35,8 +35,8 @@ class Glimmer_PT_Panel(Panel):
         layout.separator()
 
         box = layout.box()
-        box.row().prop(settings, "nameEnum", text= "Animal Name")
-
+        box.row().prop(settings, "nameEnum", text= "Pet")
+        box.row().prop(settings, "colorsEnum", text= "Color")
         if settings.isSkill is True:
             box.row().prop(settings, "skillsEnum", text = "Skill")
         else:
@@ -116,6 +116,11 @@ class Glimmer_PT_Panel(Panel):
         #row = layout.row()
         #row.operator('object.scale_object',text="Scale Object")
         #row.operator('object.unscale_object',text="Unscale Object")
+
+        dns = bpy.app.driver_namespace
+        dns_pet_names = dns.get("pet_names")
+        for name in dns_pet_names:
+            layout.row().label(text=name)
         
 
 ###############################
