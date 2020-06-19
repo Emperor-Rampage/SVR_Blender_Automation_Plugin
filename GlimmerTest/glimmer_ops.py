@@ -97,16 +97,12 @@ class Glimmer_OT_LoadNamesCsv(Operator, ImportHelper):
         for name in enum:
             new = bpy.context.scene.my_list.add()
             new.name = name
-            new.prop_list.add()
-            print(name)
 
         enum = AddSkillPropsFromCollectionCallback()
 
         for name in enum:
             new = bpy.context.scene.my_list.add()
             new.name = name
-            new.prop_list.add()
-            print(name)
 
         return {'FINISHED'}
 
@@ -186,10 +182,10 @@ class Glimmer_OT_MultiRender(Operator):
                 clip.close
 
                 item.mesh.hide_render = False
-                for prop in item.prop_list:
-                    prop.mesh.hide_render = False
-                for prop in bpy.scene.my_list[settings.skillsEnum].prop_list:
-                    prop.mesh.hide_render = False
+                for ob in item.prop_list:
+                    ob.prop.hide_render = False
+                for ob in bpy.context.scene.my_list[settings.skillsEnum].prop_list:
+                    ob.prop.hide_render = False
 
                 #First Render Loop
                 string1 = settings.workDir + "mp4/" + settings.nameEnum + "/" + settings.nameEnum + item.colorsEnum + "-" + settings.skillsEnum + "-base.mp4"
@@ -213,12 +209,14 @@ class Glimmer_OT_MultiRender(Operator):
                     if ob.hide_render == False:
                         if ob.type != 'LIGHT':
                             ob.hide_render = True
-                            
+
                 item.mesh.hide_render = False
-                for prop in item.prop_list:
-                    prop.mesh.hide_render = False
-                for prop in bpy.scene.my_list[settings.actionsEnum].prop_list:
-                    prop.mesh.hide_render = False
+                for ob in item.prop_list:
+                    if ob: 
+                        ob.prop.hide_render = False
+                for ob in bpy.context.scene.my_list[settings.actionsEnum].prop_list:
+                    if ob:
+                        ob.prop.hide_render = False
 
                 #First Render Loop
                 string1 = settings.workDir + "mp4/" + settings.nameEnum + "/" + settings.nameEnum + item.colorsEnum + "-" + settings.actionsEnum + ".mp4"

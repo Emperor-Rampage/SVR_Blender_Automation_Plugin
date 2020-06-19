@@ -37,7 +37,7 @@ class Glimmer_PT_Panel(Panel):
 
         box = layout.box()
         box.row().prop(settings, "nameEnum", text= "Pet")
-        box.row().prop(settings, "colorsEnum", text= "Color")
+        #box.row().prop(settings, "colorsEnum", text= "Color")
         if settings.isSkill is True:
             box.row().prop(settings, "skillsEnum", text = "Skill")
         else:
