@@ -69,4 +69,10 @@ def CreateDirectories():
     else:
         print ("Successfully created the directory %s" % path)
 
-  
+def AddItemsFromCollectionCallback(self, context):
+    items = []
+    scene = context.scene
+    for item in scene.my_items.values():
+        items.append((item.some_str, item.some_str, ""))
+    return items
+ 

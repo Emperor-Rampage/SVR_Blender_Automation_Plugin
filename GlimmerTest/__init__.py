@@ -37,15 +37,14 @@ from . glimmer_panels import Glimmer_PT_Panel, Glimmer_UL_ActionList, ActionList
 from . glimmer_ops import (
     Glimmer_OT_LoadNamesCsv, 
     Glimmer_OT_LoadCsvFile, 
-    Glimmer_OT_MultiRender,
-    Glimmer_OT_NewMultiRender, 
+    Glimmer_OT_MultiRender, 
     Glimmer_OT_ScaleObject, 
     Glimmer_OT_UnScaleObject, 
     Glimmer_OT_AddVariation, 
-    Glimmer_OT_DeleteVariation
+    Glimmer_OT_DeleteVariation,
+    SVR_ActionPropList
 )
-from . glimmer_panels import Glimmer_PT_Panel, Glimmer_UL_ActionList, ActionListItem, LIST_OT_NewItem, LIST_OT_DeleteItem, LIST_OT_MoveItem, LIST_OT_NewItemNew
-from . glimmer_funcs import validateRenderSettings, SetRenderBlock
+from . glimmer_funcs import validateRenderSettings, SetRenderBlock, AddItemsFromCollectionCallback
 
 
 myTestArray = ["test string one","test string two"]
@@ -60,62 +59,19 @@ class SVR_Settings(bpy.types.PropertyGroup):
         description="Main animal name.",
         #items=[('hummingbird',"Hummingbird","")
         #]
-        items= []
+        items= AddItemsFromCollectionCallback,
     )
 
     skillsEnum: EnumProperty(
         name="Skills:",
         description="Pet Skills.",
-        items=[('singing',"Singing", ""),
-                ('knitting',"Knitting", ""),
-                ('bubbles',"Bubbles", ""),
-                ('hiding',"Hiding", ""),
-                ('hypnotize',"Hypnotize", ""),
-                ('juggle',"Juggle", ""),
-                ('marathon',"Marathon", ""),
-                ('singingfail',"Singing Fail", ""),
-                ('knittingfail',"Knitting Fail", ""),
-                ('bubblesfail',"Bubbles Fail", ""),
-                ('hidingfail',"Hiding Fail", ""),
-                ('hypnotizefail',"Hypnotize Fail", ""),
-                ('jugglefail',"Juggle Fail", ""),
-                ('marathonfail',"Marathon Fail", ""),
-                ('',"", ""),
-        ]
+        items=AddItemsFromCollectionCallback,
     )
 
     actionsEnum: EnumProperty(
         name="Actions:",
         description="Pet Actions.",
-        items=[ ('idle',"Idle", ""),
-                ('happy',"Happy", ""),
-                ('sad',"Sad", ""),
-                ('hungry',"Hungry", ""),
-                ('starving',"Starving", ""),
-                ('sick',"Sick", ""),
-                ('ill',"Ill", ""),
-                ('bad',"Bad", ""),
-                ('afraid',"Afraid", ""),
-                ('lazy',"Lazy", ""),
-                ('tired',"Tired", ""),
-                ('sleep',"Sleep", ""),
-                ('outshape',"Out of Shape", ""),
-                ('inclass',"In Class", ""),
-                ('inclassdone',"In Class Done", ""),
-                ('inclasspickup',"In Class Pickup", ""),
-                ('mistreated',"Mistreated", ""),
-                ('petwater',"Pet Water", ""),
-                ('basicfeed',"Basic Feed", ""),
-                ('premiumfeed',"Premium Feed", ""),
-                ('worms',"Worms", ""),
-                ('lollipop',"Lollipop", ""),
-                ('pettreat',"Pet Treat", ""),
-                ('weights',"Weights", ""),
-                ('ropejumpning',"Rope Jumping", ""),
-                ('position',"Position", ""),                
-                ('avatar',"Avatar", ""),
-                ('',"", ""),
-        ]
+        items=AddItemsFromCollectionCallback,
     )
 
 
@@ -123,10 +79,7 @@ class SVR_VariationSettings(bpy.types.PropertyGroup):
     colorsEnum: EnumProperty(
         name="Colors:",
         description="Color Variations.",
-        items=[ ('green',"Green",""),
-        ('magenta', "Magenta",""),
-        ('orange', "Orange",""),
-        ]
+        items=AddItemsFromCollectionCallback,
     )
     material : bpy.props.PointerProperty(name="MaterialProperty", type= bpy.types.Material)
     mesh : bpy.props.PointerProperty(name="MeshProperty", type= bpy.types.Object)

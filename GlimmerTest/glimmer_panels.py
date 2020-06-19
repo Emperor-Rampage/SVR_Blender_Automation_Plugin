@@ -158,7 +158,8 @@ class Temp_Action(bpy.types.Operator):
 class ActionListItem(PropertyGroup):
     bl_idname = "collection.propitem"
     bl_label = "Pointer property group, used to hold prop info."
-    pointer: PointerProperty( name="pointer", type= bpy.types.Object)   
+    name : StringProperty(name="name")
+    prop : PointerProperty(name="prop", type= bpy.types.Object)   
 
 class Glimmer_UL_ActionList(UIList):
     """Demo UIList.""" 
