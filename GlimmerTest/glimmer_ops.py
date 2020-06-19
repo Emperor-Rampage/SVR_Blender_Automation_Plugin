@@ -15,10 +15,58 @@ from . glimmer_funcs import gatherData, newRender, validateRenderSettings, SetRe
 
 pet_name = ""
 pet_names = []
-colors = []
-actions = []
-skills = []
 gifs = []
+sections = ["colors", "actions", "skills"]
+
+class Glimmer_OT_LoadNamesCsv(Operator, ImportHelper): 
+    bl_idname = "glimmer.load_names_csv" 
+    bl_label = "Load a CSV file with pet, color, and action names." 
+    
+    def execute(self, context): 
+        settings = context.scene.svr_settings
+        settings.csvFile = self.filepath
+        dns = bpy.app.driver_namespace
+        #pet_names = dns.get("pet_names")
+        #pet_colors = dns.get("pet_colors")
+        #pet_actions = dns.get("pet_actions")
+        #pet_skills = dns.get("pet_skills")
+        pets = {}
+        with open(self.filepath, newline='') as csvfile:
+            spamreader = csv.reader(csvfile, delimiter=',', quotechar='|')
+            c_row = 0
+            c_sec = 0 #section - [ "colors", "actions", "skills"]
+            for row in spamreader:
+                c_col = 0 #column
+                for item in row:
+                    if c_row == 1:
+                        pet_names.append(item)                    
+                    elif c_row == 2:
+                        for name in pet_names:
+                            pets[name] = {}
+                            for s in sections:
+                                pets[name][s] = []                                
+                    elif c_row > 2:
+                        if (item == "-standard actions-"):
+                            c_sec = 1
+                        elif (item == "-skill actions-"):
+                            c_sec = 2
+                        else:
+                            pets[pet_names[c_col]][sections[c_sec]].append(item)
+                            c_col += 1
+                c_row += 1
+        for name in pet_names:
+            print(name)
+            print("COLORS:")
+            for color in pets[name]["colors"]:
+                print(color)
+            print("ACTIONS:")
+            for action in pets[name]["actions"]:
+                print(action)
+            print("SKILLS:")
+            for skill in pets[name]["skills"]:
+                print(skill)
+
+        return {'FINISHED'}
 
 class Glimmer_OT_LoadCsvFile(Operator, ImportHelper): 
     bl_idname = "glimmer.load_csv_file" 

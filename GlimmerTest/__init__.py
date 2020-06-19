@@ -33,7 +33,16 @@ from bpy.props import (
     PointerProperty
 ) 
 
-from . glimmer_ops import Glimmer_OT_LoadCsvFile, Glimmer_OT_MultiRender,Glimmer_OT_NewMultiRender, Glimmer_OT_ScaleObject, Glimmer_OT_UnScaleObject, Glimmer_OT_AddVariation, Glimmer_OT_DeleteVariation
+from . glimmer_ops import (
+    Glimmer_OT_LoadNamesCsv, 
+    Glimmer_OT_LoadCsvFile, 
+    Glimmer_OT_MultiRender,
+    Glimmer_OT_NewMultiRender, 
+    Glimmer_OT_ScaleObject, 
+    Glimmer_OT_UnScaleObject, 
+    Glimmer_OT_AddVariation, 
+    Glimmer_OT_DeleteVariation
+)
 from . glimmer_panels import Glimmer_PT_Panel, Glimmer_UL_ActionList, ActionListItem, LIST_OT_NewItem, LIST_OT_DeleteItem, LIST_OT_MoveItem, LIST_OT_NewItemNew
 from . glimmer_funcs import validateRenderSettings, SetRenderBlock
 
@@ -126,6 +135,7 @@ classes = (
     SVR_Settings,
     ActionListItem,
     SVR_VariationSettings,
+    Glimmer_OT_LoadNamesCsv,
     Glimmer_OT_LoadCsvFile,
     Glimmer_OT_MultiRender,
     Glimmer_OT_NewMultiRender,
@@ -153,10 +163,10 @@ def register():
         
     #Well this is weird but it appears that globals are a little weird in blender addons, this is _one_ way to do it.
     dns = bpy.app.driver_namespace
-    dns["pet_names"] = ["hummingbird","ostrich"]
-    dns["pet_colors"] =  { "hummingbird" : ["green","magenta","orange"], "ostrich" : ["white","black"] }
-    dns["pet_actions"] = []
-    dns["pet_skills"] = []
+    dns["pet_names"] = []
+    dns["pet_colors"] =  {}
+    dns["pet_actions"] = {}
+    dns["pet_skills"] = {}
     
 def unregister():
     for cls in reversed(classes):

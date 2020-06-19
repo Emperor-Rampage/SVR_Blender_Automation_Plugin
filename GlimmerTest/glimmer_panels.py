@@ -30,7 +30,7 @@ class Glimmer_PT_Panel(Panel):
         #print(variationSettings.items())
         box = layout.box()
         box.row().prop(settings,"workDir",text="Work Directory")
-        box.row().operator('glimmer.load_csv_file',text="Load XML File")
+        box.row().operator('glimmer.load_names_csv',text="Load CSV File")
         box.row().prop(settings,"csvFile",text="CSV File Path")
         layout.separator()
 
