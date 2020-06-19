@@ -28,10 +28,8 @@ class Glimmer_OT_LoadNamesCsv(Operator, ImportHelper):
         settings = context.scene.svr_settings
         settings.csvFile = self.filepath
         dns = bpy.app.driver_namespace
-        #pet_names = dns.get("pet_names")
-        #pet_colors = dns.get("pet_colors")
-        #pet_actions = dns.get("pet_actions")
-        #pet_skills = dns.get("pet_skills")
+        #dns_pet_names = dns.get("pet_names")
+        #dns_pets = dns.get("pets")
         pets = {}
         with open(self.filepath, newline='') as csvfile:
             spamreader = csv.reader(csvfile, delimiter=',', quotechar='|')
@@ -62,15 +60,19 @@ class Glimmer_OT_LoadNamesCsv(Operator, ImportHelper):
             enum = []
             for color in pets[name]["colors"]:
                 enum.append(color)
-            bpy.types.Scene.svr_settings.colorsEnum = bpy.props.EnumProperty(items= enum)
+            #bpy.types.Scene.svr_settings.colorsEnum = bpy.props.EnumProperty(items= enum)
             print("ACTIONS:")
             for action in pets[name]["actions"]:
                 print(action)
             print("SKILLS:")
             for skill in pets[name]["skills"]:
                 print(skill)
+        
+        dns["pet_names"] =  pet_names
+        dns["pets"] = pets
 
         return {'FINISHED'}
+
 
 class SVR_ActionPropList(bpy.types.PropertyGroup):
     name : bpy.props.StringProperty(name= "Name")
@@ -123,21 +125,21 @@ class Glimmer_OT_MultiRender(Operator):
 
     def execute(self, context):
         scn = context.scene
-        mysettings = context.scene.svr_settings
-        validateRenderSettings(mysettings, context)
+        settings = context.scene.svr_settings
+        validateRenderSettings(settings, context)
 
         CreateDirectories()
 
         for item in scn.my_variations:
-            if mysettings.isSkill is True:
+            if settings.isSkill is True:
                                          
                 for ob in bpy.context.scene.objects:
                     if ob.hide_render == False:
                         if ob.type != 'LIGHT':
                             ob.hide_render = True
                             
-                string1 =  mysettings.workDir + "mp4/" + mysettings.nameEnum + item.colorsEnum + "/" + mysettings.nameEnum + item.colorsEnum + "-" + mysettings.skillsEnum + "-base.jpeg"
-                gif1 = mysettings.workDir + "gif/" + mysettings.nameEnum + item.colorsEnum + "-" + mysettings.skillsEnum + "-empty.gif"
+                string1 =  settings.workDir + "mp4/" + settings.nameEnum + item.colorsEnum + "/" + settings.nameEnum + item.colorsEnum + "-" + settings.skillsEnum + "-base.jpeg"
+                gif1 = settings.workDir + "gif/" + settings.nameEnum + item.colorsEnum + "-" + settings.skillsEnum + "-empty.gif"
                 scn.render.filepath = string1
 
                 #Enable objects from the hide list.
@@ -151,9 +153,9 @@ class Glimmer_OT_MultiRender(Operator):
                 item.mesh.hide_render = False
 
                 #First Render Loop
-                string1 = mysettings.workDir + "mp4/" + mysettings.nameEnum + "/" + mysettings.nameEnum + item.colorsEnum + "-" + mysettings.skillsEnum + "-base.mp4"
-                gif1L = mysettings.workDir + "gif/" + mysettings.nameEnum + item.colorsEnum + "-" + mysettings.skillsEnum + "-left.gif"
-                gif1R = mysettings.workDir + "gif/" + mysettings.nameEnum + item.colorsEnum + "-" + mysettings.skillsEnum + "-right.gif"
+                string1 = settings.workDir + "mp4/" + settings.nameEnum + "/" + settings.nameEnum + item.colorsEnum + "-" + settings.skillsEnum + "-base.mp4"
+                gif1L = settings.workDir + "gif/" + settings.nameEnum + item.colorsEnum + "-" + settings.skillsEnum + "-left.gif"
+                gif1R = settings.workDir + "gif/" + settings.nameEnum + item.colorsEnum + "-" + settings.skillsEnum + "-right.gif"
 
                 scn.render.filepath = string1
                 newRender(item.mesh, item.material)
@@ -173,8 +175,8 @@ class Glimmer_OT_MultiRender(Operator):
                             ob.hide_render = True
                 item.mesh.hide_render = False            
                 #First Render Loop
-                string1 = mysettings.workDir + "mp4/" + mysettings.nameEnum + "/" + mysettings.nameEnum + item.colorsEnum + "-" + mysettings.actionsEnum + ".mp4"
-                gif1 = mysettings.workDir + "gif/" + mysettings.nameEnum + item.colorsEnum + "-" + mysettings.actionsEnum + ".gif"
+                string1 = settings.workDir + "mp4/" + settings.nameEnum + "/" + settings.nameEnum + item.colorsEnum + "-" + settings.actionsEnum + ".mp4"
+                gif1 = settings.workDir + "gif/" + settings.nameEnum + item.colorsEnum + "-" + settings.actionsEnum + ".gif"
                 scn.render.filepath = string1
                 newRender(item.mesh, item.material)
                 myclip = VideoFileClip(string1)
@@ -224,15 +226,6 @@ class Glimmer_OT_ScaleObject(bpy.types.Operator):
         settings = context.scene.svr_settings
         s = settings.scaleValue
         sourceName = context.object.name
-
-        ## TEMP, testing #######
-        dns = bpy.app.driver_namespace
-        pet_names = dns.get("pet_names")
-        pet_colors = dns.get("pet_colors")
-        pet_actions = dns.get("pet_actions")
-        pet_skills = dns.get("pet_skills")
-        print("Scaling the " + sourceName + ", pet names[0]: " + pet_names[0] + " pet actions: " + str(len(pet_actions)))
-        ########################
 
         for obj in bpy.data.objects:
             print(obj.name)

@@ -33,7 +33,18 @@ from bpy.props import (
     PointerProperty
 ) 
 
-from . glimmer_panels import Glimmer_PT_Panel, Glimmer_UL_ActionList, ActionListItem, LIST_OT_NewItem, LIST_OT_DeleteItem, LIST_OT_MoveItem, LIST_OT_NewItemProp, LIST_OT_DeleteItemProp, Temp_Action
+from . glimmer_panels import (
+    Glimmer_PT_Panel, 
+    Glimmer_UL_ActionList, 
+    ActionListItem, 
+    LIST_OT_NewItem, 
+    LIST_OT_DeleteItem, 
+    LIST_OT_MoveItem, 
+    LIST_OT_NewItemProp, 
+    LIST_OT_DeleteItemProp, 
+    Temp_Action
+)
+
 from . glimmer_ops import (
     Glimmer_OT_LoadNamesCsv, 
     Glimmer_OT_LoadCsvFile, 
@@ -44,8 +55,15 @@ from . glimmer_ops import (
     Glimmer_OT_DeleteVariation,
     SVR_ActionPropList
 )
-from . glimmer_funcs import validateRenderSettings, SetRenderBlock
-
+from . glimmer_funcs import (
+    validateRenderSettings, 
+    SetRenderBlock,
+    AddItemsFromCollectionCallback,
+    AddNamesCollectionCallback,
+    AddColorsCollectionCallback,
+    AddActionsCollectionCallback,
+    AddSkillsCollectionCallback,
+)
 
 myTestArray = ["test string one","test string two"]
 
@@ -57,64 +75,26 @@ class SVR_Settings(bpy.types.PropertyGroup):
     nameEnum: EnumProperty(
         name="Name:",
         description="Main animal name.",
-        #items=[('hummingbird',"Hummingbird","")
-        #]
-        items= []
+        items = AddNamesCollectionCallback
+        #items= []
     )
 
-    skillsEnum: EnumProperty(
-        name="Skills:",
-        description="Pet Skills.",
-        items=[('singing',"Singing", ""),
-                ('knitting',"Knitting", ""),
-                ('bubbles',"Bubbles", ""),
-                ('hiding',"Hiding", ""),
-                ('hypnotize',"Hypnotize", ""),
-                ('juggle',"Juggle", ""),
-                ('marathon',"Marathon", ""),
-                ('singingfail',"Singing Fail", ""),
-                ('knittingfail',"Knitting Fail", ""),
-                ('bubblesfail',"Bubbles Fail", ""),
-                ('hidingfail',"Hiding Fail", ""),
-                ('hypnotizefail',"Hypnotize Fail", ""),
-                ('jugglefail',"Juggle Fail", ""),
-                ('marathonfail',"Marathon Fail", ""),
-                ('',"", ""),
-        ]
+    colorsEnum: EnumProperty(
+        name="Colors:",
+        description="Pet Colors.",
+        items = AddColorsCollectionCallback
     )
 
     actionsEnum: EnumProperty(
         name="Actions:",
         description="Pet Actions.",
-        items=[ ('idle',"Idle", ""),
-                ('happy',"Happy", ""),
-                ('sad',"Sad", ""),
-                ('hungry',"Hungry", ""),
-                ('starving',"Starving", ""),
-                ('sick',"Sick", ""),
-                ('ill',"Ill", ""),
-                ('bad',"Bad", ""),
-                ('afraid',"Afraid", ""),
-                ('lazy',"Lazy", ""),
-                ('tired',"Tired", ""),
-                ('sleep',"Sleep", ""),
-                ('outshape',"Out of Shape", ""),
-                ('inclass',"In Class", ""),
-                ('inclassdone',"In Class Done", ""),
-                ('inclasspickup',"In Class Pickup", ""),
-                ('mistreated',"Mistreated", ""),
-                ('petwater',"Pet Water", ""),
-                ('basicfeed',"Basic Feed", ""),
-                ('premiumfeed',"Premium Feed", ""),
-                ('worms',"Worms", ""),
-                ('lollipop',"Lollipop", ""),
-                ('pettreat',"Pet Treat", ""),
-                ('weights',"Weights", ""),
-                ('ropejumpning',"Rope Jumping", ""),
-                ('position',"Position", ""),                
-                ('avatar',"Avatar", ""),
-                ('',"", ""),
-        ]
+        items = AddActionsCollectionCallback
+    )
+    
+    skillsEnum: EnumProperty(
+        name="Skills:",
+        description="Pet Skills.",
+        items = AddSkillsCollectionCallback
     )
 
 
@@ -166,9 +146,7 @@ def register():
     #Well this is weird but it appears that globals are a little weird in blender addons, this is _one_ way to do it.
     dns = bpy.app.driver_namespace
     dns["pet_names"] = []
-    dns["pet_colors"] =  {}
-    dns["pet_actions"] = {}
-    dns["pet_skills"] = {}
+    dns["pets"] =  {}
     
 def unregister():
     for cls in reversed(classes):

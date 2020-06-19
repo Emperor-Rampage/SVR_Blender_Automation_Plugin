@@ -50,8 +50,8 @@ def SetRenderBlock():
     bpy.context.scene.render.ffmpeg.audio_codec = "NONE"
 
 def CreateDirectories():
-    mysettings = bpy.context.scene.svr_settings
-    path = mysettings.workDir + "gif"
+    settings = bpy.context.scene.svr_settings
+    path = settings.workDir + "gif"
 
     try:
         os.makedirs(path)
@@ -60,7 +60,7 @@ def CreateDirectories():
     else:
         print ("Successfully created the directory %s" % path)
         
-    path = mysettings.workDir + "mp4"
+    path = settings.workDir + "mp4"
 
     try:
         os.makedirs(path)
@@ -75,4 +75,38 @@ def AddItemsFromCollectionCallback(self, context):
     for item in scene.my_items.values():
         items.append((item.some_str, item.some_str, ""))
     return items
- 
+
+def AddNamesCollectionCallback(self, context):
+    items = []
+    dns = bpy.app.driver_namespace
+    pet_names = dns.get("pet_names")
+    for name in pet_names:
+        items.append((name, name, ""))
+    return items
+    
+def AddColorsCollectionCallback(self, context):
+    items = []
+    settings = context.scene.svr_settings
+    dns = bpy.app.driver_namespace
+    pets = dns.get("pets")
+    for color in pets[settings.nameEnum]["colors"]:
+        items.append((color, color, ""))
+    return items
+    
+def AddActionsCollectionCallback(self, context):
+    items = []
+    settings = context.scene.svr_settings
+    dns = bpy.app.driver_namespace
+    pets = dns.get("pets")
+    for action in pets[settings.nameEnum]["actions"]:
+        items.append((action, action, ""))
+    return items
+    
+def AddSkillsCollectionCallback(self, context):
+    items = []
+    settings = context.scene.svr_settings
+    dns = bpy.app.driver_namespace
+    pets = dns.get("pets")
+    for skill in pets[settings.nameEnum]["skills"]:
+        items.append((skill, skill, ""))
+    return items
