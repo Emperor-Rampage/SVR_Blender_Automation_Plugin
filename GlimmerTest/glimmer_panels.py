@@ -118,10 +118,10 @@ class Glimmer_PT_Panel(Panel):
         #row.operator('object.scale_object',text="Scale Object")
         #row.operator('object.unscale_object',text="Unscale Object")
 
-        dns = bpy.app.driver_namespace
-        dns_pet_names = dns.get("pet_names")
-        for name in dns_pet_names:
-            layout.row().label(text=name)
+        #dns = bpy.app.driver_namespace
+        #dns_pet_names = dns.get("pet_names")
+        #for name in dns_pet_names:
+            #layout.row().label(text=name)
         
 
 ###############################

@@ -188,9 +188,9 @@ class Glimmer_OT_MultiRender(Operator):
                     ob.prop.hide_render = False
 
                 #First Render Loop
-                string1 = settings.workDir + "mp4/" + settings.nameEnum + "/" + settings.nameEnum + item.colorsEnum + "-" + settings.skillsEnum + "-base.mp4"
-                gif1L = settings.workDir + "gif/" + settings.nameEnum + item.colorsEnum + "-" + settings.skillsEnum + "-left.gif"
-                gif1R = settings.workDir + "gif/" + settings.nameEnum + item.colorsEnum + "-" + settings.skillsEnum + "-right.gif"
+                string1 = settings.workDir + "mp4/" + settings.nameEnum + "/" + item.colorsEnum + "/"+ item.colorsEnum + "-" + settings.skillsEnum + "-base.mp4"
+                gif1L = settings.workDir + "gif/" + settings.nameEnum + "/"+ item.colorsEnum + "/" + settings.nameEnum + item.colorsEnum + "-" + settings.skillsEnum + "-left.gif"
+                gif1R = settings.workDir + "gif/" + settings.nameEnum + "/"+ item.colorsEnum + "/" + settings.nameEnum + item.colorsEnum + "-" + settings.skillsEnum + "-right.gif"
 
                 scn.render.filepath = string1
                 newRender(item.mesh, item.material)
@@ -219,8 +219,8 @@ class Glimmer_OT_MultiRender(Operator):
                         ob.prop.hide_render = False
 
                 #First Render Loop
-                string1 = settings.workDir + "mp4/" + settings.nameEnum + "/" + settings.nameEnum + item.colorsEnum + "-" + settings.actionsEnum + ".mp4"
-                gif1 = settings.workDir + "gif/" + settings.nameEnum + item.colorsEnum + "-" + settings.actionsEnum + ".gif"
+                string1 = settings.workDir + "mp4/" + settings.nameEnum + "/" + item.colorsEnum + "/"+ item.colorsEnum + "-" + settings.skillsEnum + ".mp4"
+                gif1 = settings.workDir + "gif/" + settings.nameEnum + "/"+ item.colorsEnum + "/" + settings.nameEnum + item.colorsEnum + "-" + settings.skillsEnum + ".gif"
                 scn.render.filepath = string1
                 newRender(item.mesh, item.material)
                 myclip = VideoFileClip(string1)

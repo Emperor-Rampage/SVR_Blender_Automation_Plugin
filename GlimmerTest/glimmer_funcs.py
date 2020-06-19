@@ -53,21 +53,39 @@ def CreateDirectories():
     settings = bpy.context.scene.svr_settings
     path = settings.workDir + "gif"
 
-    try:
-        os.makedirs(path)
-    except OSError:
-        print ("Creation of the directory %s failed" % path)
-    else:
-        print ("Successfully created the directory %s" % path)
+    #try:
+        #os.makedirs(path)
+    #except OSError:
+        #print ("Creation of the directory %s failed" % path)
+    #else:
+        #print ("Successfully created the directory %s" % path)
         
-    path = settings.workDir + "mp4"
+    #path = settings.workDir + "mp4"
 
-    try:
-        os.makedirs(path)
-    except OSError:
-        print ("Creation of the directory %s failed" % path)
-    else:
-        print ("Successfully created the directory %s" % path)
+    #try:
+        #os.makedirs(path)
+    #except OSError:
+        #print ("Creation of the directory %s failed" % path)
+    #else:
+        #print ("Successfully created the directory %s" % path)
+
+    colorEnum = PopColors()
+    for color in colorEnum:
+        path = settings.workDir + "mp4\\" + settings.nameEnum + "\\" + color
+        try:
+            os.makedirs(path)
+        except OSError:
+            print ("Creation of the directory %s failed" % path)
+        else:
+            print ("Successfully created the directory %s" % path)
+        
+        path = settings.workDir + "gif\\" + settings.nameEnum + "\\" + color
+        try:
+            os.makedirs(path)
+        except OSError:
+            print ("Creation of the directory %s failed" % path)
+        else:
+            print ("Successfully created the directory %s" % path)
 
 def AddActionPropsFromCollectionCallback():
     items = []
@@ -94,7 +112,16 @@ def AddNamesCollectionCallback(self, context):
     for name in pet_names:
         items.append((name, name, ""))
     return items
-    
+
+def PopColors():
+    items = []
+    settings = bpy.context.scene.svr_settings
+    dns = bpy.app.driver_namespace
+    pets = dns.get("pets")
+    for color in pets[settings.nameEnum]["colors"]:
+        items.append(color)
+    return items
+
 def AddColorsCollectionCallback(self, context):
     items = []
     settings = context.scene.svr_settings
