@@ -15,10 +15,7 @@ from bpy.props import (
 from . glimmer_funcs import gatherData, newRender, validateRenderSettings, SetRenderBlock, newRender, emptyRender, CreateDirectories
 from . glimmer_panels import ActionListItem
 
-pet_name = ""
-pet_names = []
 gifs = []
-sections = ["colors", "actions", "skills"]
 
 class Glimmer_OT_LoadNamesCsv(Operator, ImportHelper): 
     bl_idname = "glimmer.load_names_csv" 
@@ -27,9 +24,8 @@ class Glimmer_OT_LoadNamesCsv(Operator, ImportHelper):
     def execute(self, context): 
         settings = context.scene.svr_settings
         settings.csvFile = self.filepath
-        dns = bpy.app.driver_namespace
-        #dns_pet_names = dns.get("pet_names")
-        #dns_pets = dns.get("pets")
+        sections = ["colors", "actions", "skills"]
+        pet_names = []
         pets = {}
         with open(self.filepath, newline='') as csvfile:
             spamreader = csv.reader(csvfile, delimiter=',', quotechar='|')
@@ -60,7 +56,6 @@ class Glimmer_OT_LoadNamesCsv(Operator, ImportHelper):
             enum = []
             for color in pets[name]["colors"]:
                 enum.append(color)
-            #bpy.types.Scene.svr_settings.colorsEnum = bpy.props.EnumProperty(items= enum)
             print("ACTIONS:")
             for action in pets[name]["actions"]:
                 print(action)
@@ -68,6 +63,7 @@ class Glimmer_OT_LoadNamesCsv(Operator, ImportHelper):
             for skill in pets[name]["skills"]:
                 print(skill)
         
+        dns = bpy.app.driver_namespace
         dns["pet_names"] =  pet_names
         dns["pets"] = pets
 
@@ -97,8 +93,6 @@ class Glimmer_OT_LoadCsvFile(Operator, ImportHelper):
                     if c_row == 0:
                         if c_col in (0,5,8):
                             pet_names.append(item)
-                            if c_col == 0:
-                                pet_name = "hummingbird" # hell with it, this is all temporary
 
                     if c_row >= 12 and c_row <= 81:
                         if c_col in (0,5,8):
