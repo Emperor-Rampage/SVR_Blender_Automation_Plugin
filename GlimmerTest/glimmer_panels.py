@@ -9,7 +9,7 @@ from bpy.props import (
 
 )
 
-from GlimmerTest.glimmer_funcs import validateRenderSettings, SetRenderBlock, AddNew
+from GlimmerTest.glimmer_funcs import validateRenderSettings, SetRenderBlock, AddNew, AddActionPropsFromCollectionCallback, AddSkillPropsFromCollectionCallback
 
 class Glimmer_PT_Panel(Panel):
     bl_idname = "Glimmer_PT_Panel"
@@ -25,7 +25,6 @@ class Glimmer_PT_Panel(Panel):
         scene = context.scene
 
         settings = context.scene.svr_settings
-        mylist = context.scene.my_list
         variationSettings = context.scene.my_variations
 
 
@@ -61,7 +60,7 @@ class Glimmer_PT_Panel(Panel):
             if settings.isSkill is True:
                 for item in scene.my_list[settings.skillsEnum].prop_list:
                     row = box.row()
-                    row.label=(scene.my_list[settings.skillsEnum].name)
+                    row.label(text= scene.my_list[settings.skillsEnum].name)
                     row.prop(item, "prop", text="Prop Object:")
             else:
                 for item in scene.my_list[settings.actionsEnum].prop_list: 
@@ -81,10 +80,7 @@ class Glimmer_PT_Panel(Panel):
             delete.string = settings.skillsEnum
         else:
             delete.string = settings.actionsEnum 
-        #row.operator('my_list.move_item', text='UP').direction = 'UP'
-        #row.operator('my_list.move_item', text='DOWN').direction = 'DOWN'
-            
-        
+                   
         
         layout.separator()
 
@@ -147,7 +143,7 @@ class Temp_Action(bpy.types.Operator):
 
     def execute(self, context):
 
-        enum = enum_members_from_instance(bpy.context.scene.svr_settings, "skillsEnum")
+        enum = AddActionPropsFromCollectionCallback()
         
         for name in enum:
             new = bpy.context.scene.my_list.add()
@@ -155,7 +151,7 @@ class Temp_Action(bpy.types.Operator):
             new.prop_list.add()
             print(name)
 
-        enum = enum_members_from_instance(bpy.context.scene.svr_settings, "actionsEnum")
+        enum = AddSkillPropsFromCollectionCallback()
 
         for name in enum:
             new = bpy.context.scene.my_list.add()

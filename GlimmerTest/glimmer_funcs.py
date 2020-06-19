@@ -69,11 +69,22 @@ def CreateDirectories():
     else:
         print ("Successfully created the directory %s" % path)
 
-def AddItemsFromCollectionCallback(self, context):
+def AddActionPropsFromCollectionCallback():
     items = []
-    scene = context.scene
-    for item in scene.my_items.values():
-        items.append((item.some_str, item.some_str, ""))
+    settings = bpy.context.scene.svr_settings
+    dns = bpy.app.driver_namespace
+    pets = dns.get("pets")
+    for action in pets[settings.nameEnum]["actions"]:
+        items.append(action)
+    return items
+
+def AddSkillPropsFromCollectionCallback():
+    items = []
+    settings = bpy.context.scene.svr_settings
+    dns = bpy.app.driver_namespace
+    pets = dns.get("pets")
+    for action in pets[settings.nameEnum]["skills"]:
+        items.append(action)
     return items
 
 def AddNamesCollectionCallback(self, context):

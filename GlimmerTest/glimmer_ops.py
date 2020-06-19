@@ -13,7 +13,7 @@ from bpy.props import (
     CollectionProperty
 ) 
 from . glimmer_funcs import gatherData, newRender, validateRenderSettings, SetRenderBlock, newRender, emptyRender, CreateDirectories
-from . glimmer_panels import ActionListItem
+from . glimmer_panels import ActionListItem, enum_members_from_instance
 
 pet_name = ""
 pet_names = []
@@ -95,6 +95,22 @@ class Glimmer_OT_LoadNamesCsv(Operator, ImportHelper):
         
         dns["pet_names"] =  pet_names
         dns["pets"] = pets
+
+        enum = enum_members_from_instance(bpy.context.scene.svr_settings, "skillsEnum")
+        
+        for name in enum:
+            new = bpy.context.scene.my_list.add()
+            new.name = name
+            new.prop_list.add()
+            print(name)
+
+        enum = enum_members_from_instance(bpy.context.scene.svr_settings, "actionsEnum")
+
+        for name in enum:
+            new = bpy.context.scene.my_list.add()
+            new.name = name
+            new.prop_list.add()
+            print(name)
 
         return {'FINISHED'}
 

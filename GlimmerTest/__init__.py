@@ -58,7 +58,6 @@ from . glimmer_ops import (
 from . glimmer_funcs import (
     validateRenderSettings, 
     SetRenderBlock,
-    AddItemsFromCollectionCallback,
     AddNamesCollectionCallback,
     AddColorsCollectionCallback,
     AddActionsCollectionCallback,
@@ -76,7 +75,6 @@ class SVR_Settings(bpy.types.PropertyGroup):
         name="Name:",
         description="Main animal name.",
         items = AddNamesCollectionCallback
-        #items= []
     )
 
     colorsEnum: EnumProperty(
@@ -102,7 +100,7 @@ class SVR_VariationSettings(bpy.types.PropertyGroup):
     colorsEnum: EnumProperty(
         name="Colors:",
         description="Color Variations.",
-        items=[]#AddItemsFromCollectionCallback,
+        items = AddColorsCollectionCallback
     )
     material : bpy.props.PointerProperty(name="MaterialProperty", type= bpy.types.Material)
     mesh : bpy.props.PointerProperty(name="MeshProperty", type= bpy.types.Object)
