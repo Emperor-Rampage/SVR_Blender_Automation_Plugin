@@ -30,7 +30,7 @@ class Glimmer_PT_Panel(Panel):
         #print(variationSettings.items())
         box = layout.box()
         box.row().prop(settings,"workDir",text="Work Directory")
-        box.row().operator('glimmer.load_csv_file',text="Load XML File")
+        box.row().operator('glimmer.load_csv_file',text="Load CSV File")
         box.row().prop(settings,"csvFile",text="CSV File Path")
         layout.separator()
 
@@ -50,24 +50,36 @@ class Glimmer_PT_Panel(Panel):
         layout.separator()
         layout.row().operator("render.multirender", text="Multi Render", icon='OBJECT_DATAMODE')
         layout.separator()
+        layout.row().operator("temp.test", text="Test Enum Gen")
 
-        #Master Prop List Area
+        #Action Prop List Area
         box = layout.box()
-        box.row().label(text= "Master Prop List")
-        box.row().template_list("Glimmer_UL_ActionList", "", scene, "my_list", scene, "list_index")
+        box.row().label(text= "Action Prop List")
+        #box.row().template_list("Glimmer_UL_ActionList", "", scene, "my_list", scene, "list_index")
         row = box.row()
-        if scene.list_index >= 0 and scene.my_list: 
-            item = scene.my_list[scene.list_index] 
-            row = box.row()
-            row.prop(item, "pointer")
+        if scene.list_index >= 0 and scene.my_list:
+            if settings.isSkill is True:
+                for item in scene.my_list[settings.skillsEnum].prop_list:
+                    #item = scene.my_list[scene.list_index] 
+                    row = box.row()
+                    row.label=(scene.my_list[settings.skillsEnum].name)
+                    row.prop(item, "pointer")
+            else:
+                for item in scene.my_list[settings.actionsEnum].prop_list:
+                    #item = scene.my_list[scene.list_index] 
+                    row = box.row()
+                    row.label(text= scene.my_list[settings.actionsEnum].name)
+                    row.prop(item, "pointer")
+
+            
         layout.separator()
         
         #Do Work on Master Prop List
         row = layout.row()
-        row.operator('my_list.new_item', text='NEW')
-        row.operator('my_list.delete_item', text='REMOVE') 
-        row.operator('my_list.move_item', text='UP').direction = 'UP'
-        row.operator('my_list.move_item', text='DOWN').direction = 'DOWN'
+        #row.operator('my_list.new_item', text='NEW')
+        #row.operator('my_list.delete_item', text='REMOVE') 
+        #row.operator('my_list.move_item', text='UP').direction = 'UP'
+        #row.operator('my_list.move_item', text='DOWN').direction = 'DOWN'
         layout.separator()
 
         #Variation Panel Area
@@ -83,26 +95,22 @@ class Glimmer_PT_Panel(Panel):
             box = layout.box()          
             box.row().prop(item, 'colorsEnum')
             box.row().prop(item, 'material')
-            box.row().prop(item, 'mesh')
-            box.row().template_list("Glimmer_UL_ActionList", "", item, "prop_list",  item, "list_index")
-            
+            box.row().prop(item, 'mesh')                   
             row = box.row() 
+
             new = row.operator('prop_list.new_item', text='NEW')
             new.index = iterator
-            row.operator('my_list.delete_item', text='REMOVE') 
-            row.operator('my_list.move_item', text='UP').direction = 'UP'
-            row.operator('my_list.move_item', text='DOWN').direction = 'DOWN'
 
-            row = box.row()
-            if item.list_index >= 0 and item.prop_list: 
-                item = item.prop_list[item.list_index] 
-                row = box.row()
-                row.prop(item, "pointer")
-
-            layout.separator()
-            iterator = iterator + 1
+            remove = row.operator('prop_list.delete_item', text='REMOVE')
+            remove.index = iterator 
 
             
+            if item.list_index >= 0 and item.prop_list:
+                for prop in item.prop_list: 
+                    box.row().prop(prop, "Prop Object")
+
+            layout.separator()
+            iterator = iterator + 1            
         
         #layout.row().prop(settings,"scaleValue",text="Scale Amount")
         #row = layout.row()
@@ -112,7 +120,44 @@ class Glimmer_PT_Panel(Panel):
 
 ###############################
 
+def enum_members_from_type(rna_type, prop_str):
+    prop = rna_type.bl_rna.properties[prop_str]
+    return [e.identifier for e in prop.enum_items]
+
+
+def enum_members_from_instance(rna_item, prop_str):
+    return enum_members_from_type(type(rna_item), prop_str)
+
+class Temp_Action(bpy.types.Operator):
+    bl_idname = "temp.test"
+    bl_label = "My Class Name"
+    bl_description = "Description that shows in blender tooltips"
+    bl_options = {"REGISTER"}
+
+    def execute(self, context):
+
+        enum = enum_members_from_instance(bpy.context.scene.svr_settings, "skillsEnum")
+        
+        for name in enum:
+            new = bpy.context.scene.my_list.add()
+            new.name = name
+            new.prop_list.add()
+            print(name)
+
+        enum = enum_members_from_instance(bpy.context.scene.svr_settings, "actionsEnum")
+
+        for name in enum:
+            new = bpy.context.scene.my_list.add()
+            new.name = name
+            new.prop_list.add()
+            print(name)
+
+        return {"FINISHED"}
+
+
 class ActionListItem(PropertyGroup):
+    bl_idname = "collection.propitem"
+    bl_label = "Pointer property group, used to hold prop info."
     pointer: PointerProperty( name="pointer", type= bpy.types.Object)   
 
 class Glimmer_UL_ActionList(UIList):
@@ -127,22 +172,37 @@ class Glimmer_UL_ActionList(UIList):
             layout.alignment = 'CENTER' 
             layout.label("", icon = custom_icon) 
 
-class LIST_OT_NewItemNew(Operator): 
+class LIST_OT_NewItemProp(Operator): 
     """Add a new item to the list.""" 
     bl_idname = "prop_list.new_item" 
     bl_label = "Add a new item"
 
-    index : bpy.props.IntProperty(name='index', default= 0)
+    index : bpy.props.IntProperty(name='index')
 
     def execute(self, context): 
         context.scene.my_variations[self.index].prop_list.add() 
+        return{'FINISHED'}
+
+class LIST_OT_DeleteItemProp(Operator): 
+    """Delete the selected item from the list.""" 
+    bl_idname = "prop_list.delete_item" 
+    bl_label = "Deletes an item" 
+
+    index : bpy.props.IntProperty(name='index')
+        
+    def execute(self, context): 
+        my_list = context.scene.my_variations[self.index].prop_list
+        index = context.scene.my_variations[self.index].list_index
+
+        my_list.remove(0) 
+        #context.scene.my_variations[self.index].list_index = min(max(0, index - 1), len(my_list) - 1) 
+    
         return{'FINISHED'}
 
 class LIST_OT_NewItem(Operator): 
     """Add a new item to the list.""" 
     bl_idname = "my_list.new_item" 
     bl_label = "Add a new item"
-
 
     def execute(self, context): 
         context.scene.my_list.add() 

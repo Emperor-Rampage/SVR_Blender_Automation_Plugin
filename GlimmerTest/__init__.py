@@ -33,8 +33,8 @@ from bpy.props import (
     PointerProperty
 ) 
 
-from . glimmer_ops import Glimmer_OT_LoadCsvFile, Glimmer_OT_MultiRender, Glimmer_OT_ScaleObject, Glimmer_OT_UnScaleObject, Glimmer_OT_AddVariation, Glimmer_OT_DeleteVariation
-from . glimmer_panels import Glimmer_PT_Panel, Glimmer_UL_ActionList, ActionListItem, LIST_OT_NewItem, LIST_OT_DeleteItem, LIST_OT_MoveItem, LIST_OT_NewItemNew
+from . glimmer_ops import Glimmer_OT_LoadCsvFile, Glimmer_OT_MultiRender, Glimmer_OT_ScaleObject, Glimmer_OT_UnScaleObject, Glimmer_OT_AddVariation, Glimmer_OT_DeleteVariation, SVR_ActionPropList
+from . glimmer_panels import Glimmer_PT_Panel, Glimmer_UL_ActionList, ActionListItem, LIST_OT_NewItem, LIST_OT_DeleteItem, LIST_OT_MoveItem, LIST_OT_NewItemProp, LIST_OT_DeleteItemProp, Temp_Action
 from . glimmer_funcs import validateRenderSettings, SetRenderBlock
 
 
@@ -108,6 +108,7 @@ class SVR_Settings(bpy.types.PropertyGroup):
         ]
     )
 
+
 class SVR_VariationSettings(bpy.types.PropertyGroup):
     colorsEnum: EnumProperty(
         name="Colors:",
@@ -126,6 +127,7 @@ classes = (
     SVR_Settings,
     ActionListItem,
     SVR_VariationSettings,
+    SVR_ActionPropList,
     Glimmer_OT_LoadCsvFile,
     Glimmer_OT_MultiRender,
     Glimmer_OT_ScaleObject,
@@ -135,9 +137,11 @@ classes = (
     Glimmer_OT_AddVariation,
     Glimmer_OT_DeleteVariation,
     LIST_OT_NewItem,
-    LIST_OT_NewItemNew,
+    LIST_OT_NewItemProp,
     LIST_OT_DeleteItem,
-    LIST_OT_MoveItem
+    LIST_OT_DeleteItemProp,
+    LIST_OT_MoveItem,
+    Temp_Action
     )
 
 def register():
@@ -145,17 +149,16 @@ def register():
         bpy.utils.register_class(cls)
 
     bpy.types.Scene.svr_settings = bpy.props.PointerProperty(type = SVR_Settings)
-    bpy.types.Scene.my_list = CollectionProperty(type = ActionListItem) 
+    bpy.types.Scene.my_list = CollectionProperty(type = SVR_ActionPropList) 
     bpy.types.Scene.my_variations = CollectionProperty(type = SVR_VariationSettings)
     bpy.types.Scene.list_index = IntProperty(name = "Index for my_list", default = 0)
-    bpy.types.Scene.object_list = PointerProperty(type = bpy.data.collections.items)
         
     #Well this is weird but it appears that globals are a little weird in blender addons, this is _one_ way to do it.
     dns = bpy.app.driver_namespace
     dns["pet_names"] = ["hummingbird","ostrich"]
     dns["pet_colors"] =  { "hummingbird" : ["green","magenta","orange"], "ostrich" : ["white","black"] }
     dns["pet_actions"] = []
-    dns["pet_skills"] = []
+    dns["pet_skills"] = [] 
     
 def unregister():
     for cls in reversed(classes):

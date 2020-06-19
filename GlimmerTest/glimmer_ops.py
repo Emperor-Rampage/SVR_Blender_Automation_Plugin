@@ -8,10 +8,11 @@ from bpy.props import (
     BoolProperty,
     IntProperty,
     FloatProperty,
-    StringProperty
+    StringProperty,
+    CollectionProperty
 ) 
-
 from . glimmer_funcs import gatherData, newRender, validateRenderSettings, SetRenderBlock, newRender, emptyRender, CreateDirectories
+from . glimmer_panels import ActionListItem
 
 pet_name = ""
 pet_names = []
@@ -20,6 +21,10 @@ actions = []
 skills = []
 gifs = []
 
+class SVR_ActionPropList(bpy.types.PropertyGroup):
+    name : bpy.props.StringProperty(name= "Name")
+    prop_list : bpy.props.CollectionProperty(type = ActionListItem)
+
 class Glimmer_OT_LoadCsvFile(Operator, ImportHelper): 
     bl_idname = "glimmer.load_csv_file" 
     bl_label = "Load a CSV file." 
@@ -27,6 +32,7 @@ class Glimmer_OT_LoadCsvFile(Operator, ImportHelper):
     def execute(self, context): 
         settings = context.scene.svr_settings
         settings.csvFile = self.filepath
+
         dns = bpy.app.driver_namespace
         pet_actions = dns.get("pet_actions")
         with open(self.filepath, newline='') as csvfile:
@@ -67,7 +73,7 @@ class Glimmer_OT_MultiRender(Operator):
     def execute(self, context):
         scn = context.scene
         mysettings = context.scene.svr_settings
-        validateRenderSettings(mysettings)
+        validateRenderSettings(mysettings, context)
 
         CreateDirectories()
 
@@ -79,8 +85,8 @@ class Glimmer_OT_MultiRender(Operator):
                         if ob.type != 'LIGHT':
                             ob.hide_render = True
                             
-                string1 =  mysettings.workDir + "mp4/" + mysettings.nameEnum + item.colorsEnum + "/" + mysettings.nameEnum + item.colorsEnum + "-" + mysettings.skillEnum + "-base.jpeg"
-                gif1 = mysettings.workDir + "gif/" + mysettings.nameEnum + item.colorsEnum + "-" + mysettings.skillEnum + "-empty.gif"
+                string1 =  mysettings.workDir + "mp4/" + mysettings.nameEnum + item.colorsEnum + "/" + mysettings.nameEnum + item.colorsEnum + "-" + mysettings.skillsEnum + "-base.jpeg"
+                gif1 = mysettings.workDir + "gif/" + mysettings.nameEnum + item.colorsEnum + "-" + mysettings.skillsEnum + "-empty.gif"
                 scn.render.filepath = string1
 
                 #Enable objects from the hide list.
@@ -94,9 +100,9 @@ class Glimmer_OT_MultiRender(Operator):
                 item.mesh.hide_render = False
 
                 #First Render Loop
-                string1 = mysettings.workDir + "mp4/" + mysettings.nameEnum + "/" + mysettings.nameEnum + item.colorsEnum + "-" + mysettings.skillEnum + "-base.mp4"
-                gif1L = mysettings.workDir + "gif/" + mysettings.nameEnum + item.colorsEnum + "-" + mysettings.skillEnum + "-left.gif"
-                gif1R = mysettings.workDir + "gif/" + mysettings.nameEnum + item.colorsEnum + "-" + mysettings.skillEnum + "-right.gif"
+                string1 = mysettings.workDir + "mp4/" + mysettings.nameEnum + "/" + mysettings.nameEnum + item.colorsEnum + "-" + mysettings.skillsEnum + "-base.mp4"
+                gif1L = mysettings.workDir + "gif/" + mysettings.nameEnum + item.colorsEnum + "-" + mysettings.skillsEnum + "-left.gif"
+                gif1R = mysettings.workDir + "gif/" + mysettings.nameEnum + item.colorsEnum + "-" + mysettings.skillsEnum + "-right.gif"
 
                 scn.render.filepath = string1
                 newRender(item.mesh, item.material)
@@ -107,6 +113,7 @@ class Glimmer_OT_MultiRender(Operator):
                 myclip = myclip.fx( vfx.mirror_x)                
                 myclip.write_gif(gif1R, program="ffmpeg")
                 myclip.close
+
             else:
 
                 for ob in bpy.context.scene.objects:
@@ -146,8 +153,8 @@ class Glimmer_OT_DeleteVariation(bpy.types.Operator):
         index = len(context.scene.my_variations) - 1
         if index >= 0:
             context.scene.my_variations.remove(index)
-            return{'FINISHED'}
-        return{'FAILED'}
+            
+        return{'FINISHED'}
 
 #########################################
 
