@@ -224,7 +224,7 @@ class Glimmer_OT_MultiRender(Operator):
                 scn.render.filepath = string1
                 newRender(item.mesh, item.material)
                 myclip = VideoFileClip(string1)
-                myclip.write_gif(gif1, fps=30, program='ImageMagick', opt='none')
+                myclip.write_gif(gif1, fps=30, program='ffmpeg')
                 myclip.close
                     
         return {"FINISHED"}
