@@ -170,7 +170,7 @@ class Glimmer_OT_MultiRender(Operator):
                             ob.hide_render = True
                             
                 string1 =  settings.workDir + "mp4/" + settings.nameEnum + item.colorsEnum + "/" + settings.nameEnum + item.colorsEnum + "-" + settings.skillsEnum + "-base.jpeg"
-                gif1 = settings.workDir + "gif/" + settings.nameEnum + item.colorsEnum + "-" + settings.skillsEnum + "-empty.gif"
+                gif1 = settings.workDir + "gif/" + settings.nameEnum + "/"+ item.colorsEnum + "/" + settings.nameEnum + item.colorsEnum + "-" + settings.skillsEnum + "-empty.gif"
                 scn.render.filepath = string1
 
                 #Enable objects from the hide list.
@@ -178,7 +178,7 @@ class Glimmer_OT_MultiRender(Operator):
 
                 clip = ImageClip(string1)
                 clip.duration = 0.1
-                clip.write_gif(gif1,fps = 24, program="ffmpeg")
+                clip.write_gif(gif1,fps = 30, program="ffmpeg")
                 clip.close
 
                 item.mesh.hide_render = False
@@ -196,10 +196,10 @@ class Glimmer_OT_MultiRender(Operator):
                 newRender(item.mesh, item.material)
 
                 myclip = VideoFileClip(string1)
-                myclip.write_gif(gif1L, program="ffmpeg")
+                myclip.write_gif(gif1L, fps = 30, program="ffmpeg")
 
                 myclip = myclip.fx( vfx.mirror_x)                
-                myclip.write_gif(gif1R, program="ffmpeg")
+                myclip.write_gif(gif1R, fps = 30, program="ffmpeg")
                 myclip.close
 
             else:
@@ -219,12 +219,12 @@ class Glimmer_OT_MultiRender(Operator):
                         ob.prop.hide_render = False
 
                 #First Render Loop
-                string1 = settings.workDir + "mp4/" + settings.nameEnum + "/" + item.colorsEnum + "/"+ item.colorsEnum + "-" + settings.skillsEnum + ".mp4"
-                gif1 = settings.workDir + "gif/" + settings.nameEnum + "/"+ item.colorsEnum + "/" + settings.nameEnum + item.colorsEnum + "-" + settings.skillsEnum + ".gif"
+                string1 = settings.workDir + "mp4/" + settings.nameEnum + "/" + item.colorsEnum + "/"+ item.colorsEnum + "-" + settings.actionsEnum + ".mp4"
+                gif1 = settings.workDir + "gif/" + settings.nameEnum + "/"+ item.colorsEnum + "/" + settings.nameEnum + item.colorsEnum + "-" + settings.actionsEnum + ".gif"
                 scn.render.filepath = string1
                 newRender(item.mesh, item.material)
                 myclip = VideoFileClip(string1)
-                myclip.write_gif(gif1, fps = 24, program= "ffmpeg", opt = "None")
+                myclip.write_gif(gif1, fps=30, program='ImageMagick', opt='none')
                 myclip.close
                     
         return {"FINISHED"}
