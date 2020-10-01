@@ -16,7 +16,7 @@ bl_info = {
     "author" : "Chris Calef, Conner Lindsley",
     "description" : "",
     "blender" : (2, 80, 0),
-    "version" : (1, 0, 0),
+    "version" : (1, 2, 0),
     "location" : "",
     "warning" : "",
     "category" : "Rendering"
@@ -41,7 +41,10 @@ from . glimmer_panels import (
     LIST_OT_DeleteItem, 
     LIST_OT_MoveItem, 
     LIST_OT_NewItemProp, 
-    LIST_OT_DeleteItemProp
+    LIST_OT_DeleteItemProp,
+    LIST_OT_NewEnviroProp,
+    LIST_OT_DeleteEnviroItem
+
 )
 
 from . glimmer_ops import (
@@ -52,7 +55,8 @@ from . glimmer_ops import (
     Glimmer_OT_UnScaleObject, 
     Glimmer_OT_AddVariation, 
     Glimmer_OT_DeleteVariation,
-    SVR_ActionPropList
+    SVR_ActionPropList, 
+    SVR_EnviornmentPropList
 )
 from . glimmer_funcs import (
     validateRenderSettings, 
@@ -61,6 +65,7 @@ from . glimmer_funcs import (
     AddColorsCollectionCallback,
     AddActionsCollectionCallback,
     AddSkillsCollectionCallback,
+
 )
 
 myTestArray = ["test string one","test string two"]
@@ -68,7 +73,8 @@ myTestArray = ["test string one","test string two"]
 class SVR_Settings(bpy.types.PropertyGroup):
     workDir : bpy.props.StringProperty(name = "Work Directory", default = "C:\\work\\")
     csvFile : StringProperty(name="CSV Filename")
-    isSkill : BoolProperty(name="isSkill:", description="Set Render Mode to skill.", update= validateRenderSettings)    
+    isSkill : BoolProperty(name="isSkill:", description="Set Render Mode to skill.", update= validateRenderSettings)
+    
     
     nameEnum: EnumProperty(
         name="Name:",
@@ -79,19 +85,22 @@ class SVR_Settings(bpy.types.PropertyGroup):
     colorsEnum: EnumProperty(
         name="Colors:",
         description="Pet Colors.",
-        items = AddColorsCollectionCallback
+        items = AddColorsCollectionCallback,
+        update= validateRenderSettings
     )
 
     actionsEnum: EnumProperty(
         name="Actions:",
         description="Pet Actions.",
-        items = AddActionsCollectionCallback
+        items = AddActionsCollectionCallback,
+        update= validateRenderSettings
     )
     
     skillsEnum: EnumProperty(
         name="Skills:",
         description="Pet Skills.",
-        items = AddSkillsCollectionCallback
+        items = AddSkillsCollectionCallback,
+        update= validateRenderSettings
     )
 
 
@@ -111,6 +120,7 @@ classes = (
     ActionListItem,
     SVR_VariationSettings,
     SVR_ActionPropList,
+    SVR_EnviornmentPropList,
     Glimmer_OT_LoadNamesCsv,
     Glimmer_OT_LoadCsvFile,
     Glimmer_OT_MultiRender,
@@ -124,6 +134,8 @@ classes = (
     LIST_OT_NewItemProp,
     LIST_OT_DeleteItem,
     LIST_OT_DeleteItemProp,
+    LIST_OT_NewEnviroProp,
+    LIST_OT_DeleteEnviroItem,
     LIST_OT_MoveItem
     )
 
@@ -132,9 +144,11 @@ def register():
         bpy.utils.register_class(cls)
 
     bpy.types.Scene.svr_settings = bpy.props.PointerProperty(type = SVR_Settings)
-    bpy.types.Scene.my_list = CollectionProperty(type = SVR_ActionPropList) 
+    bpy.types.Scene.my_list = CollectionProperty(type = SVR_ActionPropList)
+    bpy.types.Scene.enviro_list = CollectionProperty(type = SVR_EnviornmentPropList)  
     bpy.types.Scene.my_variations = CollectionProperty(type = SVR_VariationSettings)
     bpy.types.Scene.list_index = IntProperty(name = "Index for my_list", default = 0)
+    bpy.types.Scene.enviro_index = IntProperty(name = "Index for enivro_list", default = 0)
         
     #Well this is weird but it appears that globals are a little weird in blender addons, this is _one_ way to do it.
     dns = bpy.app.driver_namespace
@@ -146,6 +160,8 @@ def unregister():
         bpy.utils.unregister_class(cls)
     del bpy.types.Scene.svr_settings
     del bpy.types.Scene.my_list
+    del bpy.types.Scene.enviro_list
     del bpy.types.Scene.my_variations 
     del bpy.types.Scene.list_index
+    del bpy.types.Scene.enviro_index
 

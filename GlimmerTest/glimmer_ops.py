@@ -1,3 +1,4 @@
+from typing import Type
 import bpy
 import csv
 from bpy_extras.io_utils import ImportHelper
@@ -12,7 +13,7 @@ from bpy.props import (
     EnumProperty,
     CollectionProperty
 ) 
-from . glimmer_funcs import gatherData, newRender, validateRenderSettings, SetRenderBlock, newRender, emptyRender, CreateDirectories, AddActionPropsFromCollectionCallback, AddSkillPropsFromCollectionCallback
+from . glimmer_funcs import gatherData, newRender, validateRenderSettings, SetRenderBlock, newRender, emptyRender, marathonEmptyRender, CreateDirectories, AddActionPropsFromCollectionCallback, AddSkillPropsFromCollectionCallback, AddEnviroPropsFromCollectionCallback
 from . glimmer_panels import ActionListItem
 
 gifs = []
@@ -97,6 +98,7 @@ class Glimmer_OT_LoadNamesCsv(Operator, ImportHelper):
         for name in enum:
             new = bpy.context.scene.my_list.add()
             new.name = name
+        
 
         enum = AddSkillPropsFromCollectionCallback()
 
@@ -104,11 +106,22 @@ class Glimmer_OT_LoadNamesCsv(Operator, ImportHelper):
             new = bpy.context.scene.my_list.add()
             new.name = name
 
+
+        enum = AddEnviroPropsFromCollectionCallback()
+        
+        for name in enum:
+            new = bpy.context.scene.enviro_list.add()
+            new.name = name
+
         return {'FINISHED'}
 
 
 class SVR_ActionPropList(bpy.types.PropertyGroup):
     name : bpy.props.StringProperty(name= "Name")
+    prop_list : bpy.props.CollectionProperty(type = ActionListItem)
+
+class SVR_EnviornmentPropList(bpy.types.PropertyGroup):
+    name : bpy.props.StringProperty(name="Name")
     prop_list : bpy.props.CollectionProperty(type = ActionListItem)
 
 class Glimmer_OT_LoadCsvFile(Operator, ImportHelper): 
@@ -162,7 +175,40 @@ class Glimmer_OT_MultiRender(Operator):
         CreateDirectories()
 
         for item in scn.my_variations:
-            if settings.isSkill is True:
+            if settings.actionEnum == "mistreated" and settings.isSkill is False:
+                #Render Mistreated animation.
+                    #Hide everything.
+                    #Check the Enviornment Props list
+                    #Un-hide everything in that list.
+                    #Render single frame gif for that one.
+                for ob in bpy.context.scene.objects:
+                    if ob.hide_render == False:
+                        if ob.type != 'LIGHT':
+                            ob.hide_render = True
+
+
+                for ob in item.prop_list:
+                    if ob: 
+                        ob.prop.hide_render = False
+                for ob in bpy.context.scene.my_list[settings.actionsEnum].prop_list:
+                    if ob:
+                        ob.prop.hide_render = False
+                        
+            elif settings.actionEnum == "icon" and settings.isSkill is False:
+
+                for ob in bpy.context.scene.objects:
+                    if ob.hide_render == False:
+                        if ob.type != 'LIGHT':
+                            ob.hide_render = True
+            elif settings.actionEnum == "avatar" and settings.isSkill is False:
+
+                for ob in bpy.context.scene.objects:
+                    if ob.hide_render == False:
+                        if ob.type != 'LIGHT':
+                            ob.hide_render = True
+
+            elif settings.isSkill is True:
+                #Add special setup for Marathon-empty, rendering out all the frames.
                                          
                 for ob in bpy.context.scene.objects:
                     if ob.hide_render == False:
@@ -174,7 +220,10 @@ class Glimmer_OT_MultiRender(Operator):
                 scn.render.filepath = string1
 
                 #Enable objects from the hide list.
-                emptyRender(item.mesh, item.material)
+                if settings.skillsEnum == "marathon" or settings.skillsEnum == "marathonfail":
+                    marathonEmptyRender(item.mesh, item.material)
+                else:
+                    emptyRender(item.mesh, item.material)
 
                 clip = ImageClip(string1)
                 clip.duration = 0.1
