@@ -50,22 +50,20 @@ class Glimmer_PT_Panel(Panel):
         layout.separator()
         layout.row().operator("render.multirender", text="Multi Render", icon='OBJECT_DATAMODE')
         layout.separator()
-        iterator = 0
+
         #Environment Prop List Area
         box = layout.box()
         box.row().label(text= "Environment Prop List")
         row = box.row()
-        if scene.enviro_index >= 0 and scene.enviro_list:
-            for item in scene.enviro_list: 
-                row = box.row()
-                row.label(text= "Enviro Props")
-                row.prop(item, "prop", text="Prop Object:")
+        for item in scene.enviro_list: 
+            row = box.row()
+            row.label(text= "Enviro Props")
+            row.prop(item, "prop", text="Prop Object:")
         #Do Work on Environment Prop List
         new = row.operator('enviro_list.new_item', text='NEW')
-        new.index = iterator
+        new.string = "Enviro Prop"
 
-        remove = row.operator('prop_list.delete_item', text='REMOVE')
-        remove.index = iterator 
+        delete = row.operator('enviro_list.delete_item', text='DELETE')
                        
         layout.separator()
 
@@ -100,7 +98,7 @@ class Glimmer_PT_Panel(Panel):
                    
         
         layout.separator()
-
+        iterator = 0
         #Variation Panel Area
         layout.row().label(text= "Variation Panel")
         row = layout.row()
@@ -205,10 +203,10 @@ class LIST_OT_NewEnviroProp(Operator):
     bl_idname = "enviro_list.new_item" 
     bl_label = "Add a new item"
 
-    index : bpy.props.IntProperty(name='index')
+    string : bpy.props.StringProperty()
 
     def execute(self, context): 
-        context.scene.enviro_list[self.index].prop_list.add() 
+        context.scene.enviro_list.add() 
         return{'FINISHED'}
 
 class LIST_OT_DeleteItem(Operator): 
@@ -232,13 +230,11 @@ class LIST_OT_DeleteEnviroItem(Operator):
     """Delete the selected item from the list.""" 
     bl_idname = "enviro_list.delete_item" 
     bl_label = "Deletes an item" 
-
-    index : bpy.props.IntProperty(name='index')
- 
+    
+    string : bpy.props.StringProperty()
         
     def execute(self, context): 
-        my_list = context.scene.enviro_list[self.index].prop_list
-        index = context.scene.enviro_list[self.index].list_index
+        my_list = context.scene.enviro_list
 
         my_list.remove(0) 
         #context.scene.list_index = min(max(0, index - 1), len(my_list) - 1) 

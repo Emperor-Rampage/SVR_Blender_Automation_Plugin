@@ -13,7 +13,7 @@ from bpy.props import (
     EnumProperty,
     CollectionProperty
 ) 
-from . glimmer_funcs import gatherData, newRender, validateRenderSettings, SetRenderBlock, newRender, emptyRender, marathonEmptyRender, CreateDirectories, AddActionPropsFromCollectionCallback, AddSkillPropsFromCollectionCallback, AddEnviroPropsFromCollectionCallback
+from . glimmer_funcs import gatherData, newRender, validateRenderSettings, SetRenderBlock, newRender, newAvatarRender, emptyRender, marathonEmptyRender, CreateDirectories, AddActionPropsFromCollectionCallback, AddSkillPropsFromCollectionCallback, AddEnviroPropsFromCollectionCallback
 from . glimmer_panels import ActionListItem
 
 gifs = []
@@ -107,21 +107,17 @@ class Glimmer_OT_LoadNamesCsv(Operator, ImportHelper):
             new.name = name
 
 
-        enum = AddEnviroPropsFromCollectionCallback()
+        #enum = AddEnviroPropsFromCollectionCallback()
         
-        for name in enum:
-            new = bpy.context.scene.enviro_list.add()
-            new.name = name
+        #for name in enum:
+            #new = bpy.context.scene.enviro_list.add()
+            #new.name = name
 
         return {'FINISHED'}
 
 
 class SVR_ActionPropList(bpy.types.PropertyGroup):
     name : bpy.props.StringProperty(name= "Name")
-    prop_list : bpy.props.CollectionProperty(type = ActionListItem)
-
-class SVR_EnviornmentPropList(bpy.types.PropertyGroup):
-    name : bpy.props.StringProperty(name="Name")
     prop_list : bpy.props.CollectionProperty(type = ActionListItem)
 
 class Glimmer_OT_LoadCsvFile(Operator, ImportHelper): 
@@ -175,7 +171,7 @@ class Glimmer_OT_MultiRender(Operator):
         CreateDirectories()
 
         for item in scn.my_variations:
-            if settings.actionEnum == "mistreated" and settings.isSkill is False:
+            if settings.actionsEnum == "mistreated" and settings.isSkill is False:
                 #Render Mistreated animation.
                     #Hide everything.
                     #Check the Enviornment Props list
@@ -186,26 +182,57 @@ class Glimmer_OT_MultiRender(Operator):
                         if ob.type != 'LIGHT':
                             ob.hide_render = True
 
-
-                for ob in item.prop_list:
+                for ob in scn.enviro_list:
                     if ob: 
                         ob.prop.hide_render = False
-                for ob in bpy.context.scene.my_list[settings.actionsEnum].prop_list:
-                    if ob:
-                        ob.prop.hide_render = False
+
+                string1 =  settings.workDir + "mp4/" + settings.nameEnum + item.colorsEnum + "/" + settings.nameEnum + item.colorsEnum + "-" + settings.actionsEnum + "-base.png"
+                gif1 = settings.workDir + "gif/" + settings.nameEnum + "/"+ item.colorsEnum + "/" + settings.nameEnum + item.colorsEnum + "-" + settings.actionsEnum + ".gif"
+                scn.render.filepath = string1                
+                emptyRender(item.mesh, item.material)
+
+                clip = ImageClip(string1)
+                clip.duration = 0.1
+                clip.write_gif(gif1,fps = 30, program="ffmpeg")
+                clip.close
+ 
                         
-            elif settings.actionEnum == "icon" and settings.isSkill is False:
+            elif settings.actionsEnum == "icon" and settings.isSkill is False:
 
                 for ob in bpy.context.scene.objects:
                     if ob.hide_render == False:
                         if ob.type != 'LIGHT':
                             ob.hide_render = True
-            elif settings.actionEnum == "avatar" and settings.isSkill is False:
+                item.mesh.hide_render = False
+
+                string1 =  settings.workDir + "mp4/" + settings.nameEnum + item.colorsEnum + "/" + settings.nameEnum + item.colorsEnum + "-" + settings.actionsEnum + "-base.png"
+                gif1 = settings.workDir + "gif/" + settings.nameEnum + "/"+ item.colorsEnum + "/" + settings.nameEnum + item.colorsEnum + ".gif"
+                scn.render.filepath = string1
+                emptyRender(item.mesh, item.material)
+
+                clip = ImageClip(string1)
+                clip.duration = 0.1
+                clip.write_gif(gif1,fps = 30, program="ffmpeg")
+                clip.close
+
+            elif settings.actionsEnum == "avatar" and settings.isSkill is False:
 
                 for ob in bpy.context.scene.objects:
                     if ob.hide_render == False:
                         if ob.type != 'LIGHT':
                             ob.hide_render = True
+                item.mesh.hide_render = False
+                string1 =  settings.workDir + "png/" + settings.nameEnum + item.colorsEnum + "/" + settings.nameEnum + item.colorsEnum + "-" + settings.actionsEnum + "-base.png"
+                gif1 = settings.workDir + "gif/" + settings.nameEnum + "/"+ item.colorsEnum + "/" + settings.nameEnum + item.colorsEnum + "-" + settings.actionsEnum + ".gif"
+                scn.render.filepath = string1
+
+                newAvatarRender(item.mesh, item.material)
+
+                clip = ImageSequenceClip(settings.workDir + "png/" + settings.nameEnum + item.colorsEnum + "/", with_mask= True, durations=.01)
+                clip.duration = 0.1
+                clip.write_gif(gif1,fps = 30, program="ffmpeg")
+                clip.close
+
 
             elif settings.isSkill is True:
                 #Add special setup for Marathon-empty, rendering out all the frames.
@@ -214,6 +241,10 @@ class Glimmer_OT_MultiRender(Operator):
                     if ob.hide_render == False:
                         if ob.type != 'LIGHT':
                             ob.hide_render = True
+
+                for ob in scn.enviro_list:
+                    if ob: 
+                        ob.prop.hide_render = False
                             
                 string1 =  settings.workDir + "mp4/" + settings.nameEnum + item.colorsEnum + "/" + settings.nameEnum + item.colorsEnum + "-" + settings.skillsEnum + "-base.jpeg"
                 gif1 = settings.workDir + "gif/" + settings.nameEnum + "/"+ item.colorsEnum + "/" + settings.nameEnum + item.colorsEnum + "-" + settings.skillsEnum + "-empty.gif"
@@ -251,7 +282,7 @@ class Glimmer_OT_MultiRender(Operator):
                 myclip.write_gif(gif1R, fps = 30, program="ffmpeg")
                 myclip.close
 
-            else:
+            elif settings.isSkill is False and settings.actionsEnum != "mistreated" and settings.actionsEnum != "avatar" and settings.actionsEnum != "icon":
 
                 #Turn off all props and meshes and only enable the ones we want.
                 for ob in bpy.context.scene.objects:
@@ -260,6 +291,9 @@ class Glimmer_OT_MultiRender(Operator):
                             ob.hide_render = True
 
                 item.mesh.hide_render = False
+                for ob in scn.enviro_list:
+                    if ob: 
+                        ob.prop.hide_render = False
                 for ob in item.prop_list:
                     if ob: 
                         ob.prop.hide_render = False

@@ -18,6 +18,15 @@ def newRender(object, material):
             object.data.materials.append(material)
     bpy.ops.render.render(animation=True)
 
+def newAvatarRender(object, material):
+    if object.data.materials:
+            object.data.materials[0] = material
+    else:
+            object.data.materials.append(material)
+
+    SetRenderBlock(True)
+    bpy.ops.render.render(animation=True)
+
 def emptyRender(object, material):
     if object.data.materials:
             object.data.materials[0] = material
@@ -27,7 +36,7 @@ def emptyRender(object, material):
     bpy.context.scene.render.image_settings.color_mode = "RGB"
     bpy.context.scene.frame_set(1)
     bpy.ops.render.render(write_still= True)
-    SetRenderBlock()
+    SetRenderBlock(False)
 
 def marathonEmptyRender(object, material):
     if object.data.materials:
@@ -114,6 +123,14 @@ def CreateDirectories():
         else:
             print ("Successfully created the directory %s" % path)
 
+        path = settings.workDir + "png\\" + settings.nameEnum + "\\" + color
+        try:
+            os.makedirs(path)
+        except OSError:
+            print ("Creation of the directory %s failed" % path)
+        else:
+            print ("Successfully created the directory %s" % path)
+
 def AddActionPropsFromCollectionCallback():
     items = []
     settings = bpy.context.scene.svr_settings
@@ -178,9 +195,9 @@ def AddSkillsCollectionCallback(self, context):
 
 def AddEnviroPropsFromCollectionCallback():
     items = []
-    settings = bpy.context.scene.svr_settings
+    #settings = bpy.context.scene.svr_settings
     dns = bpy.app.driver_namespace
-    pets = dns.get("pets")
-    for action in pets[settings.nameEnum]["actions"]:
-        items.append(action)
+    enviroProp = dns.get("enviro")
+    for prop in enviroProp:
+        items.append(prop)
     return items

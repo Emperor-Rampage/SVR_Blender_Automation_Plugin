@@ -55,8 +55,7 @@ from . glimmer_ops import (
     Glimmer_OT_UnScaleObject, 
     Glimmer_OT_AddVariation, 
     Glimmer_OT_DeleteVariation,
-    SVR_ActionPropList, 
-    SVR_EnviornmentPropList
+    SVR_ActionPropList
 )
 from . glimmer_funcs import (
     validateRenderSettings, 
@@ -120,7 +119,6 @@ classes = (
     ActionListItem,
     SVR_VariationSettings,
     SVR_ActionPropList,
-    SVR_EnviornmentPropList,
     Glimmer_OT_LoadNamesCsv,
     Glimmer_OT_LoadCsvFile,
     Glimmer_OT_MultiRender,
@@ -145,7 +143,7 @@ def register():
 
     bpy.types.Scene.svr_settings = bpy.props.PointerProperty(type = SVR_Settings)
     bpy.types.Scene.my_list = CollectionProperty(type = SVR_ActionPropList)
-    bpy.types.Scene.enviro_list = CollectionProperty(type = SVR_EnviornmentPropList)  
+    bpy.types.Scene.enviro_list = CollectionProperty(type = ActionListItem)  
     bpy.types.Scene.my_variations = CollectionProperty(type = SVR_VariationSettings)
     bpy.types.Scene.list_index = IntProperty(name = "Index for my_list", default = 0)
     bpy.types.Scene.enviro_index = IntProperty(name = "Index for enivro_list", default = 0)
@@ -154,14 +152,16 @@ def register():
     dns = bpy.app.driver_namespace
     dns["pet_names"] = []
     dns["pets"] =  {}
+    dns["enviro"] = []
     
 def unregister():
     for cls in reversed(classes):
         bpy.utils.unregister_class(cls)
-    del bpy.types.Scene.svr_settings
-    del bpy.types.Scene.my_list
-    del bpy.types.Scene.enviro_list
-    del bpy.types.Scene.my_variations 
+
+    del bpy.types.Scene.enviro_index    
     del bpy.types.Scene.list_index
-    del bpy.types.Scene.enviro_index
+    del bpy.types.Scene.my_variations 
+    del bpy.types.Scene.enviro_list
+    del bpy.types.Scene.my_list
+    del bpy.types.Scene.svr_settings
 
