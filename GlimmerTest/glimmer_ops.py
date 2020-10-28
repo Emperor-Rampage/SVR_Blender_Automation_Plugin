@@ -3,6 +3,8 @@ import bpy
 import csv
 from bpy_extras.io_utils import ImportHelper
 from moviepy.editor import *
+import imageio
+from numpy import fliplr
 
 from bpy.types import Operator
 from bpy.props import (
@@ -13,7 +15,7 @@ from bpy.props import (
     EnumProperty,
     CollectionProperty
 ) 
-from . glimmer_funcs import gatherData, newRender, validateRenderSettings, SetRenderBlock, newRender, newAvatarRender, emptyRender, marathonEmptyRender, CreateDirectories, AddActionPropsFromCollectionCallback, AddSkillPropsFromCollectionCallback, AddEnviroPropsFromCollectionCallback
+from . glimmer_funcs import PNGTestRender, gatherData, newRender, validateRenderSettings, SetRenderBlock, newRender, newAvatarRender, PNGTestRender, emptyRender, marathonEmptyRender, CreateDirectories, AddActionPropsFromCollectionCallback, AddSkillPropsFromCollectionCallback, AddEnviroPropsFromCollectionCallback
 from . glimmer_panels import ActionListItem
 
 gifs = []
@@ -186,15 +188,18 @@ class Glimmer_OT_MultiRender(Operator):
                     if ob: 
                         ob.prop.hide_render = False
 
-                string1 =  settings.workDir + "mp4/" + settings.nameEnum + item.colorsEnum + "/" + settings.nameEnum + item.colorsEnum + "-" + settings.actionsEnum + "-base.png"
+                string1 =  settings.workDir + "mp4/" + settings.nameEnum + "/"+ item.colorsEnum + "/" + "Empty" + "/" + settings.nameEnum + item.colorsEnum + "-" + settings.actionsEnum + "-base"
                 gif1 = settings.workDir + "gif/" + settings.nameEnum + "/"+ item.colorsEnum + "/" + settings.nameEnum + item.colorsEnum + "-" + settings.actionsEnum + ".gif"
                 scn.render.filepath = string1                
                 emptyRender(item.mesh, item.material)
 
-                clip = ImageClip(string1)
-                clip.duration = 0.1
-                clip.write_gif(gif1,fps = 30, program="ffmpeg")
-                clip.close
+                vid = imageio.imread(string1 + ".png")
+                imageio.imwrite(gif1, vid, fps=30)
+
+                #clip = ImageClip(string1)
+                #clip.duration = 0.1
+                #clip.write_gif(gif1,fps = 30, program="ffmpeg")
+                #clip.close
  
                         
             elif settings.actionsEnum == "icon" and settings.isSkill is False:
@@ -205,15 +210,22 @@ class Glimmer_OT_MultiRender(Operator):
                             ob.hide_render = True
                 item.mesh.hide_render = False
 
-                string1 =  settings.workDir + "mp4/" + settings.nameEnum + item.colorsEnum + "/" + settings.nameEnum + item.colorsEnum + "-" + settings.actionsEnum + "-base.png"
+                string1 =  settings.workDir + "png/" + settings.nameEnum + "/" + item.colorsEnum + "/" + settings.actionsEnum + "/" + settings.nameEnum + item.colorsEnum + "-" + settings.actionsEnum 
                 gif1 = settings.workDir + "gif/" + settings.nameEnum + "/"+ item.colorsEnum + "/" + settings.nameEnum + item.colorsEnum + ".gif"
                 scn.render.filepath = string1
                 emptyRender(item.mesh, item.material)
 
-                clip = ImageClip(string1)
-                clip.duration = 0.1
-                clip.write_gif(gif1,fps = 30, program="ffmpeg")
-                clip.close
+                images = []
+                for file_name in os.listdir(settings.workDir + "png/" + settings.nameEnum + "/" + item.colorsEnum + "/" + settings.actionsEnum):
+                    if file_name.endswith('.png'):
+                        file_path = os.path.join(settings.workDir + "png/" + settings.nameEnum + "/" + item.colorsEnum + "/" + settings.actionsEnum, file_name)
+                        images.append(imageio.imread(file_path))
+                imageio.mimsave(gif1, images, fps=30)
+
+                #clip = ImageClip(string1)
+                #clip.duration = 0.1
+                #clip.write_gif(gif1,fps = 30, program="ffmpeg")
+                #clip.close
 
             elif settings.actionsEnum == "avatar" and settings.isSkill is False:
 
@@ -222,16 +234,23 @@ class Glimmer_OT_MultiRender(Operator):
                         if ob.type != 'LIGHT':
                             ob.hide_render = True
                 item.mesh.hide_render = False
-                string1 =  settings.workDir + "png/" + settings.nameEnum + item.colorsEnum + "/" + settings.nameEnum + item.colorsEnum + "-" + settings.actionsEnum + "-base.png"
+                string1 =  settings.workDir + "png/" + settings.nameEnum + "/" + item.colorsEnum + "/" + settings.actionsEnum + "/" + settings.nameEnum + item.colorsEnum + "-" + settings.actionsEnum 
                 gif1 = settings.workDir + "gif/" + settings.nameEnum + "/"+ item.colorsEnum + "/" + settings.nameEnum + item.colorsEnum + "-" + settings.actionsEnum + ".gif"
                 scn.render.filepath = string1
 
                 newAvatarRender(item.mesh, item.material)
 
-                clip = ImageSequenceClip(settings.workDir + "png/" + settings.nameEnum + item.colorsEnum + "/", with_mask= True, durations=.01)
-                clip.duration = 0.1
-                clip.write_gif(gif1,fps = 30, program="ffmpeg")
-                clip.close
+                images = []
+                for file_name in os.listdir(settings.workDir + "png/" + settings.nameEnum + "/" + item.colorsEnum + "/" + settings.actionsEnum):
+                    if file_name.endswith('.png'):
+                        file_path = os.path.join(settings.workDir + "png/" + settings.nameEnum + "/" + item.colorsEnum + "/" + settings.actionsEnum, file_name)
+                        images.append(imageio.imread(file_path))
+                imageio.mimsave(gif1, images, fps=30)
+
+                #clip = ImageSequenceClip(settings.workDir + "png/" + settings.nameEnum + item.colorsEnum + "/", with_mask= True, set_duration=.01)
+                #clip.duration = 0.1
+                #clip.write_gif(gif1,fps = 30, program="ffmpeg")
+                #clip.close
 
 
             elif settings.isSkill is True:
@@ -246,20 +265,27 @@ class Glimmer_OT_MultiRender(Operator):
                     if ob: 
                         ob.prop.hide_render = False
                             
-                string1 =  settings.workDir + "mp4/" + settings.nameEnum + item.colorsEnum + "/" + settings.nameEnum + item.colorsEnum + "-" + settings.skillsEnum + "-base.jpeg"
+                string1 =  settings.workDir + "png/" + settings.nameEnum + "/" + item.colorsEnum + "/" + settings.skillsEnum + "/" + "Empty" +"/" + settings.nameEnum + item.colorsEnum + "-" + settings.skillsEnum + "-empty"
                 gif1 = settings.workDir + "gif/" + settings.nameEnum + "/"+ item.colorsEnum + "/" + settings.nameEnum + item.colorsEnum + "-" + settings.skillsEnum + "-empty.gif"
                 scn.render.filepath = string1
 
                 #Enable objects from the hide list.
-                if settings.skillsEnum == "marathon" or settings.skillsEnum == "marathonfail":
+                if settings.skillsEnum == "marathon" or settings.skillsEnum == "marathonfail" or settings.skillsEnum == "jugglefail" or settings.skillsEnum == "juggle":
                     marathonEmptyRender(item.mesh, item.material)
                 else:
                     emptyRender(item.mesh, item.material)
 
-                clip = ImageClip(string1)
-                clip.duration = 0.1
-                clip.write_gif(gif1,fps = 30, program="ffmpeg")
-                clip.close
+                images = []
+                for file_name in os.listdir(settings.workDir + "png/" + settings.nameEnum + "/" + item.colorsEnum + "/" + settings.skillsEnum + "/" + "Empty"):
+                    if file_name.endswith('.png'):
+                        file_path = os.path.join(settings.workDir + "png/" + settings.nameEnum + "/" + item.colorsEnum + "/" + settings.skillsEnum + "/" + "Empty", file_name)
+                        images.append(imageio.imread(file_path))
+                imageio.mimsave(gif1, images, fps=30)
+
+                #clip = ImageClip(string1)
+                #clip.duration = 0.1
+                #clip.write_gif(gif1,fps = 30, program="ffmpeg")
+                #clip.close
 
                 item.mesh.hide_render = False
                 for ob in item.prop_list:
@@ -268,19 +294,47 @@ class Glimmer_OT_MultiRender(Operator):
                     ob.prop.hide_render = False
 
                 #First Render Loop
-                string1 = settings.workDir + "mp4/" + settings.nameEnum + "/" + item.colorsEnum + "/"+ item.colorsEnum + "-" + settings.skillsEnum + "-base.mp4"
-                gif1L = settings.workDir + "gif/" + settings.nameEnum + "/"+ item.colorsEnum + "/" + settings.nameEnum + item.colorsEnum + "-" + settings.skillsEnum + "-left.gif"
-                gif1R = settings.workDir + "gif/" + settings.nameEnum + "/"+ item.colorsEnum + "/" + settings.nameEnum + item.colorsEnum + "-" + settings.skillsEnum + "-right.gif"
+                string1 = settings.workDir + "png/" + settings.nameEnum + "/" + item.colorsEnum + "/" + settings.skillsEnum  + "/" + settings.nameEnum + item.colorsEnum + "-" + settings.skillsEnum 
+                #string2 = settings.workDir + "png/" + settings.nameEnum + "/" + item.colorsEnum + "/" + settings.skillsEnum  + "/" + settings.nameEnum + item.colorsEnum + "-" + settings.skillsEnum 
+                gif1 = settings.workDir + "gif/" + settings.nameEnum + "/"+ item.colorsEnum + "/" + settings.nameEnum + item.colorsEnum + "-" + settings.skillsEnum + "-left.gif"
+                gif2 = settings.workDir + "gif/" + settings.nameEnum + "/"+ item.colorsEnum + "/" + settings.nameEnum + item.colorsEnum + "-" + settings.skillsEnum + "-right.gif"
 
                 scn.render.filepath = string1
-                newRender(item.mesh, item.material)
+                #newRender(item.mesh, item.material)
+                if settings.skillsEnum == "marathon" or settings.skillsEnum == "marathonfail" or settings.skillsEnum == "jugglingfail" or settings.skillsEnum == "juggling":
+                    marathonEmptyRender(item.mesh, item.material)
+                else:
+                    PNGTestRender(item.mesh, item.material)
+                #myclip = VideoFileClip(string1)
+                #myclip = myclip.fx( vfx.mirror_x)
+                #myclip.write_videofile(string2)
 
-                myclip = VideoFileClip(string1)
-                myclip.write_gif(gif1L, fps = 30, program="ffmpeg")
+                images = []
+                for file_name in os.listdir(settings.workDir + "png/" + settings.nameEnum + "/" + item.colorsEnum + "/" + settings.skillsEnum):
+                    if file_name.endswith('.png'):
+                        file_path = os.path.join(settings.workDir + "png/" + settings.nameEnum + "/" + item.colorsEnum + "/" + settings.skillsEnum, file_name)
+                        images.append(imageio.imread(file_path))
+                imageio.mimsave(gif1, images, fps=30)
 
-                myclip = myclip.fx( vfx.mirror_x)                
-                myclip.write_gif(gif1R, fps = 30, program="ffmpeg")
-                myclip.close
+                images = []
+                for file_name in os.listdir(settings.workDir + "png/" + settings.nameEnum + "/" + item.colorsEnum + "/" + settings.skillsEnum):
+                    if file_name.endswith('.png'):
+                        file_path = os.path.join(settings.workDir + "png/" + settings.nameEnum + "/" + item.colorsEnum + "/" + settings.skillsEnum, file_name)
+                        images.append(fliplr(imageio.imread(file_path)))
+                imageio.mimsave(gif2, images, fps=30)
+
+                #vid = imageio.mimread(string1)
+                #imageio.mimwrite(gif1, vid, fps=30)
+                
+                #vid = imageio.mimread(string2)
+                #imageio.mimwrite(gif2, vid, fps=30)
+
+
+                #myclip.write_gif(gif1L, fps = 30, program="ffmpeg")
+
+                #myclip = myclip.fx( vfx.mirror_x)                
+                #myclip.write_gif(gif1R, fps = 30, program="ffmpeg")
+                #myclip.close
 
             elif settings.isSkill is False and settings.actionsEnum != "mistreated" and settings.actionsEnum != "avatar" and settings.actionsEnum != "icon":
 
@@ -302,13 +356,27 @@ class Glimmer_OT_MultiRender(Operator):
                         ob.prop.hide_render = False
 
                 #First Render Loop
-                string1 = settings.workDir + "mp4/" + settings.nameEnum + "/" + item.colorsEnum + "/"+ item.colorsEnum + "-" + settings.actionsEnum + ".mp4"
+                #string1 = settings.workDir + "mp4/" + settings.nameEnum + "/" + item.colorsEnum + "/"+ item.colorsEnum + "-" + settings.actionsEnum + ".mp4"
+                string1 = settings.workDir + "png/" + settings.nameEnum + "/" + item.colorsEnum + "/" + settings.actionsEnum + "/" + settings.nameEnum + item.colorsEnum + "-" + settings.actionsEnum 
                 gif1 = settings.workDir + "gif/" + settings.nameEnum + "/"+ item.colorsEnum + "/" + settings.nameEnum + item.colorsEnum + "-" + settings.actionsEnum + ".gif"
                 scn.render.filepath = string1
-                newRender(item.mesh, item.material)
-                myclip = VideoFileClip(string1)
-                myclip.write_gif(gif1, fps=30, program='ffmpeg')
-                myclip.close
+
+                PNGTestRender(item.mesh, item.material)
+
+                images = []
+                for file_name in os.listdir(settings.workDir + "png/" + settings.nameEnum + "/" + item.colorsEnum + "/" + settings.actionsEnum):
+                    if file_name.endswith('.png'):
+                        file_path = os.path.join(settings.workDir + "png/" + settings.nameEnum + "/" + item.colorsEnum + "/" + settings.actionsEnum, file_name)
+                        images.append(imageio.imread(file_path))
+                imageio.mimsave(gif1, images, fps=30)
+
+                #newRender(item.mesh, item.material)
+                #vid = imageio.mimread(string1)
+                #imageio.mimwrite(gif1, vid, fps=30)
+
+                #myclip = VideoFileClip(string1)
+                #myclip.write_gif(gif1, fps=30, program='ffmpeg')
+                #myclip.close
                     
         return {"FINISHED"}
 

@@ -16,13 +16,15 @@ bl_info = {
     "author" : "Chris Calef, Conner Lindsley",
     "description" : "",
     "blender" : (2, 80, 0),
-    "version" : (1, 2, 0),
+    "version" : (1, 2, 1),
     "location" : "",
     "warning" : "",
     "category" : "Rendering"
 }
 
 import bpy
+import subprocess
+
 from bpy.props import (
     BoolProperty,
     IntProperty,
@@ -138,6 +140,16 @@ classes = (
     )
 
 def register():
+
+    py_exec = bpy.app.binary_path_python
+    # ensure pip is installed & update
+    subprocess.call([str(py_exec), "-m", "ensurepip", "--user"])
+    subprocess.call([str(py_exec), "-m", "pip", "install", "--upgrade", "pip"])
+    # install dependencies using pip
+    # dependencies such as 'numpy' could be added to the end of this command's list
+    subprocess.call([str(py_exec),"-m", "pip", "install", "--user", "imageio"])
+    subprocess.call([str(py_exec),"-m", "pip", "install", "--user", "moviepy"])
+
     for cls in classes:
         bpy.utils.register_class(cls)
 
@@ -153,6 +165,7 @@ def register():
     dns["pet_names"] = []
     dns["pets"] =  {}
     dns["enviro"] = []
+
     
 def unregister():
     for cls in reversed(classes):

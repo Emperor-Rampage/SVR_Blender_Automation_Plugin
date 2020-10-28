@@ -27,11 +27,23 @@ def newAvatarRender(object, material):
     SetRenderBlock(True)
     bpy.ops.render.render(animation=True)
 
+def PNGTestRender(object, material):
+    if object.data.materials:
+            object.data.materials[0] = material
+    else:
+            object.data.materials.append(material)
+    bpy.context.scene.render.use_file_extension = True
+    bpy.context.scene.render.image_settings.file_format = "PNG"
+    bpy.context.scene.render.image_settings.color_mode = "RGB"
+    bpy.ops.render.render(animation=True)
+    SetRenderBlock(False)
+
 def emptyRender(object, material):
     if object.data.materials:
             object.data.materials[0] = material
     else:
             object.data.materials.append(material)
+    bpy.context.scene.render.use_file_extension = True
     bpy.context.scene.render.image_settings.file_format = "PNG"
     bpy.context.scene.render.image_settings.color_mode = "RGB"
     bpy.context.scene.frame_set(1)
@@ -43,7 +55,12 @@ def marathonEmptyRender(object, material):
             object.data.materials[0] = material
     else:
             object.data.materials.append(material)
+    bpy.context.scene.render.use_file_extension = True
+    bpy.context.scene.render.image_settings.file_format = "PNG"
+    bpy.context.scene.render.image_settings.color_mode = "RGB"
+    bpy.context.scene.render.film_transparent = True
     bpy.ops.render.render(animation=True)
+
 
 def validateRenderSettings(self, context):
     if self.actionsEnum == "avatar" and self.isSkill is False:
@@ -72,13 +89,13 @@ def SetRenderBlock(avatar):
         bpy.context.scene.render.ffmpeg.format = "MPEG4"
         bpy.context.scene.render.ffmpeg.codec = "MPEG4"
         bpy.context.scene.render.ffmpeg.use_autosplit = False
-        bpy.context.scene.render.ffmpeg.constant_rate_factor = "MEDIUM"
+        bpy.context.scene.render.ffmpeg.constant_rate_factor = "LOSSLESS"
         bpy.context.scene.render.ffmpeg.ffmpeg_preset = "GOOD"
         bpy.context.scene.render.ffmpeg.gopsize = 18
         bpy.context.scene.render.ffmpeg.audio_codec = "NONE"
         bpy.context.scene.render.film_transparent = False
     else:
-        bpy.context.scene.render.use_file_extension = False
+        bpy.context.scene.render.use_file_extension = True
         bpy.context.scene.render.image_settings.file_format = "PNG"
         bpy.context.scene.render.image_settings.color_mode = "RGBA"
         bpy.context.scene.render.film_transparent = True
