@@ -60,6 +60,7 @@ class Glimmer_PT_Panel(Panel):
             row.label(text= "Enviro Props")
             row.prop(item, "prop", text="Prop Object:")
         #Do Work on Environment Prop List
+        
         row = box.row()
         new = row.operator('enviro_list.new_item', text='NEW')
         new.string = "Enviro Prop"

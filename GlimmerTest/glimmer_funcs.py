@@ -101,26 +101,10 @@ def SetRenderBlock(avatar):
         bpy.context.scene.render.film_transparent = True
 
 
-
+#Attempt to create the directories for the output, using the given location in the tool.
 def CreateDirectories():
     settings = bpy.context.scene.svr_settings
     path = settings.workDir + "gif"
-
-    #try:
-        #os.makedirs(path)
-    #except OSError:
-        #print ("Creation of the directory %s failed" % path)
-    #else:
-        #print ("Successfully created the directory %s" % path)
-        
-    #path = settings.workDir + "mp4"
-
-    #try:
-        #os.makedirs(path)
-    #except OSError:
-        #print ("Creation of the directory %s failed" % path)
-    #else:
-        #print ("Successfully created the directory %s" % path)
 
     colorEnum = PopColors()
     for color in colorEnum:
@@ -218,3 +202,10 @@ def AddEnviroPropsFromCollectionCallback():
     for prop in enviroProp:
         items.append(prop)
     return items
+
+def SetFrameRange(floor, ceiling):
+    if isinstance(floor, int) is True and isinstance(ceiling, int) is True:
+        bpy.context.scene.frame_start = floor
+        bpy.context.scene.frame_end = ceiling
+    else:
+        print("ERROR: Cannot set frame range! Check start and end frame numbers for this animation!")

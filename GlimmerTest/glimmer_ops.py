@@ -79,15 +79,15 @@ class Glimmer_OT_LoadNamesCsv(Operator, ImportHelper):
                             c_col += 1
                 c_row += 1
         for name in pet_names:
-            print(name)
-            print("COLORS:")
+            #print(name)
+            #print("COLORS:")
             enum = []
             for color in pets[name]["colors"]:
                 enum.append(color)
-            print("ACTIONS:")
+            #print("ACTIONS:")
             for action in pets[name]["actions"]:
                 print(action)
-            print("SKILLS:")
+            #print("SKILLS:")
             for skill in pets[name]["skills"]:
                 print(skill)
         
@@ -158,7 +158,7 @@ class Glimmer_OT_LoadCsvFile(Operator, ImportHelper):
 class Glimmer_OT_MultiRender(Operator):
     bl_idname = "render.multirender"
     bl_label = "Multi Render"
-    bl_description = "Render Three Times!"
+    bl_description = "Render each variation with the current animation."
     bl_options = {"REGISTER"}
 
     @classmethod
@@ -323,19 +323,6 @@ class Glimmer_OT_MultiRender(Operator):
                         images.append(fliplr(imageio.imread(file_path)))
                 imageio.mimsave(gif2, images, fps=30)
 
-                #vid = imageio.mimread(string1)
-                #imageio.mimwrite(gif1, vid, fps=30)
-                
-                #vid = imageio.mimread(string2)
-                #imageio.mimwrite(gif2, vid, fps=30)
-
-
-                #myclip.write_gif(gif1L, fps = 30, program="ffmpeg")
-
-                #myclip = myclip.fx( vfx.mirror_x)                
-                #myclip.write_gif(gif1R, fps = 30, program="ffmpeg")
-                #myclip.close
-
             elif settings.isSkill is False and settings.actionsEnum != "mistreated" and settings.actionsEnum != "avatar" and settings.actionsEnum != "icon":
 
                 #Turn off all props and meshes and only enable the ones we want.
@@ -370,15 +357,17 @@ class Glimmer_OT_MultiRender(Operator):
                         images.append(imageio.imread(file_path))
                 imageio.mimsave(gif1, images, fps=30)
 
-                #newRender(item.mesh, item.material)
-                #vid = imageio.mimread(string1)
-                #imageio.mimwrite(gif1, vid, fps=30)
-
-                #myclip = VideoFileClip(string1)
-                #myclip.write_gif(gif1, fps=30, program='ffmpeg')
-                #myclip.close
-                    
         return {"FINISHED"}
+
+class Glimmer_OT_RenderAll(bpy.types.Operator):
+    bl_idname = "render.renderall"
+    bl_label = "Render All"
+    bl_description = "Renders each animation sequencially."
+    bl_options = {"REGISTER"}
+
+    def execute(self, context):
+        return{"FINISHED"}
+    
 
 class Glimmer_OT_AddVariation(bpy.types.Operator):
     bl_idname = "collections.add_variation"
