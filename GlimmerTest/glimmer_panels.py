@@ -9,7 +9,7 @@ from bpy.props import (
 
 )
 
-from GlimmerTest.glimmer_funcs import validateRenderSettings, SetRenderBlock, AddNew, AddActionPropsFromCollectionCallback, AddSkillPropsFromCollectionCallback
+#from GlimmerTest.glimmer_funcs import validateRenderSettings, SetRenderBlock, AddNew, AddActionActionPropsFromCollectionCallback, AddSkillActionPropsFromCollectionCallback
 
 class Glimmer_PT_Panel(Panel):
     bl_idname = "Glimmer_PT_Panel"
@@ -36,63 +36,93 @@ class Glimmer_PT_Panel(Panel):
         layout.separator()
 
         box = layout.box()
-        box.row().prop(settings, "nameEnum", text= "Pet")
+        box.row().prop(settings, "nameEnum", text= "Pet Name")
         #box.row().prop(settings, "colorsEnum", text= "Color")
         if settings.isSkill is True:
-            box.row().prop(settings, "skillsEnum", text = "Skill")
+            box.row().prop(settings, "skillsEnum", text = "Pet Skill Title")
         else:
-            box.row().prop(settings, "actionsEnum", text = "Action")
+            box.row().prop(settings, "actionsEnum", text = "Pet Action Title")
 
+        #box.row().prop(settings, "action", text= "Blender Action")
 
         row = box.row()
-        row.prop(settings, "isSkill", text = "Render As Skill?")
-
-        layout.separator()
-        layout.row().operator("render.multirender", text="Multi Render", icon='OBJECT_DATAMODE')
-        layout.separator()
-
+        row.prop(settings, "isSkill", text = "Switch to Skill Mode?")
+        box.separator()
+        row = box.row()
+        row.label(text = "Animation Frame Range")
+        
         #Environment Prop List Area
         box = layout.box()
         box.row().label(text= "Environment Prop List")
         row = box.row()
-        for item in scene.enviro_list: 
-            row = box.row()
-            row.label(text= "Enviro Props")
-            row.prop(item, "prop", text="Prop Object:")
+
+        if scene.list_index >= 0 and scene.my_enviro_list:
+            if settings.isSkill is True:
+                for item in scene.my_enviro_list[settings.skillsEnum].prop_list: 
+                    row = box.row()
+                    row.label(text= "Enviro Props")
+                    row.prop(item, "prop", text="Prop Object:")
+            else:
+                for item in scene.my_enviro_list[settings.actionsEnum].prop_list: 
+                    row = box.row()
+                    row.label(text= "Enviro Props")
+                    row.prop(item, "prop", text="Prop Object:")
+
         #Do Work on Environment Prop List
         
         row = box.row()
-        new = row.operator('enviro_list.new_item', text='NEW')
-        new.string = "Enviro Prop"
+        new = row.operator('my_enviro_list.new_item', text='NEW')
+        if settings.isSkill is True:
+            new.string = settings.skillsEnum
+        else:
+            new.string = settings.actionsEnum
 
-        delete = row.operator('enviro_list.delete_item', text='DELETE')
-                       
+        delete = row.operator('my_enviro_list.delete_item', text='DELETE')
+        if settings.isSkill is True:
+            delete.string = settings.skillsEnum
+        else:
+            delete.string = settings.actionsEnum 
+
+
         layout.separator()
 
         #Action Prop List Area
         box = layout.box()
         box.row().label(text= "Action Prop List")
         row = box.row()
-        if scene.list_index >= 0 and scene.my_list:
+        if scene.list_index >= 0 and scene.my_action_list:
             if settings.isSkill is True:
-                for item in scene.my_list[settings.skillsEnum].prop_list:
+                for item in scene.my_action_list[settings.skillsEnum].prop_list:
+                    box= layout.box()
                     row = box.row()
-                    row.label(text= scene.my_list[settings.skillsEnum].name)
-                    row.prop(item, "prop", text="Prop Object:")
+                    row.label(text= "Action Prop")
+                    row = box.row()
+                    row.prop(item, "prop", text="Prop Mesh:")
+                    row = box.row()
+                    row.prop(item, "rig", text="Prop Rig:")
+                    row = box.row()
+                    row.prop(item, "action", text="Prop Action:")
             else:
-                for item in scene.my_list[settings.actionsEnum].prop_list: 
+                for item in scene.my_action_list[settings.actionsEnum].prop_list:
+                    box= layout.box()
                     row = box.row()
-                    row.label(text= scene.my_list[settings.actionsEnum].name)
-                    row.prop(item, "prop", text="Prop Object:")
+                    row.label(text="Action Prop")
+                    row = box.row()
+                    row.prop(item, "prop", text="Prop Mesh:")
+                    row = box.row()
+                    row.prop(item, "rig", text="Prop Rig:")
+                    row = box.row()
+                    row.prop(item, "action", text="Prop Action:")
+
         #Do Work on Action Prop List
         row = box.row()
-        new = row.operator('my_list.new_item', text='NEW')
+        new = row.operator('my_action_list.new_item', text='NEW')
         if settings.isSkill is True:
             new.string = settings.skillsEnum
         else:
             new.string = settings.actionsEnum
 
-        delete = row.operator('my_list.delete_item', text='REMOVE')
+        delete = row.operator('my_action_list.delete_item', text='REMOVE')
         if settings.isSkill is True:
             delete.string = settings.skillsEnum
         else:
@@ -113,7 +143,8 @@ class Glimmer_PT_Panel(Panel):
             box = layout.box()          
             box.row().prop(item, 'colorsEnum')
             box.row().prop(item, 'material')
-            box.row().prop(item, 'mesh')                   
+            box.row().prop(item, 'mesh')
+            box.row().prop(item, 'rig')               
             row = box.row() 
 
             new = row.operator('prop_list.new_item', text='NEW')
@@ -130,6 +161,11 @@ class Glimmer_PT_Panel(Panel):
             layout.separator()
             iterator = iterator + 1            
         
+        layout.separator()
+        layout.row().operator("render.multirender", text="Render Animation", icon='OBJECT_DATAMODE')
+        layout.separator()
+
+
         #layout.row().prop(settings,"scaleValue",text="Scale Amount")
         #row = layout.row()
         #row.operator('object.scale_object',text="Scale Object")
@@ -145,10 +181,37 @@ class Glimmer_PT_Panel(Panel):
 
 
 class ActionListItem(PropertyGroup):
-    bl_idname = "collection.propitem"
-    bl_label = "Pointer property group, used to hold prop info."
+    bl_idname = "collection.actionpropitem"
+    bl_label = "Pointer property group, used to hold Action Prop info."
     name : StringProperty(name="name")
-    prop : PointerProperty(name="prop", type= bpy.types.Object)   
+    prop : PointerProperty(name="prop", type= bpy.types.Mesh)
+    rig : PointerProperty(name="rig", type= bpy.types.Armature)
+    action : PointerProperty(name="action", type= bpy.types.Action)
+
+class EnviroListItem(PropertyGroup):
+    bl_idname = "collection.enviropropitem"
+    bl_label = "Pointer property group, used to hold Enviro Prop info."
+    name : StringProperty(name="name")
+    prop : PointerProperty(name="prop", type= bpy.types.Mesh)
+
+class FrameRange(PropertyGroup):
+    bl_idname = "collection.framerange"
+    bl_label = "Integer Property Group, used to handle the Render frame range."
+    name : StringProperty(name="name")
+    floor : IntProperty(name="floor", default=1)
+    ceiling : IntProperty(name="ceiling", default=60)
+
+class ActionPointer(PropertyGroup):
+    bl_idname = "collection.blendaction"
+    bl_label = "Pointer property group, to indicate what Action should be assigned to the Pet per anim."
+    name : StringProperty(name="name")
+    action : PointerProperty(name="action", type= bpy.types.Action)
+
+class CameraPointer(PropertyGroup):
+    bl_idname = "collection.animcamera"
+    bl_label = "Pointer Property Group, indicates what camera to use for each animation."
+    name : StringProperty(name="name")
+    camera : PointerProperty(name="camera", type= bpy.types.Camera)
 
 class Glimmer_UL_ActionList(UIList):
     """Demo UIList.""" 
@@ -181,91 +244,92 @@ class LIST_OT_DeleteItemProp(Operator):
     index : bpy.props.IntProperty(name='index')
         
     def execute(self, context): 
-        my_list = context.scene.my_variations[self.index].prop_list
+        my_action_list = context.scene.my_variations[self.index].prop_list
         index = context.scene.my_variations[self.index].list_index
 
-        my_list.remove(0) 
-        #context.scene.my_variations[self.index].list_index = min(max(0, index - 1), len(my_list) - 1) 
+        my_action_list.remove(len(my_action_list) - 1)
+        #my_action_list.remove(0) 
+        #context.scene.my_variations[self.index].list_index = min(max(0, index - 1), len(my_action_list) - 1) 
     
         return{'FINISHED'}
 
 class LIST_OT_NewItem(Operator): 
     """Add a new item to the list.""" 
-    bl_idname = "my_list.new_item" 
+    bl_idname = "my_action_list.new_item" 
     bl_label = "Add a new item"
 
     string : bpy.props.StringProperty()
 
     def execute(self, context): 
-        context.scene.my_list[self.string].prop_list.add() 
+        context.scene.my_action_list[self.string].prop_list.add() 
         return{'FINISHED'}
 
 class LIST_OT_NewEnviroProp(Operator): 
     """Add a new item to the list.""" 
-    bl_idname = "enviro_list.new_item" 
+    bl_idname = "my_enviro_list.new_item" 
     bl_label = "Add a new item"
 
     string : bpy.props.StringProperty()
 
     def execute(self, context): 
-        context.scene.enviro_list.add() 
+        context.scene.my_enviro_list[self.string].prop_list.add()
         return{'FINISHED'}
 
 class LIST_OT_DeleteItem(Operator): 
     """Delete the selected item from the list.""" 
-    bl_idname = "my_list.delete_item" 
+    bl_idname = "my_action_list.delete_item" 
     bl_label = "Deletes an item" 
 
     string : bpy.props.StringProperty()
  
         
     def execute(self, context): 
-        my_list = context.scene.my_list[self.string].prop_list
+        my_action_list = context.scene.my_action_list[self.string].prop_list
         
 
-        my_list.remove(0) 
-        #context.scene.list_index = min(max(0, index - 1), len(my_list) - 1) 
+        my_action_list.remove(0) 
+        #context.scene.list_index = min(max(0, index - 1), len(my_action_list) - 1) 
     
         return{'FINISHED'}
 
 class LIST_OT_DeleteEnviroItem(Operator): 
     """Delete the selected item from the list.""" 
-    bl_idname = "enviro_list.delete_item" 
+    bl_idname = "my_enviro_list.delete_item" 
     bl_label = "Deletes an item" 
     
     string : bpy.props.StringProperty()
         
     def execute(self, context): 
-        my_list = context.scene.enviro_list
+        my_enviro_list = context.scene.my_enviro_list[self.string].prop_list
 
-        my_list.remove(0) 
-        #context.scene.list_index = min(max(0, index - 1), len(my_list) - 1) 
-    
+        my_enviro_list.remove(0) 
+        #context.scene.list_index = min(max(0, index - 1), len(my_enviro_list) - 1) 
+
         return{'FINISHED'}
 
 class LIST_OT_MoveItem(Operator):
     """Move an item in the list."""
-    bl_idname = "my_list.move_item"
+    bl_idname = "my_action_list.move_item"
     bl_label = "Move an item in the list"
 
     direction: bpy.props.EnumProperty(items=(('UP', 'Up', ""), ('DOWN', 'Down', "")))
     
     @classmethod
     def poll(cls, context):
-        return context.scene.my_list
+        return context.scene.my_action_list
     
     def move_index(self):
         """ Move index of an item render queue while clamping it. """
         index = bpy.context.scene.list_index
-        list_length = len(bpy.context.scene.my_list) - 1 # (index starts at 0)
+        list_length = len(bpy.context.scene.my_action_list) - 1 # (index starts at 0)
         new_index = index + (-1 if self.direction == 'UP' else 1)
         bpy.context.scene.list_index = max(0, min(new_index, list_length))
 
     def execute(self, context):
-        my_list = context.scene.my_list
+        my_action_list = context.scene.my_action_list
         index = context.scene.list_index
         neighbor = index + (-1 if self.direction == 'UP' else 1)
-        my_list.move(neighbor, index)
+        my_action_list.move(neighbor, index)
         self.move_index()
         return{'FINISHED'}
 

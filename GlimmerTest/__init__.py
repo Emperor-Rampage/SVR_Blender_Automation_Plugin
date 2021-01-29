@@ -38,7 +38,11 @@ from bpy.props import (
 from . glimmer_panels import (
     Glimmer_PT_Panel, 
     Glimmer_UL_ActionList, 
-    ActionListItem, 
+    ActionListItem,
+    EnviroListItem,
+    #FrameRange,
+    #ActionPointer,
+    #CameraPointer, 
     LIST_OT_NewItem, 
     LIST_OT_DeleteItem, 
     LIST_OT_MoveItem, 
@@ -57,25 +61,29 @@ from . glimmer_ops import (
     Glimmer_OT_UnScaleObject, 
     Glimmer_OT_AddVariation, 
     Glimmer_OT_DeleteVariation,
-    SVR_ActionPropList
+    SVR_ActionPropList, 
+    SVR_EnviroPropList,
+    #SVR_CameraList, 
+    SVR_FrameRangeList,
+    #SVR_PetActionList
 )
 from . glimmer_funcs import (
     validateRenderSettings, 
-    SetRenderBlock,
     AddNamesCollectionCallback,
     AddColorsCollectionCallback,
     AddActionsCollectionCallback,
-    AddSkillsCollectionCallback,
-
+    AddSkillsCollectionCallback
 )
 
-myTestArray = ["test string one","test string two"]
+#myTestArray = ["test string one","test string two"]
 
 class SVR_Settings(bpy.types.PropertyGroup):
     workDir : bpy.props.StringProperty(name = "Work Directory", default = "C:\\work\\")
     csvFile : StringProperty(name="CSV Filename")
     isSkill : BoolProperty(name="isSkill:", description="Set Render Mode to skill.", update= validateRenderSettings)
-    
+
+    # Make the Camera and Action Set be a Collection Property, and have a bank of them for each action/skill then use a callback to determine which goes where.
+    #action : bpy.props.PointerProperty(name="Action", type= bpy.types.Action)
     
     nameEnum: EnumProperty(
         name="Name:",
@@ -112,15 +120,21 @@ class SVR_VariationSettings(bpy.types.PropertyGroup):
         items = AddColorsCollectionCallback
     )
     material : bpy.props.PointerProperty(name="MaterialProperty", type= bpy.types.Material)
-    mesh : bpy.props.PointerProperty(name="MeshProperty", type= bpy.types.Object)
+    mesh : bpy.props.PointerProperty(name="MeshProperty", type= bpy.types.Mesh)
+    rig : bpy.props.PointerProperty(name="ArmatureProperty", type= bpy.types.Armature)
     prop_list : bpy.props.CollectionProperty(type = ActionListItem)
-    list_index : bpy.props.IntProperty(name = "Index for my_list", default = 0)
+    list_index : bpy.props.IntProperty(name = "Index for my_action_list", default = 0)
 
 classes = (
     SVR_Settings,
     ActionListItem,
+    EnviroListItem,
     SVR_VariationSettings,
     SVR_ActionPropList,
+    SVR_EnviroPropList,
+    SVR_FrameRangeList,
+    #SVR_CameraList,
+    #SVR_PetActionList,
     Glimmer_OT_LoadNamesCsv,
     Glimmer_OT_LoadCsvFile,
     Glimmer_OT_MultiRender,
@@ -141,30 +155,35 @@ classes = (
 
 def register():
 
-    py_exec = bpy.app.binary_path_python
+    #py_exec = bpy.app.binary_path_python
+
     # ensure pip is installed & update
-    subprocess.call([str(py_exec), "-m", "ensurepip", "--user"])
-    subprocess.call([str(py_exec), "-m", "pip", "install", "--upgrade", "pip"])
+    #subprocess.call([str(py_exec), "-m", "ensurepip", "--user"])
+    #subprocess.call([str(py_exec), "-m", "pip", "install", "--upgrade", "pip"])
+
     # install dependencies using pip
     # dependencies such as 'numpy' could be added to the end of this command's list
-    subprocess.call([str(py_exec),"-m", "pip", "install", "--user", "imageio"])
-    subprocess.call([str(py_exec),"-m", "pip", "install", "--user", "moviepy"])
+    #subprocess.call([str(py_exec),"-m", "pip", "install", "--user", "imageio"])
+    #subprocess.call([str(py_exec),"-m", "pip", "install", "--user", "moviepy"])
 
     for cls in classes:
         bpy.utils.register_class(cls)
 
     bpy.types.Scene.svr_settings = bpy.props.PointerProperty(type = SVR_Settings)
-    bpy.types.Scene.my_list = CollectionProperty(type = SVR_ActionPropList)
-    bpy.types.Scene.enviro_list = CollectionProperty(type = ActionListItem)  
+    bpy.types.Scene.my_action_list = CollectionProperty(type = SVR_ActionPropList)
+    bpy.types.Scene.my_enviro_list = CollectionProperty(type = SVR_EnviroPropList)  
     bpy.types.Scene.my_variations = CollectionProperty(type = SVR_VariationSettings)
-    bpy.types.Scene.list_index = IntProperty(name = "Index for my_list", default = 0)
-    bpy.types.Scene.enviro_index = IntProperty(name = "Index for enivro_list", default = 0)
+    #bpy.types.Scene.my_camera_list = CollectionProperty(type = SVR_CameraList)
+    #bpy.types.Scene.frame_range = CollectionProperty(type = SVR_FrameRangeList)
+    #bpy.types.Scene.pet_action = CollectionProperty(type = SVR_PetActionList)
+    bpy.types.Scene.list_index = IntProperty(name = "Index for my_action_list", default = 0)
+    bpy.types.Scene.enviro_index = IntProperty(name = "Index for my_enivro_list", default = 0)
         
     #Well this is weird but it appears that globals are a little weird in blender addons, this is _one_ way to do it.
     dns = bpy.app.driver_namespace
     dns["pet_names"] = []
     dns["pets"] =  {}
-    dns["enviro"] = []
+    #dns["enviro"] = []
 
     
 def unregister():
@@ -173,8 +192,11 @@ def unregister():
 
     del bpy.types.Scene.enviro_index    
     del bpy.types.Scene.list_index
+    #del bpy.types.Scene.pet_action
+    #del bpy.types.Scene.frame_range
+    #del bpy.types.Scene.my_camera_list
     del bpy.types.Scene.my_variations 
-    del bpy.types.Scene.enviro_list
-    del bpy.types.Scene.my_list
+    del bpy.types.Scene.my_enviro_list
+    del bpy.types.Scene.my_action_list
     del bpy.types.Scene.svr_settings
 

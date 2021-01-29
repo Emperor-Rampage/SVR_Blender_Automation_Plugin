@@ -132,7 +132,7 @@ def CreateDirectories():
         else:
             print ("Successfully created the directory %s" % path)
 
-def AddActionPropsFromCollectionCallback():
+def AddActionActionPropsFromCollectionCallback():
     items = []
     settings = bpy.context.scene.svr_settings
     dns = bpy.app.driver_namespace
@@ -141,7 +141,25 @@ def AddActionPropsFromCollectionCallback():
         items.append(action)
     return items
 
-def AddSkillPropsFromCollectionCallback():
+def AddSkillActionPropsFromCollectionCallback():
+    items = []
+    settings = bpy.context.scene.svr_settings
+    dns = bpy.app.driver_namespace
+    pets = dns.get("pets")
+    for action in pets[settings.nameEnum]["skills"]:
+        items.append(action)
+    return items
+
+def AddActionEnviroPropsFromCollectionCallback():
+    items = []
+    settings = bpy.context.scene.svr_settings
+    dns = bpy.app.driver_namespace
+    pets = dns.get("pets")
+    for action in pets[settings.nameEnum]["actions"]:
+        items.append(action)
+    return items
+
+def AddSkillEnviroPropsFromCollectionCallback():   
     items = []
     settings = bpy.context.scene.svr_settings
     dns = bpy.app.driver_namespace
@@ -194,18 +212,9 @@ def AddSkillsCollectionCallback(self, context):
         items.append((skill, skill, ""))
     return items
 
-def AddEnviroPropsFromCollectionCallback():
-    items = []
-    #settings = bpy.context.scene.svr_settings
-    dns = bpy.app.driver_namespace
-    enviroProp = dns.get("enviro")
-    for prop in enviroProp:
-        items.append(prop)
-    return items
-
 def SetFrameRange(floor, ceiling):
     if isinstance(floor, int) is True and isinstance(ceiling, int) is True:
         bpy.context.scene.frame_start = floor
         bpy.context.scene.frame_end = ceiling
     else:
-        print("ERROR: Cannot set frame range! Check start and end frame numbers for this animation!")
+        print("ERROR: Cannot set frame range! Check start and end frame numbers for this animation!") 

@@ -15,8 +15,8 @@ from bpy.props import (
     EnumProperty,
     CollectionProperty
 ) 
-from . glimmer_funcs import PNGTestRender, gatherData, newRender, validateRenderSettings, SetRenderBlock, newRender, newAvatarRender, PNGTestRender, emptyRender, marathonEmptyRender, CreateDirectories, AddActionPropsFromCollectionCallback, AddSkillPropsFromCollectionCallback, AddEnviroPropsFromCollectionCallback
-from . glimmer_panels import ActionListItem
+from . glimmer_funcs import PNGTestRender, gatherData, newRender, validateRenderSettings, SetRenderBlock, newRender, newAvatarRender, PNGTestRender, emptyRender, marathonEmptyRender, CreateDirectories, AddActionActionPropsFromCollectionCallback, AddSkillActionPropsFromCollectionCallback, AddActionEnviroPropsFromCollectionCallback, AddSkillEnviroPropsFromCollectionCallback
+from . glimmer_panels import ActionListItem, EnviroListItem, ActionPointer, CameraPointer, EnviroListItem, FrameRange
 
 gifs = []
 
@@ -95,25 +95,31 @@ class Glimmer_OT_LoadNamesCsv(Operator, ImportHelper):
         dns["pet_names"] =  pet_names
         dns["pets"] = pets
 
-        enum = AddActionPropsFromCollectionCallback()
+        enum = AddActionActionPropsFromCollectionCallback()
         
         for name in enum:
-            new = bpy.context.scene.my_list.add()
+            new = bpy.context.scene.my_action_list.add()
             new.name = name
         
 
-        enum = AddSkillPropsFromCollectionCallback()
+        enum = AddSkillActionPropsFromCollectionCallback()
 
         for name in enum:
-            new = bpy.context.scene.my_list.add()
+            new = bpy.context.scene.my_action_list.add()
             new.name = name
 
 
-        #enum = AddEnviroPropsFromCollectionCallback()
+        enum = AddActionEnviroPropsFromCollectionCallback()
         
-        #for name in enum:
-            #new = bpy.context.scene.enviro_list.add()
-            #new.name = name
+        for name in enum:
+            new = bpy.context.scene.my_enviro_list.add()
+            new.name = name
+
+        enum = AddSkillEnviroPropsFromCollectionCallback()
+        
+        for name in enum:
+            new = bpy.context.scene.my_enviro_list.add()
+            new.name = name
 
         return {'FINISHED'}
 
@@ -121,6 +127,22 @@ class Glimmer_OT_LoadNamesCsv(Operator, ImportHelper):
 class SVR_ActionPropList(bpy.types.PropertyGroup):
     name : bpy.props.StringProperty(name= "Name")
     prop_list : bpy.props.CollectionProperty(type = ActionListItem)
+
+class SVR_EnviroPropList(bpy.types.PropertyGroup):
+    name : bpy.props.StringProperty(name= "Name")
+    prop_list : bpy.props.CollectionProperty(type = EnviroListItem)
+
+class SVR_FrameRangeList(bpy.types.PropertyGroup):
+    name : bpy.props.StringProperty(name="name")
+    range_list : bpy.props.CollectionProperty(type = FrameRange)
+
+class SVR_CameraList(bpy.types.PropertyGroup):
+    name : bpy.props.StringProperty(name="name")
+    camera_list : bpy.props.CollectionProperty(type = CameraPointer)
+
+class SVR_PetActionList(bpy.types.PropertyGroup):
+    name : bpy.props.StringProperty(name="name")
+    action_list : bpy.props.CollectionProperty(type= ActionPointer)
 
 class Glimmer_OT_LoadCsvFile(Operator, ImportHelper): 
     bl_idname = "glimmer.load_csv_file" 
@@ -184,7 +206,7 @@ class Glimmer_OT_MultiRender(Operator):
                         if ob.type != 'LIGHT':
                             ob.hide_render = True
 
-                for ob in scn.enviro_list:
+                for ob in scn.my_enviro_list:
                     if ob: 
                         ob.prop.hide_render = False
 
@@ -257,11 +279,12 @@ class Glimmer_OT_MultiRender(Operator):
                 #Add special setup for Marathon-empty, rendering out all the frames.
                                          
                 for ob in bpy.context.scene.objects:
-                    if ob.hide_render == False:
-                        if ob.type != 'LIGHT':
-                            ob.hide_render = True
+                    if ob.type != 'NONETYPE': 
+                        if ob.hide_render == False:
+                            if ob.type != 'LIGHT':
+                                ob.hide_render = True
 
-                for ob in scn.enviro_list:
+                for ob in scn.my_enviro_list:
                     if ob: 
                         ob.prop.hide_render = False
                             
@@ -290,7 +313,7 @@ class Glimmer_OT_MultiRender(Operator):
                 item.mesh.hide_render = False
                 for ob in item.prop_list:
                     ob.prop.hide_render = False
-                for ob in bpy.context.scene.my_list[settings.skillsEnum].prop_list:
+                for ob in bpy.context.scene.my_action_list[settings.skillsEnum].prop_list:
                     ob.prop.hide_render = False
 
                 #First Render Loop
@@ -332,13 +355,13 @@ class Glimmer_OT_MultiRender(Operator):
                             ob.hide_render = True
 
                 item.mesh.hide_render = False
-                for ob in scn.enviro_list:
+                for ob in scn.my_enviro_list:
                     if ob: 
                         ob.prop.hide_render = False
                 for ob in item.prop_list:
                     if ob: 
                         ob.prop.hide_render = False
-                for ob in bpy.context.scene.my_list[settings.actionsEnum].prop_list:
+                for ob in bpy.context.scene.my_action_list[settings.actionsEnum].prop_list:
                     if ob:
                         ob.prop.hide_render = False
 
@@ -368,7 +391,6 @@ class Glimmer_OT_RenderAll(bpy.types.Operator):
     def execute(self, context):
         return{"FINISHED"}
     
-
 class Glimmer_OT_AddVariation(bpy.types.Operator):
     bl_idname = "collections.add_variation"
     bl_label = "Add Variation"
