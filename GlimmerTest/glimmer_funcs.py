@@ -1,6 +1,7 @@
 import bpy
 import os
-
+from bpy_extras.io_utils import ImportHelper
+import csv
 
 def AddNew(ActionList):
     ActionList.add()
@@ -61,7 +62,6 @@ def marathonEmptyRender(object, material):
     bpy.context.scene.render.film_transparent = True
     bpy.ops.render.render(animation=True)
 
-
 def validateRenderSettings(self, context):
     if self.actionsEnum == "avatar" and self.isSkill is False:
         bpy.context.scene.render.resolution_x = 100
@@ -79,7 +79,6 @@ def validateRenderSettings(self, context):
         bpy.context.scene.render.resolution_x = 464
         bpy.context.scene.render.resolution_y = 346
         SetRenderBlock(False)        
-
 
 def SetRenderBlock(avatar):
     if avatar == False:
@@ -99,7 +98,6 @@ def SetRenderBlock(avatar):
         bpy.context.scene.render.image_settings.file_format = "PNG"
         bpy.context.scene.render.image_settings.color_mode = "RGBA"
         bpy.context.scene.render.film_transparent = True
-
 
 #Attempt to create the directories for the output, using the given location in the tool.
 def CreateDirectories():
@@ -218,3 +216,95 @@ def SetFrameRange(floor, ceiling):
         bpy.context.scene.frame_end = ceiling
     else:
         print("ERROR: Cannot set frame range! Check start and end frame numbers for this animation!") 
+
+def LoadCSVFile(self, context):
+    settings = context.scene.svr_settings
+    settings.csvFile = self.filepath
+    sections = ["colors", "actions", "skills"]
+    pet_names = []
+    pets = {}
+    with open(self.filepath, newline='') as csvfile:
+        spamreader = csv.reader(csvfile, delimiter=',', quotechar='|')
+        c_row = 0
+        c_sec = 0 #section - [ "colors", "actions", "skills"]
+        for row in spamreader:
+            c_col = 0 #column
+            for item in row:
+                if c_row == 1:
+                    pet_names.append(item)                                            
+                elif c_row == 2:
+                    for name in pet_names:
+                        pets[name] = {}
+                        for s in sections:
+                            pets[name][s] = []                                
+                elif c_row > 2:
+                    if (item == "-standard actions-"):
+                        c_sec = 1
+                    elif (item == "-skill actions-"):
+                        c_sec = 2
+                    else:
+                        pets[pet_names[c_col]][sections[c_sec]].append(item)
+                        c_col += 1
+            c_row += 1
+    for name in pet_names:
+        #print(name)
+        #print("COLORS:")
+        enum = []
+        for color in pets[name]["colors"]:
+            enum.append(color)
+        #print("ACTIONS:")
+        for action in pets[name]["actions"]:
+            print(action)
+        #print("SKILLS:")
+        for skill in pets[name]["skills"]:
+            print(skill)
+    
+    dns = bpy.app.driver_namespace
+    dns["pet_names"] =  pet_names
+    dns["pets"] = pets
+
+    enum = AddActionActionPropsFromCollectionCallback()
+    
+    for name in enum:
+        actionProp = bpy.context.scene.my_action_list.add() #Create Action Prop
+        actionProp.name = name
+
+        enviroProp = bpy.context.scene.my_enviro_list.add() #Create Skill Prop
+        enviroProp.name = name
+
+        frameRange = bpy.context.scene.frame_range_list.add() #Create Frame List
+        frameRange.name = name
+        frameRange.floor = 1
+        frameRange.ceiling = 60
+
+        cameraPointer = bpy.context.scene.my_camera_list.add()
+        cameraPointer.name = name
+
+        petAction = bpy.context.scene.pet_action.add()
+        petAction.name = name
+    
+
+    enum = AddSkillActionPropsFromCollectionCallback()
+
+    for name in enum:
+        actionProp = bpy.context.scene.my_action_list.add() #Create Action Prop
+        actionProp.name = name
+
+        enviroProp = bpy.context.scene.my_enviro_list.add() #Create Skill Prop
+        enviroProp.name = name
+
+        frameRange = bpy.context.scene.frame_range_list.add() #Create Frame List
+        frameRange.name = name
+        frameRange.floor = 1
+        frameRange.ceiling = 60
+
+        cameraPointer = bpy.context.scene.my_camera_list.add()
+        cameraPointer.name = name
+
+        petAction = bpy.context.scene.pet_action.add()
+        petAction.name = name
+
+
+    
+
+    return {'FINISHED'}

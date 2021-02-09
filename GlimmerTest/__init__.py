@@ -16,7 +16,7 @@ bl_info = {
     "author" : "Chris Calef, Conner Lindsley",
     "description" : "",
     "blender" : (2, 80, 0),
-    "version" : (1, 2, 1),
+    "version" : (1, 3, 0),
     "location" : "",
     "warning" : "",
     "category" : "Rendering"
@@ -40,9 +40,6 @@ from . glimmer_panels import (
     Glimmer_UL_ActionList, 
     ActionListItem,
     EnviroListItem,
-    #FrameRange,
-    #ActionPointer,
-    #CameraPointer, 
     LIST_OT_NewItem, 
     LIST_OT_DeleteItem, 
     LIST_OT_MoveItem, 
@@ -63,9 +60,9 @@ from . glimmer_ops import (
     Glimmer_OT_DeleteVariation,
     SVR_ActionPropList, 
     SVR_EnviroPropList,
-    #SVR_CameraList, 
+    SVR_CameraList, 
     SVR_FrameRangeList,
-    #SVR_PetActionList
+    SVR_PetActionList
 )
 from . glimmer_funcs import (
     validateRenderSettings, 
@@ -120,7 +117,7 @@ class SVR_VariationSettings(bpy.types.PropertyGroup):
         items = AddColorsCollectionCallback
     )
     material : bpy.props.PointerProperty(name="MaterialProperty", type= bpy.types.Material)
-    mesh : bpy.props.PointerProperty(name="MeshProperty", type= bpy.types.Mesh)
+    mesh : bpy.props.PointerProperty(name="MeshProperty", type= bpy.types.Object)
     rig : bpy.props.PointerProperty(name="ArmatureProperty", type= bpy.types.Armature)
     prop_list : bpy.props.CollectionProperty(type = ActionListItem)
     list_index : bpy.props.IntProperty(name = "Index for my_action_list", default = 0)
@@ -133,8 +130,8 @@ classes = (
     SVR_ActionPropList,
     SVR_EnviroPropList,
     SVR_FrameRangeList,
-    #SVR_CameraList,
-    #SVR_PetActionList,
+    SVR_CameraList,
+    SVR_PetActionList,
     Glimmer_OT_LoadNamesCsv,
     Glimmer_OT_LoadCsvFile,
     Glimmer_OT_MultiRender,
@@ -173,9 +170,9 @@ def register():
     bpy.types.Scene.my_action_list = CollectionProperty(type = SVR_ActionPropList)
     bpy.types.Scene.my_enviro_list = CollectionProperty(type = SVR_EnviroPropList)  
     bpy.types.Scene.my_variations = CollectionProperty(type = SVR_VariationSettings)
-    #bpy.types.Scene.my_camera_list = CollectionProperty(type = SVR_CameraList)
-    #bpy.types.Scene.frame_range = CollectionProperty(type = SVR_FrameRangeList)
-    #bpy.types.Scene.pet_action = CollectionProperty(type = SVR_PetActionList)
+    bpy.types.Scene.my_camera_list = CollectionProperty(type = SVR_CameraList)
+    bpy.types.Scene.frame_range_list = CollectionProperty(type = SVR_FrameRangeList)
+    bpy.types.Scene.pet_action = CollectionProperty(type = SVR_PetActionList)
     bpy.types.Scene.list_index = IntProperty(name = "Index for my_action_list", default = 0)
     bpy.types.Scene.enviro_index = IntProperty(name = "Index for my_enivro_list", default = 0)
         
@@ -192,9 +189,9 @@ def unregister():
 
     del bpy.types.Scene.enviro_index    
     del bpy.types.Scene.list_index
-    #del bpy.types.Scene.pet_action
-    #del bpy.types.Scene.frame_range
-    #del bpy.types.Scene.my_camera_list
+    del bpy.types.Scene.pet_action
+    del bpy.types.Scene.frame_range_list
+    del bpy.types.Scene.my_camera_list
     del bpy.types.Scene.my_variations 
     del bpy.types.Scene.my_enviro_list
     del bpy.types.Scene.my_action_list

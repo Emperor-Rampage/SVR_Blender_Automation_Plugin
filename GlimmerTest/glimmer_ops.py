@@ -13,10 +13,11 @@ from bpy.props import (
     FloatProperty,
     StringProperty,
     EnumProperty,
-    CollectionProperty
+    CollectionProperty,
+    PointerProperty
 ) 
-from . glimmer_funcs import PNGTestRender, gatherData, newRender, validateRenderSettings, SetRenderBlock, newRender, newAvatarRender, PNGTestRender, emptyRender, marathonEmptyRender, CreateDirectories, AddActionActionPropsFromCollectionCallback, AddSkillActionPropsFromCollectionCallback, AddActionEnviroPropsFromCollectionCallback, AddSkillEnviroPropsFromCollectionCallback
-from . glimmer_panels import ActionListItem, EnviroListItem, ActionPointer, CameraPointer, EnviroListItem, FrameRange
+from . glimmer_funcs import LoadCSVFile, PNGTestRender, gatherData, newRender, validateRenderSettings, SetRenderBlock, newRender, newAvatarRender, PNGTestRender, emptyRender, marathonEmptyRender, CreateDirectories, AddActionActionPropsFromCollectionCallback, AddSkillActionPropsFromCollectionCallback, AddActionEnviroPropsFromCollectionCallback, AddSkillEnviroPropsFromCollectionCallback
+from . glimmer_panels import ActionListItem, EnviroListItem, EnviroListItem 
 
 gifs = []
 
@@ -49,7 +50,8 @@ class Glimmer_OT_LoadNamesCsv(Operator, ImportHelper):
     bl_idname = "glimmer.load_names_csv" 
     bl_label = "Load a CSV file with pet, color, and action names." 
     
-    def execute(self, context): 
+    def execute(self, context):
+        #LoadCSVFile         
         settings = context.scene.svr_settings
         settings.csvFile = self.filepath
         sections = ["colors", "actions", "skills"]
@@ -98,31 +100,44 @@ class Glimmer_OT_LoadNamesCsv(Operator, ImportHelper):
         enum = AddActionActionPropsFromCollectionCallback()
         
         for name in enum:
-            new = bpy.context.scene.my_action_list.add()
-            new.name = name
-        
+            actionProp = bpy.context.scene.my_action_list.add() #Create Action Prop
+            actionProp.name = name
+
+            enviroProp = bpy.context.scene.my_enviro_list.add() #Create Skill Prop
+            enviroProp.name = name
+
+            frameRange = bpy.context.scene.frame_range_list.add() #Create Frame List
+            frameRange.name = name
+            frameRange.floor = 1
+            frameRange.ceiling = 60
+
+            cameraPointer = bpy.context.scene.my_camera_list.add()
+            cameraPointer.name = name
+
+            petAction = bpy.context.scene.pet_action.add()
+            petAction.name = name   
 
         enum = AddSkillActionPropsFromCollectionCallback()
 
         for name in enum:
-            new = bpy.context.scene.my_action_list.add()
-            new.name = name
+                actionProp = bpy.context.scene.my_action_list.add() #Create Action Prop
+                actionProp.name = name
 
+                enviroProp = bpy.context.scene.my_enviro_list.add() #Create Skill Prop
+                enviroProp.name = name
 
-        enum = AddActionEnviroPropsFromCollectionCallback()
-        
-        for name in enum:
-            new = bpy.context.scene.my_enviro_list.add()
-            new.name = name
+                frameRange = bpy.context.scene.frame_range_list.add() #Create Frame List
+                frameRange.name = name
+                frameRange.floor = 1
+                frameRange.ceiling = 60
 
-        enum = AddSkillEnviroPropsFromCollectionCallback()
-        
-        for name in enum:
-            new = bpy.context.scene.my_enviro_list.add()
-            new.name = name
+                cameraPointer = bpy.context.scene.my_camera_list.add()
+                cameraPointer.name = name
+
+                petAction = bpy.context.scene.pet_action.add()
+                petAction.name = name      
 
         return {'FINISHED'}
-
 
 class SVR_ActionPropList(bpy.types.PropertyGroup):
     name : bpy.props.StringProperty(name= "Name")
@@ -133,16 +148,19 @@ class SVR_EnviroPropList(bpy.types.PropertyGroup):
     prop_list : bpy.props.CollectionProperty(type = EnviroListItem)
 
 class SVR_FrameRangeList(bpy.types.PropertyGroup):
-    name : bpy.props.StringProperty(name="name")
-    range_list : bpy.props.CollectionProperty(type = FrameRange)
+    name : bpy.props.StringProperty(name="Name")
+    #range_list : bpy.props.CollectionProperty(type = FrameRange)
+    name : StringProperty(name="name")
+    floor : IntProperty(name="floor")
+    ceiling : IntProperty(name="ceiling")
 
 class SVR_CameraList(bpy.types.PropertyGroup):
-    name : bpy.props.StringProperty(name="name")
-    camera_list : bpy.props.CollectionProperty(type = CameraPointer)
+    name : bpy.props.StringProperty(name="Name")
+    camera : PointerProperty(name="camera", type= bpy.types.Camera)
 
 class SVR_PetActionList(bpy.types.PropertyGroup):
-    name : bpy.props.StringProperty(name="name")
-    action_list : bpy.props.CollectionProperty(type= ActionPointer)
+    name : bpy.props.StringProperty(name="Name")
+    action : PointerProperty(name="action", type= bpy.types.Action)
 
 class Glimmer_OT_LoadCsvFile(Operator, ImportHelper): 
     bl_idname = "glimmer.load_csv_file" 
@@ -187,6 +205,11 @@ class Glimmer_OT_MultiRender(Operator):
     def poll(cls, context):
         return True
 
+    #RENDER LOOP MAP
+    #Special Animations: Mistreated, Avatar and Icon Require special setups/render info. (May include Marathon and Juggle as they will have to load things in.)
+    #Action Animations: Normal animations for the pet's render. (Now pulling all info from the scene settings.) Renders .PNG's and then converts them into .GIF format afterwards.
+    #Skill Animations (save Juggle and Marathon): Sets the correct render settings for the skill animations and does a whole bunch of modifying to them afterwards to make the 3 gifs for each anim.
+
     def execute(self, context):
         scn = context.scene
         settings = context.scene.svr_settings
@@ -196,95 +219,22 @@ class Glimmer_OT_MultiRender(Operator):
 
         for item in scn.my_variations:
             if settings.actionsEnum == "mistreated" and settings.isSkill is False:
-                #Render Mistreated animation.
-                    #Hide everything.
-                    #Check the Enviornment Props list
-                    #Un-hide everything in that list.
-                    #Render single frame gif for that one.
-                for ob in bpy.context.scene.objects:
-                    if ob.hide_render == False:
-                        if ob.type != 'LIGHT':
-                            ob.hide_render = True
-
-                for ob in scn.my_enviro_list:
-                    if ob: 
-                        ob.prop.hide_render = False
-
-                string1 =  settings.workDir + "mp4/" + settings.nameEnum + "/"+ item.colorsEnum + "/" + "Empty" + "/" + settings.nameEnum + item.colorsEnum + "-" + settings.actionsEnum + "-base"
-                gif1 = settings.workDir + "gif/" + settings.nameEnum + "/"+ item.colorsEnum + "/" + settings.nameEnum + item.colorsEnum + "-" + settings.actionsEnum + ".gif"
-                scn.render.filepath = string1                
-                emptyRender(item.mesh, item.material)
-
-                vid = imageio.imread(string1 + ".png")
-                imageio.imwrite(gif1, vid, fps=30)
-
-                #clip = ImageClip(string1)
-                #clip.duration = 0.1
-                #clip.write_gif(gif1,fps = 30, program="ffmpeg")
-                #clip.close
- 
-                        
+                RenderMistreated(self, context, item)               
             elif settings.actionsEnum == "icon" and settings.isSkill is False:
-
-                for ob in bpy.context.scene.objects:
-                    if ob.hide_render == False:
-                        if ob.type != 'LIGHT':
-                            ob.hide_render = True
-                item.mesh.hide_render = False
-
-                string1 =  settings.workDir + "png/" + settings.nameEnum + "/" + item.colorsEnum + "/" + settings.actionsEnum + "/" + settings.nameEnum + item.colorsEnum + "-" + settings.actionsEnum 
-                gif1 = settings.workDir + "gif/" + settings.nameEnum + "/"+ item.colorsEnum + "/" + settings.nameEnum + item.colorsEnum + ".gif"
-                scn.render.filepath = string1
-                emptyRender(item.mesh, item.material)
-
-                images = []
-                for file_name in os.listdir(settings.workDir + "png/" + settings.nameEnum + "/" + item.colorsEnum + "/" + settings.actionsEnum):
-                    if file_name.endswith('.png'):
-                        file_path = os.path.join(settings.workDir + "png/" + settings.nameEnum + "/" + item.colorsEnum + "/" + settings.actionsEnum, file_name)
-                        images.append(imageio.imread(file_path))
-                imageio.mimsave(gif1, images, fps=30)
-
-                #clip = ImageClip(string1)
-                #clip.duration = 0.1
-                #clip.write_gif(gif1,fps = 30, program="ffmpeg")
-                #clip.close
-
+                RenderIcon(self, context, item)
             elif settings.actionsEnum == "avatar" and settings.isSkill is False:
-
-                for ob in bpy.context.scene.objects:
-                    if ob.hide_render == False:
-                        if ob.type != 'LIGHT':
-                            ob.hide_render = True
-                item.mesh.hide_render = False
-                string1 =  settings.workDir + "png/" + settings.nameEnum + "/" + item.colorsEnum + "/" + settings.actionsEnum + "/" + settings.nameEnum + item.colorsEnum + "-" + settings.actionsEnum 
-                gif1 = settings.workDir + "gif/" + settings.nameEnum + "/"+ item.colorsEnum + "/" + settings.nameEnum + item.colorsEnum + "-" + settings.actionsEnum + ".gif"
-                scn.render.filepath = string1
-
-                newAvatarRender(item.mesh, item.material)
-
-                images = []
-                for file_name in os.listdir(settings.workDir + "png/" + settings.nameEnum + "/" + item.colorsEnum + "/" + settings.actionsEnum):
-                    if file_name.endswith('.png'):
-                        file_path = os.path.join(settings.workDir + "png/" + settings.nameEnum + "/" + item.colorsEnum + "/" + settings.actionsEnum, file_name)
-                        images.append(imageio.imread(file_path))
-                imageio.mimsave(gif1, images, fps=30)
-
-                #clip = ImageSequenceClip(settings.workDir + "png/" + settings.nameEnum + item.colorsEnum + "/", with_mask= True, set_duration=.01)
-                #clip.duration = 0.1
-                #clip.write_gif(gif1,fps = 30, program="ffmpeg")
-                #clip.close
-
-
+                RenderAvatar(self, context, item)
             elif settings.isSkill is True:
                 #Add special setup for Marathon-empty, rendering out all the frames.
-                                         
+                RenderSkill(self, context, item)
+                '''                        
                 for ob in bpy.context.scene.objects:
                     if ob.type != 'NONETYPE': 
                         if ob.hide_render == False:
                             if ob.type != 'LIGHT':
                                 ob.hide_render = True
 
-                for ob in scn.my_enviro_list:
+                for ob in bpy.context.scene.my_enviro_list[settings.actionsEnum].prop_list:
                     if ob: 
                         ob.prop.hide_render = False
                             
@@ -345,6 +295,7 @@ class Glimmer_OT_MultiRender(Operator):
                         file_path = os.path.join(settings.workDir + "png/" + settings.nameEnum + "/" + item.colorsEnum + "/" + settings.skillsEnum, file_name)
                         images.append(fliplr(imageio.imread(file_path)))
                 imageio.mimsave(gif2, images, fps=30)
+                '''
 
             elif settings.isSkill is False and settings.actionsEnum != "mistreated" and settings.actionsEnum != "avatar" and settings.actionsEnum != "icon":
 
@@ -355,7 +306,7 @@ class Glimmer_OT_MultiRender(Operator):
                             ob.hide_render = True
 
                 item.mesh.hide_render = False
-                for ob in scn.my_enviro_list:
+                for ob in bpy.context.scene.my_enviro_list[settings.actionsEnum].prop_list:
                     if ob: 
                         ob.prop.hide_render = False
                 for ob in item.prop_list:
@@ -416,6 +367,227 @@ class Glimmer_OT_DeleteVariation(bpy.types.Operator):
         return{'FINISHED'}
 
 #########################################
+def hideObjects():
+    for ob in bpy.context.scene.objects:
+        if ob.hide_render == False:
+            if ob.type != 'LIGHT':
+                ob.hide_render = True
+
+def Un_HideEnviroProps(settings):
+    for ob in bpy.context.scene.my_enviro_list[settings.actionsEnum].prop_list:
+        if ob: 
+            ob.prop.hide_render = False
+
+def RenderIcon(self, context, item):
+    scn = context.scene
+    settings = scn.svr_settings
+    hideObjects()
+    Un_HideEnviroProps(settings)
+
+    #unhide the pet mesh
+    item.mesh.hide_render = False
+
+    string1 = settings.workDir + "png/" + settings.nameEnum + "/" + item.colorsEnum + "/" + settings.actionsEnum + "/" + settings.nameEnum + item.colorsEnum
+    gif1 = settings.workDir + "gif/" + settings.nameEnum + "/"+ item.colorsEnum + "/" + settings.nameEnum + item.colorsEnum + ".gif"
+    scn.render.filepath = string1
+
+    checkAndDeleteOldPNG(constructFilePath(self,context,item))
+
+    emptyRender(item.mesh, item.material)
+
+    vid = imageio.imread(string1 + ".png")
+    imageio.imwrite(gif1, vid, fps=30)
+
+def RenderMistreated(self, context, item):
+    scn = context.scene
+    settings = scn.svr_settings
+
+    #Render Mistreated animation.
+        #Hide everything.
+        #Check the Enviornment Props list
+        #Render single frame gif.
+
+    hideObjects()
+    Un_HideEnviroProps(settings)
+
+    string1 = constructActionOutputStringPNG(self,context,item) 
+    gif1 = constructActionOutputStringGIF(self, context, item)
+    scn.render.filepath = string1
+
+    checkAndDeleteOldPNG(constructFilePath(self,context,item))
+
+    emptyRender(item.object, item.material)
+
+    vid = imageio.imread(string1 + ".png")
+    imageio.imwrite(gif1, vid, fps=30) 
+
+def RenderAvatar(self, context, item):
+    scn = context.scene
+    settings = scn.svr_settings
+
+    hideObjects()
+
+    #Unhide variation props and pet.
+    item.mesh.hide_render = False
+    for ob in item.prop_list:
+        ob.prop.hide_render = False
+    for ob in bpy.context.scene.my_action_list[settings.skillsEnum].prop_list:
+        ob.prop.hide_render = False
+
+    string1 = constructActionOutputStringPNG(self,context,item) 
+    gif1 = constructActionOutputStringGIF(self, context, item)
+    scn.render.filepath = string1
+
+    checkAndDeleteOldPNG(constructFilePath(self,context,item))
+
+    newAvatarRender(item.mesh, item.material)
+
+    images = []
+    for file_name in os.listdir(settings.workDir + "png/" + settings.nameEnum + "/" + item.colorsEnum + "/" + settings.actionsEnum):
+        if file_name.endswith('.png'):
+            file_path = os.path.join(settings.workDir + "png/" + settings.nameEnum + "/" + item.colorsEnum + "/" + settings.actionsEnum, file_name)
+            images.append(imageio.imread(file_path))
+    imageio.mimsave(gif1, images, fps=30)
+
+def RenderSkill(self, context, item):
+    scn = context.scene
+    settings = scn.svr_settings
+
+    for ob in bpy.context.scene.objects:
+                    if ob.type != 'NONETYPE': 
+                        if ob.hide_render == False:
+                            if ob.type != 'LIGHT':
+                                ob.hide_render = True
+
+    for ob in bpy.context.scene.my_enviro_list[settings.actionsEnum].prop_list:
+        if ob: 
+            ob.prop.hide_render = False
+                
+    string1 =  settings.workDir + "png/" + settings.nameEnum + "/" + item.colorsEnum + "/" + settings.skillsEnum + "/" + "Empty" +"/" + settings.nameEnum + item.colorsEnum + "-" + settings.skillsEnum + "-empty"
+    gif1 = settings.workDir + "gif/" + settings.nameEnum + "/"+ item.colorsEnum + "/" + settings.nameEnum + item.colorsEnum + "-" + settings.skillsEnum + "-empty.gif"
+    scn.render.filepath = string1
+
+    #Enable objects from the hide list.
+    if settings.skillsEnum == "marathon" or settings.skillsEnum == "marathonfail" or settings.skillsEnum == "jugglefail" or settings.skillsEnum == "juggle":
+        marathonEmptyRender(item.mesh, item.material)
+    else:
+        emptyRender(item.mesh, item.material)
+
+    images = []
+    for file_name in os.listdir(settings.workDir + "png/" + settings.nameEnum + "/" + item.colorsEnum + "/" + settings.skillsEnum + "/" + "Empty"):
+        if file_name.endswith('.png'):
+            file_path = os.path.join(settings.workDir + "png/" + settings.nameEnum + "/" + item.colorsEnum + "/" + settings.skillsEnum + "/" + "Empty", file_name)
+            images.append(imageio.imread(file_path))
+    imageio.mimsave(gif1, images, fps=30)
+
+
+    item.mesh.hide_render = False
+    for ob in item.prop_list:
+        ob.prop.hide_render = False
+    for ob in bpy.context.scene.my_action_list[settings.skillsEnum].prop_list:
+        ob.prop.hide_render = False
+
+    #First Render Loop
+    string1 = settings.workDir + "png/" + settings.nameEnum + "/" + item.colorsEnum + "/" + settings.skillsEnum  + "/" + settings.nameEnum + item.colorsEnum + "-" + settings.skillsEnum 
+    gif1 = settings.workDir + "gif/" + settings.nameEnum + "/"+ item.colorsEnum + "/" + settings.nameEnum + item.colorsEnum + "-" + settings.skillsEnum + "-left.gif"
+    gif2 = settings.workDir + "gif/" + settings.nameEnum + "/"+ item.colorsEnum + "/" + settings.nameEnum + item.colorsEnum + "-" + settings.skillsEnum + "-right.gif"
+
+    scn.render.filepath = string1
+    
+    checkAndDeleteOldPNG(settings.workDir + "png/" + settings.nameEnum + "/" + item.colorsEnum + "/" + settings.actionsEnum)
+
+    if settings.skillsEnum == "marathon" or settings.skillsEnum == "marathonfail" or settings.skillsEnum == "jugglingfail" or settings.skillsEnum == "juggling":
+        marathonEmptyRender(item.mesh, item.material)
+    else:
+        PNGTestRender(item.mesh, item.material)
+    
+    images = []
+    for file_name in os.listdir(settings.workDir + "png/" + settings.nameEnum + "/" + item.colorsEnum + "/" + settings.skillsEnum):
+        if file_name.endswith('.png'):
+            file_path = os.path.join(settings.workDir + "png/" + settings.nameEnum + "/" + item.colorsEnum + "/" + settings.skillsEnum, file_name)
+            images.append(imageio.imread(file_path))
+    imageio.mimsave(gif1, images, fps=30)
+
+    images = []
+    for file_name in os.listdir(settings.workDir + "png/" + settings.nameEnum + "/" + item.colorsEnum + "/" + settings.skillsEnum):
+        if file_name.endswith('.png'):
+            file_path = os.path.join(settings.workDir + "png/" + settings.nameEnum + "/" + item.colorsEnum + "/" + settings.skillsEnum, file_name)
+            images.append(fliplr(imageio.imread(file_path)))
+    imageio.mimsave(gif2, images, fps=30)
+
+def RenderAction(self, context, item):
+    
+    scn = context.scene
+    settings = scn.svr_settings
+
+    #Turn off all props and meshes and only enable the ones we want.
+    for ob in bpy.context.scene.objects:
+        if ob.hide_render == False:
+            if ob.type != 'LIGHT':
+                ob.hide_render = True
+
+    item.mesh.hide_render = False
+    for ob in bpy.context.scene.my_enviro_list[settings.actionsEnum].prop_list:
+        if ob: 
+            ob.prop.hide_render = False
+    for ob in item.prop_list:
+        if ob: 
+            ob.prop.hide_render = False
+    for ob in bpy.context.scene.my_action_list[settings.actionsEnum].prop_list:
+        if ob:
+            ob.prop.hide_render = False
+
+    #First Render Loop
+    #string1 = settings.workDir + "mp4/" + settings.nameEnum + "/" + item.colorsEnum + "/"+ item.colorsEnum + "-" + settings.actionsEnum + ".mp4"
+    string1 = settings.workDir + "png/" + settings.nameEnum + "/" + item.colorsEnum + "/" + settings.actionsEnum + "/" + settings.nameEnum + item.colorsEnum + "-" + settings.actionsEnum 
+    gif1 = settings.workDir + "gif/" + settings.nameEnum + "/"+ item.colorsEnum + "/" + settings.nameEnum + item.colorsEnum + "-" + settings.actionsEnum + ".gif"
+    scn.render.filepath = string1
+
+    checkAndDeleteOldPNG(settings.workDir + "png/" + settings.nameEnum + "/" + item.colorsEnum + "/" + settings.actionsEnum)
+
+    PNGTestRender(item.mesh, item.material)
+
+    images = []
+    for file_name in os.listdir(settings.workDir + "png/" + settings.nameEnum + "/" + item.colorsEnum + "/" + settings.actionsEnum):
+        if file_name.endswith('.png'):
+            file_path = os.path.join(settings.workDir + "png/" + settings.nameEnum + "/" + item.colorsEnum + "/" + settings.actionsEnum, file_name)
+            images.append(imageio.imread(file_path))
+    imageio.mimsave(gif1, images, fps=30)
+
+
+def constructFilePath(self,context, item):
+    settings = context.scene.svr_settings
+
+    string = settings.workDir + "png/" + settings.nameEnum + "/" + item.colorsEnum + "/" + settings.actionsEnum
+    return string
+
+def constructActionOutputStringPNG(self, context, item):
+    settings = context.scene.svr_settings
+
+    string = settings.workDir + "png/" + settings.nameEnum + "/" + item.colorsEnum + "/" + settings.actionsEnum + "/" + settings.nameEnum + item.colorsEnum + "-" + settings.actionsEnum
+    return string
+
+def constructActionOutputStringGIF(self, context, item):
+    settings = context.scene.svr_settings
+    string = settings.workDir + "gif/" + settings.nameEnum + "/"+ item.colorsEnum + "/" + settings.nameEnum + item.colorsEnum + "-" + settings.actionsEnum + ".gif"
+    return string
+
+def constructSkillnOutputStringPNG(self, context, item):
+    settings = context.scene.svr_settings
+
+    string = settings.workDir + "png/" + settings.nameEnum + "/" + item.colorsEnum + "/" + settings.skillsEnum + "/" + settings.nameEnum + item.colorsEnum + "-" + settings.skillsEnum
+    return string
+
+def constructSkillOutputStringGIF(self, context, item):
+    settings = context.scene.svr_settings
+    string = settings.workDir + "gif/" + settings.nameEnum + "/"+ item.colorsEnum + "/" + settings.nameEnum + item.colorsEnum + "-" + settings.skillsEnum + ".gif"
+    return string
+
+def checkAndDeleteOldPNG(string):
+    if os.path.exists(string):
+        for file_name in os.listdir(string):
+            if file_name.endswith('.png'):
+                os.remove(os.path.join(string, file_name))
 
 class Glimmer_OT_ScaleObject(bpy.types.Operator):
     bl_idname = "object.scale_object"

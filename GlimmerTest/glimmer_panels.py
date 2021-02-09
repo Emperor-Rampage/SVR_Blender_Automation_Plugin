@@ -1,3 +1,4 @@
+from typing import Text
 import bpy
 from bpy.types import PropertyGroup, UIList, Panel, Operator
 from bpy.props import (
@@ -47,16 +48,56 @@ class Glimmer_PT_Panel(Panel):
 
         row = box.row()
         row.prop(settings, "isSkill", text = "Switch to Skill Mode?")
-        box.separator()
-        row = box.row()
-        row.label(text = "Animation Frame Range")
-        
-        #Environment Prop List Area
-        box = layout.box()
-        box.row().label(text= "Environment Prop List")
-        row = box.row()
 
-        if scene.list_index >= 0 and scene.my_enviro_list:
+        if settings.isSkill is True:
+            #Animation Frame Range
+            box.separator()
+            box.row().label(text = "Animation Frames")
+            row = box.row()
+            row.prop(scene.frame_range_list[settings.skillsEnum], "floor", text = "Start Frame")
+            row = box.row()
+            row.prop(scene.frame_range_list[settings.skillsEnum], "ceiling", text = "End Frame")
+
+            #Camera Pointer
+            box.separator()
+            box.row().label(text = "Animation Camera")
+            box.row().prop(scene.my_camera_list[settings.skillsEnum], "camera", text = "Camera")
+
+            #Action Pointer
+            box.separator()
+            box.row().label(text = "Animation Action")
+            box.row().prop(scene.pet_action[settings.skillsEnum], "action", text = "Pet Action")
+            
+            #Environment Prop List Area
+            box = layout.box()
+            box.row().label(text= "Environment Prop List")
+            row = box.row()
+
+        else:
+            #Animation Frame Range
+            box.separator()
+            box.row().label(text = "Animation Frames")
+            row = box.row()
+            row.prop(scene.frame_range_list[settings.actionsEnum], "floor", text = "Start Frame")
+            row = box.row()
+            row.prop(scene.frame_range_list[settings.actionsEnum], "ceiling", text = "End Frame")
+
+            #Camera Pointer
+            box.separator()
+            box.row().label(text = "Animation Camera")
+            box.row().prop(scene.my_camera_list[settings.actionsEnum], "camera", text = "Camera")
+
+            #Action Pointer
+            box.separator()
+            box.row().label(text = "Animation Action")
+            box.row().prop(scene.pet_action[settings.actionsEnum], "action", text = "Pet Action")
+            
+            #Environment Prop List Area
+            box = layout.box()
+            box.row().label(text= "Environment Prop List")
+            row = box.row()
+
+        if scene.list_index >= 0 and scene.my_enviro_list and scene.my_action_list:
             if settings.isSkill is True:
                 for item in scene.my_enviro_list[settings.skillsEnum].prop_list: 
                     row = box.row()
@@ -184,7 +225,7 @@ class ActionListItem(PropertyGroup):
     bl_idname = "collection.actionpropitem"
     bl_label = "Pointer property group, used to hold Action Prop info."
     name : StringProperty(name="name")
-    prop : PointerProperty(name="prop", type= bpy.types.Mesh)
+    prop : PointerProperty(name="prop", type= bpy.types.Object)
     rig : PointerProperty(name="rig", type= bpy.types.Armature)
     action : PointerProperty(name="action", type= bpy.types.Action)
 
@@ -192,26 +233,7 @@ class EnviroListItem(PropertyGroup):
     bl_idname = "collection.enviropropitem"
     bl_label = "Pointer property group, used to hold Enviro Prop info."
     name : StringProperty(name="name")
-    prop : PointerProperty(name="prop", type= bpy.types.Mesh)
-
-class FrameRange(PropertyGroup):
-    bl_idname = "collection.framerange"
-    bl_label = "Integer Property Group, used to handle the Render frame range."
-    name : StringProperty(name="name")
-    floor : IntProperty(name="floor", default=1)
-    ceiling : IntProperty(name="ceiling", default=60)
-
-class ActionPointer(PropertyGroup):
-    bl_idname = "collection.blendaction"
-    bl_label = "Pointer property group, to indicate what Action should be assigned to the Pet per anim."
-    name : StringProperty(name="name")
-    action : PointerProperty(name="action", type= bpy.types.Action)
-
-class CameraPointer(PropertyGroup):
-    bl_idname = "collection.animcamera"
-    bl_label = "Pointer Property Group, indicates what camera to use for each animation."
-    name : StringProperty(name="name")
-    camera : PointerProperty(name="camera", type= bpy.types.Camera)
+    prop : PointerProperty(name="prop", type= bpy.types.Object)
 
 class Glimmer_UL_ActionList(UIList):
     """Demo UIList.""" 
