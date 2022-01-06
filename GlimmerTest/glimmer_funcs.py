@@ -3,6 +3,13 @@ import os
 from bpy_extras.io_utils import ImportHelper
 import csv
 
+def RigFilter(self, object):
+    return object.type == "ARMATURE"
+def MeshFilter(self, object):
+    return object.type == "MESH" or object.type == "LIGHT"
+def CameraFilter(self, object):
+    return object.type == "CAMERA"
+
 def AddNew(ActionList):
     ActionList.add()
 
@@ -25,79 +32,107 @@ def newAvatarRender(object, material):
     else:
             object.data.materials.append(material)
 
-    SetRenderBlock(True)
+    SetRenderBlock()
+    bpy.context.scene.use_nodes = False
+    bpy.context.scene.render.film_transparent = True
     bpy.ops.render.render(animation=True)
+    bpy.context.scene.use_nodes = True
 
 def PNGTestRender(object, material):
     if object.data.materials:
             object.data.materials[0] = material
     else:
             object.data.materials.append(material)
-    bpy.context.scene.render.use_file_extension = True
-    bpy.context.scene.render.image_settings.file_format = "PNG"
-    bpy.context.scene.render.image_settings.color_mode = "RGB"
+    SetRenderBlock()
     bpy.ops.render.render(animation=True)
-    SetRenderBlock(False)
 
 def emptyRender(object, material):
     if object.data.materials:
             object.data.materials[0] = material
     else:
             object.data.materials.append(material)
-    bpy.context.scene.render.use_file_extension = True
-    bpy.context.scene.render.image_settings.file_format = "PNG"
-    bpy.context.scene.render.image_settings.color_mode = "RGB"
+    SetRenderBlock()
     bpy.context.scene.frame_set(1)
     bpy.ops.render.render(write_still= True)
-    SetRenderBlock(False)
 
 def marathonEmptyRender(object, material):
     if object.data.materials:
             object.data.materials[0] = material
     else:
             object.data.materials.append(material)
-    bpy.context.scene.render.use_file_extension = True
-    bpy.context.scene.render.image_settings.file_format = "PNG"
-    bpy.context.scene.render.image_settings.color_mode = "RGB"
+    SetRenderBlock()
     bpy.context.scene.render.film_transparent = True
     bpy.ops.render.render(animation=True)
 
 def validateRenderSettings(self, context):
+    SetRenderBlock()
+    tree = bpy.context.scene.node_tree
     if self.actionsEnum == "avatar" and self.isSkill is False:
         bpy.context.scene.render.resolution_x = 100
         bpy.context.scene.render.resolution_y = 268
-        SetRenderBlock(True)
     elif self.actionsEnum == "icon" and self.isSkill is False:
         bpy.context.scene.render.resolution_x = 37
         bpy.context.scene.render.resolution_y = 30
-        SetRenderBlock(False)
     elif self.isSkill is True:
+        if self.skillsEnum == "marathon" or self.skillsEnum == "marathonfail":
+            #LoadMarathonBackground()
+            bpy.context.scene.use_nodes = True
+            bpy.data.scenes['Scene'].node_tree.nodes['Mix'].inputs[0].default_value = 1.0          
+        elif self.skillsEnum == "juggle" or self.skillsEnum == "jugglefail":
+            #LoadJuggleBackground()
+            bpy.context.scene.use_nodes = True
+            bpy.data.scenes['Scene'].node_tree.nodes['Mix'].inputs[0].default_value = 0.0
         bpy.context.scene.render.resolution_x = 232
         bpy.context.scene.render.resolution_y = 346
-        SetRenderBlock(False)
     else:
         bpy.context.scene.render.resolution_x = 464
-        bpy.context.scene.render.resolution_y = 346
-        SetRenderBlock(False)        
+        bpy.context.scene.render.resolution_y = 346       
 
-def SetRenderBlock(avatar):
-    if avatar == False:
-        bpy.context.scene.render.use_file_extension = False
-        bpy.context.scene.render.image_settings.file_format = "FFMPEG"
-        bpy.context.scene.render.image_settings.color_mode = "RGB"
-        bpy.context.scene.render.ffmpeg.format = "MPEG4"
-        bpy.context.scene.render.ffmpeg.codec = "MPEG4"
-        bpy.context.scene.render.ffmpeg.use_autosplit = False
-        bpy.context.scene.render.ffmpeg.constant_rate_factor = "LOSSLESS"
-        bpy.context.scene.render.ffmpeg.ffmpeg_preset = "GOOD"
-        bpy.context.scene.render.ffmpeg.gopsize = 18
-        bpy.context.scene.render.ffmpeg.audio_codec = "NONE"
-        bpy.context.scene.render.film_transparent = False
-    else:
-        bpy.context.scene.render.use_file_extension = True
-        bpy.context.scene.render.image_settings.file_format = "PNG"
-        bpy.context.scene.render.image_settings.color_mode = "RGBA"
-        bpy.context.scene.render.film_transparent = True
+def SetupCompositeSystem():
+    getfilepath = bpy.context.preferences.addons[__package__.split(".")[0]].preferences.filepath
+    bpy.context.scene.use_nodes = True
+    tree = bpy.context.scene.node_tree
+    if os.path.exists(getfilepath):
+        mov = bpy.data.movieclips.load(getfilepath + "/MarathonBG.mp4", check_existing=True)
+        img = bpy.data.images.load(getfilepath + "/JuggleBG.jpg", check_existing=True)
+        # clear default nodes
+        for node in tree.nodes:
+            tree.nodes.remove(node)
+
+        # create input image node
+        image_node = tree.nodes.new(type='CompositorNodeImage')
+        image_node.image = img
+        image_node.location = 0,0
+        # create movie input node
+        movie_node = tree.nodes.new(type='CompositorNodeMovieClip')
+        movie_node.clip = mov
+        movie_node.location = 400,0
+        # View Layer Node
+        layer_node = tree.nodes.new(type='CompositorNodeRLayers')
+        layer_node.location = 0,400
+        # Mix node
+        mix_node = tree.nodes.new(type='CompositorNodeMixRGB')
+        mix_node.location = 400,200
+        # Alpha Over Node
+        alpha_node = tree.nodes.new(type='CompositorNodeAlphaOver')
+        alpha_node.location = 400,400
+        # create output node
+        comp_node = tree.nodes.new('CompositorNodeComposite')   
+        comp_node.location = 800,0
+
+        # link nodes
+        links = tree.links
+        links.new(image_node.outputs[0], mix_node.inputs[1])
+        links.new(movie_node.outputs[0], mix_node.inputs[2])
+        links.new(mix_node.outputs[0], alpha_node.inputs[1])
+        links.new(layer_node.outputs[0], alpha_node.inputs[2])
+        links.new(alpha_node.outputs[0], comp_node.inputs[0])              
+
+def SetRenderBlock():
+    bpy.context.scene.render.use_file_extension = True
+    bpy.context.scene.render.image_settings.file_format = "PNG"
+    bpy.context.scene.render.image_settings.color_mode = "RGBA"
+    bpy.context.scene.render.film_transparent = False
 
 #Attempt to create the directories for the output, using the given location in the tool.
 def CreateDirectories():
@@ -106,14 +141,6 @@ def CreateDirectories():
 
     colorEnum = PopColors()
     for color in colorEnum:
-        path = settings.workDir + "mp4\\" + settings.nameEnum + "\\" + color
-        try:
-            os.makedirs(path)
-        except OSError:
-            print ("Creation of the directory %s failed" % path)
-        else:
-            print ("Successfully created the directory %s" % path)
-        
         path = settings.workDir + "gif\\" + settings.nameEnum + "\\" + color
         try:
             os.makedirs(path)
@@ -210,13 +237,6 @@ def AddSkillsCollectionCallback(self, context):
         items.append((skill, skill, ""))
     return items
 
-def SetFrameRange(floor, ceiling):
-    if isinstance(floor, int) is True and isinstance(ceiling, int) is True:
-        bpy.context.scene.frame_start = floor
-        bpy.context.scene.frame_end = ceiling
-    else:
-        print("ERROR: Cannot set frame range! Check start and end frame numbers for this animation!") 
-
 def LoadCSVFile(self, context):
     settings = context.scene.svr_settings
     settings.csvFile = self.filepath
@@ -308,3 +328,62 @@ def LoadCSVFile(self, context):
     
 
     return {'FINISHED'}
+
+#########################################################################################
+
+def LoadMarathonBackground():
+    getfilepath = bpy.context.preferences.addons[__package__.split(".")[0]].preferences.filepath
+    if os.path.exists(getfilepath):
+        mov = bpy.data.movieclips.load(getfilepath + "/MarathonBG.mp4", check_existing=True)
+        #mov.source = 'MOVIE'
+
+        cam = bpy.context.scene.camera
+
+        cam.data.show_background_images = True
+        if len(cam.data.background_images) > 0:
+            for background_image in cam.data.background_images:
+                cam.data.background_images.remove(background_image)
+        bg = cam.data.background_images.new()
+        bg.clip = mov
+        bg.source = "MOVIE_CLIP"
+        bpy.context.scene.render.film_transparent = True
+
+def LoadJuggleBackground():
+    getfilepath = bpy.context.preferences.addons[__package__.split(".")[0]].preferences.filepath
+    if os.path.exists(getfilepath):
+        img = bpy.data.images.load(getfilepath + "/JuggleBG.jpg", check_existing=True)
+        
+        #img.source = 'IMAGE'
+
+        cam = bpy.context.scene.camera
+
+        cam.data.show_background_images = True
+        if len(cam.data.background_images) > 0:
+            for background_image in cam.data.background_images:
+                cam.data.background_images.remove(background_image)
+        bg = cam.data.background_images.new()
+        bg.image = img
+        bg.source = "IMAGE"
+        bpy.context.scene.render.film_transparent = True
+
+'''
+def SetRenderBlock(avatar):
+    if avatar == False:
+        
+        bpy.context.scene.render.use_file_extension = False
+        bpy.context.scene.render.image_settings.file_format = "FFMPEG"
+        bpy.context.scene.render.image_settings.color_mode = "RGB"
+        bpy.context.scene.render.ffmpeg.format = "MPEG4"
+        bpy.context.scene.render.ffmpeg.codec = "MPEG4"
+        bpy.context.scene.render.ffmpeg.use_autosplit = False
+        bpy.context.scene.render.ffmpeg.constant_rate_factor = "LOSSLESS"
+        bpy.context.scene.render.ffmpeg.ffmpeg_preset = "GOOD"
+        bpy.context.scene.render.ffmpeg.gopsize = 18
+        bpy.context.scene.render.ffmpeg.audio_codec = "NONE"
+        bpy.context.scene.render.film_transparent = False
+    else:
+        bpy.context.scene.render.use_file_extension = True
+        bpy.context.scene.render.image_settings.file_format = "PNG"
+        bpy.context.scene.render.image_settings.color_mode = "RGBA"
+        bpy.context.scene.render.film_transparent = True
+'''

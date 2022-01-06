@@ -14,15 +14,16 @@
 bl_info = {
     "name" : "Glimmer Multirender",
     "author" : "Chris Calef, Conner Lindsley",
-    "description" : "",
+    "description" : "Glimmer Animation Tool for automating the SVR/Cellufun workflow.",
     "blender" : (2, 80, 0),
-    "version" : (1, 3, 0),
+    "version" : (1, 3, 1),
     "location" : "",
     "warning" : "",
     "category" : "Rendering"
 }
 
 import bpy
+import os
 import subprocess
 
 from bpy.props import (
@@ -33,7 +34,8 @@ from bpy.props import (
     EnumProperty,
     CollectionProperty,
     PointerProperty
-) 
+)
+from bpy.types import AddonPreferences 
 
 from . glimmer_panels import (
     Glimmer_PT_Panel, 
@@ -53,7 +55,8 @@ from . glimmer_panels import (
 from . glimmer_ops import (
     Glimmer_OT_LoadNamesCsv, 
     Glimmer_OT_LoadCsvFile, 
-    Glimmer_OT_MultiRender, 
+    Glimmer_OT_MultiRender,
+    Glimmer_OT_RenderAll, 
     Glimmer_OT_ScaleObject, 
     Glimmer_OT_UnScaleObject, 
     Glimmer_OT_AddVariation, 
@@ -69,10 +72,21 @@ from . glimmer_funcs import (
     AddNamesCollectionCallback,
     AddColorsCollectionCallback,
     AddActionsCollectionCallback,
-    AddSkillsCollectionCallback
+    AddSkillsCollectionCallback,
+    RigFilter,
+    MeshFilter
 )
 
-#myTestArray = ["test string one","test string two"]
+
+class GlimmerMultirenderPref(AddonPreferences):
+    bl_idname = __package__.split(".")[0]
+
+    filepath: StringProperty(name="Resource Folder File Path", subtype='FILE_PATH')
+
+    def draw(self, context):
+        layout = self.layout
+        layout.label(text = "Glimmer Tool Preferences")
+        layout.prop(self, "filepath")
 
 class SVR_Settings(bpy.types.PropertyGroup):
     workDir : bpy.props.StringProperty(name = "Work Directory", default = "C:\\work\\")
@@ -109,7 +123,6 @@ class SVR_Settings(bpy.types.PropertyGroup):
         update= validateRenderSettings
     )
 
-
 class SVR_VariationSettings(bpy.types.PropertyGroup):
     colorsEnum: EnumProperty(
         name="Colors:",
@@ -117,13 +130,14 @@ class SVR_VariationSettings(bpy.types.PropertyGroup):
         items = AddColorsCollectionCallback
     )
     material : bpy.props.PointerProperty(name="MaterialProperty", type= bpy.types.Material)
-    mesh : bpy.props.PointerProperty(name="MeshProperty", type= bpy.types.Object)
-    rig : bpy.props.PointerProperty(name="ArmatureProperty", type= bpy.types.Armature)
+    mesh : bpy.props.PointerProperty(name="MeshProperty", type= bpy.types.Object, poll=MeshFilter)
+    rig : bpy.props.PointerProperty(name="ArmatureProperty", type= bpy.types.Object, poll=RigFilter)
     prop_list : bpy.props.CollectionProperty(type = ActionListItem)
     list_index : bpy.props.IntProperty(name = "Index for my_action_list", default = 0)
 
 classes = (
     SVR_Settings,
+    GlimmerMultirenderPref,
     ActionListItem,
     EnviroListItem,
     SVR_VariationSettings,
@@ -135,6 +149,7 @@ classes = (
     Glimmer_OT_LoadNamesCsv,
     Glimmer_OT_LoadCsvFile,
     Glimmer_OT_MultiRender,
+    Glimmer_OT_RenderAll,
     Glimmer_OT_ScaleObject,
     Glimmer_OT_UnScaleObject,
     Glimmer_PT_Panel,

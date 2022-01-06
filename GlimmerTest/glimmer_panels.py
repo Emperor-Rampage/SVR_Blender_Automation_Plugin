@@ -9,6 +9,10 @@ from bpy.props import (
     PointerProperty,
 
 )
+from .  glimmer_funcs import (
+    RigFilter,
+    MeshFilter
+)
 
 #from GlimmerTest.glimmer_funcs import validateRenderSettings, SetRenderBlock, AddNew, AddActionActionPropsFromCollectionCallback, AddSkillActionPropsFromCollectionCallback
 
@@ -50,52 +54,54 @@ class Glimmer_PT_Panel(Panel):
         row.prop(settings, "isSkill", text = "Switch to Skill Mode?")
 
         if settings.isSkill is True:
-            #Animation Frame Range
-            box.separator()
-            box.row().label(text = "Animation Frames")
-            row = box.row()
-            row.prop(scene.frame_range_list[settings.skillsEnum], "floor", text = "Start Frame")
-            row = box.row()
-            row.prop(scene.frame_range_list[settings.skillsEnum], "ceiling", text = "End Frame")
+            if settings.skillsEnum is not None:
+                #Animation Frame Range
+                box.separator()
+                box.row().label(text = "Animation Frames")
+                row = box.row()
+                row.prop(scene.frame_range_list[settings.skillsEnum], "floor", text = "Start Frame")
+                row = box.row()
+                row.prop(scene.frame_range_list[settings.skillsEnum], "ceiling", text = "End Frame")
 
-            #Camera Pointer
-            box.separator()
-            box.row().label(text = "Animation Camera")
-            box.row().prop(scene.my_camera_list[settings.skillsEnum], "camera", text = "Camera")
+                #Camera Pointer
+                box.separator()
+                box.row().label(text = "Animation Camera")
+                box.row().prop(scene.my_camera_list[settings.skillsEnum], "camera", text = "Camera")
 
-            #Action Pointer
-            box.separator()
-            box.row().label(text = "Animation Action")
-            box.row().prop(scene.pet_action[settings.skillsEnum], "action", text = "Pet Action")
-            
-            #Environment Prop List Area
-            box = layout.box()
-            box.row().label(text= "Environment Prop List")
-            row = box.row()
+                #Action Pointer
+                box.separator()
+                box.row().label(text = "Animation Action")
+                box.row().prop(scene.pet_action[settings.skillsEnum], "action", text = "Pet Action")
+                
+                #Environment Prop List Area
+                box = layout.box()
+                box.row().label(text= "Environment Prop List")
+                row = box.row()
 
         else:
-            #Animation Frame Range
-            box.separator()
-            box.row().label(text = "Animation Frames")
-            row = box.row()
-            row.prop(scene.frame_range_list[settings.actionsEnum], "floor", text = "Start Frame")
-            row = box.row()
-            row.prop(scene.frame_range_list[settings.actionsEnum], "ceiling", text = "End Frame")
+            if settings.actionsEnum is not None:
+                #Animation Frame Range
+                box.separator()
+                box.row().label(text = "Animation Frames")
+                row = box.row()
+                row.prop(scene.frame_range_list[settings.actionsEnum], "floor", text = "Start Frame")
+                row = box.row()
+                row.prop(scene.frame_range_list[settings.actionsEnum], "ceiling", text = "End Frame")
 
-            #Camera Pointer
-            box.separator()
-            box.row().label(text = "Animation Camera")
-            box.row().prop(scene.my_camera_list[settings.actionsEnum], "camera", text = "Camera")
+                #Camera Pointer
+                box.separator()
+                box.row().label(text = "Animation Camera")
+                box.row().prop(scene.my_camera_list[settings.actionsEnum], "camera", text = "Camera")
 
-            #Action Pointer
-            box.separator()
-            box.row().label(text = "Animation Action")
-            box.row().prop(scene.pet_action[settings.actionsEnum], "action", text = "Pet Action")
-            
-            #Environment Prop List Area
-            box = layout.box()
-            box.row().label(text= "Environment Prop List")
-            row = box.row()
+                #Action Pointer
+                box.separator()
+                box.row().label(text = "Animation Action")
+                box.row().prop(scene.pet_action[settings.actionsEnum], "action", text = "Pet Action")
+                
+                #Environment Prop List Area
+                box = layout.box()
+                box.row().label(text= "Environment Prop List")
+                row = box.row()
 
         if scene.list_index >= 0 and scene.my_enviro_list and scene.my_action_list:
             if settings.isSkill is True:
@@ -205,6 +211,7 @@ class Glimmer_PT_Panel(Panel):
         layout.separator()
         layout.row().operator("render.multirender", text="Render Animation", icon='OBJECT_DATAMODE')
         layout.separator()
+        layout.row().operator("render.renderall", text="Render All Animations", icon='OBJECT_DATAMODE')
 
 
         #layout.row().prop(settings,"scaleValue",text="Scale Amount")
@@ -220,20 +227,19 @@ class Glimmer_PT_Panel(Panel):
 
 ###############################
 
-
 class ActionListItem(PropertyGroup):
     bl_idname = "collection.actionpropitem"
     bl_label = "Pointer property group, used to hold Action Prop info."
     name : StringProperty(name="name")
-    prop : PointerProperty(name="prop", type= bpy.types.Object)
-    rig : PointerProperty(name="rig", type= bpy.types.Armature)
+    prop : PointerProperty(name="prop", type= bpy.types.Object, poll=MeshFilter)
+    rig : PointerProperty(name="rig", type= bpy.types.Object, poll= RigFilter)
     action : PointerProperty(name="action", type= bpy.types.Action)
 
 class EnviroListItem(PropertyGroup):
     bl_idname = "collection.enviropropitem"
     bl_label = "Pointer property group, used to hold Enviro Prop info."
     name : StringProperty(name="name")
-    prop : PointerProperty(name="prop", type= bpy.types.Object)
+    prop : PointerProperty(name="prop", type= bpy.types.Object, poll= MeshFilter)
 
 class Glimmer_UL_ActionList(UIList):
     """Demo UIList.""" 
